@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:57:25 by lumartin          #+#    #+#             */
-/*   Updated: 2025/02/20 18:26:11 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/02/20 18:29:12 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	ft_read_history(char *history_file)
 	return (SUCCESS);
 }
 
-char	*return_last_command(int fd)
+static char	*return_last_command(int fd)
 {
 	char	*a_line;
 	char	*p_line;
