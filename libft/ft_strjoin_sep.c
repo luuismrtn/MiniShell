@@ -1,28 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strjoin_sep.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/02/20 18:23:50 by lumartin         ###   ########.fr       */
+/*   Created: 2025/02/20 18:07:51 by lumartin          #+#    #+#             */
+/*   Updated: 2025/02/20 18:22:56 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "inc/minishell.h"
+#include "libft.h"
 
-int	main(void)
+char	*ft_strjoin_sep(char const *s1, char const *s2, char sep)
 {
-	char	*line;
+	char	*str;
+	size_t	i;
+	size_t	j;
 
-	if (ft_read_history(HISTORY_FILE) == ERROR)
-		return (ERROR);
-	while (1)
-	{
-		line = readline("minishell ~ ");
-		write_line_history(HISTORY_FILE, line);
-		rl_on_new_line();
-	}
-	return (SUCCESS);
+	if (!s1 || !s2)
+		return (NULL);
+	str = (char *)malloc(ft_strlen(s1) + ft_strlen(s2) + 2);
+	if (!str)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (s1[j])
+		str[i++] = s1[j++];
+	str[i++] = sep;
+	j = 0;
+	while (s2[j])
+		str[i++] = s2[j++];
+	str[i] = '\0';
+	return (str);
 }
