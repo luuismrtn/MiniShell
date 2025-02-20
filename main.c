@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/02/20 16:15:40 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/02/20 17:29:54 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,8 @@ int main()
 {
     char *line;
 
-    if (read_history(HISTORY_FILE) == ERROR)
-        return NULL;
-    
+    if (ft_read_history(HISTORY_FILE) == ERROR)
+        return ERROR;
     while (1)
     {
         line = readline("minishell ~ ");
@@ -26,5 +25,5 @@ int main()
         write_line_history(HISTORY_FILE, line);
         rl_on_new_line();
     }
-    return 0;
+    return SUCCESS;
 }
