@@ -3,7 +3,9 @@ CC = cc
 CFLAGS = # -Wall -Wextra -Werror #-fsanitize=address -g3
 RM = rm -f
 
-SRC = main.c pipex.c pipex_utils.c\
+SRC = main.c \
+	pipex.c pipex_utils.c \
+	history.c \
 
 INCLUDE = -I libft -I.
 
