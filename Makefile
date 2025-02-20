@@ -1,10 +1,9 @@
-NAME = pipex
+NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror #-fsanitize=address -g3
+CFLAGS = # -Wall -Wextra -Werror #-fsanitize=address -g3
 RM = rm -f
 
-SRC = pipex.c pipex_utils.c\
-
+SRC = main.c pipex.c pipex_utils.c\
 
 INCLUDE = -I libft -I.
 
@@ -16,7 +15,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	make -C libft
-	$(CC) $(CFLAGS) $(OBJ) $(LIB) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) $(LIB) -lreadline -o $(NAME)
 
 clean:
 	$(RM) $(OBJ)

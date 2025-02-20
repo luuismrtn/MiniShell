@@ -6,11 +6,11 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/02/20 15:18:31 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/02/20 15:38:40 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "inc/pipex.h"
 
 void	exe(char **env, char **comnd)
 {
@@ -121,7 +121,7 @@ void	final_command(char **argv, int *pos, char **env, int fd_in)
 		close(fd_in);
 }
 
-int	main(int argc, char **argv, char **env)
+int	pipex(int argc, char **argv, char **env)
 {
 	int	fd_in;
 	int	i;
@@ -147,4 +147,5 @@ int	main(int argc, char **argv, char **env)
 		waitpid(-1, NULL, 0);
 		argc--;
 	}
+	return (0);
 }
