@@ -1,31 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/04 13:09:35 by aldferna          #+#    #+#             */
-/*   Updated: 2025/02/20 15:18:46 by lumartin         ###   ########.fr       */
+/*   Created: 2024/09/16 20:07:20 by lumartin          #+#    #+#             */
+/*   Updated: 2024/09/25 18:28:16 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "libft.h"
 
-# define END_COMD 0
-# define OUTFILE 1
+void	*ft_calloc(size_t count, size_t size)
+{
+	void	*ptr;
 
-# include "libft/libft.h"
-# include <fcntl.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <sys/types.h>
-# include <sys/wait.h>
-# include <unistd.h>
-
-char	**search_path(char **env, char *comnd);
-int		ok_args(int argc, char **arg);
-
-#endif
+	ptr = malloc(count * size);
+	if (ptr == 0)
+		return (0);
+	ft_bzero(ptr, count * size);
+	return (ptr);
+}

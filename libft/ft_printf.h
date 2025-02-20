@@ -1,31 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_printf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/04 13:09:35 by aldferna          #+#    #+#             */
-/*   Updated: 2025/02/20 15:18:46 by lumartin         ###   ########.fr       */
+/*   Created: 2024/09/17 13:34:11 by lumartin          #+#    #+#             */
+/*   Updated: 2024/10/05 22:28:49 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#ifndef FT_PRINTF_H
 
-# define END_COMD 0
-# define OUTFILE 1
+# define FT_PRINTF_H
 
-# include "libft/libft.h"
-# include <fcntl.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <sys/types.h>
-# include <sys/wait.h>
+# include <stdarg.h>
 # include <unistd.h>
 
-char	**search_path(char **env, char *comnd);
-int		ok_args(int argc, char **arg);
+int	ft_putchar_fd_f(char c, int fd);
+int	ft_putstr_fd_f(char *s, int fd);
+int	ft_putnbr_fd_f(int n, int fd, int is_unsigned);
+int	ft_puthex_fd_f(unsigned long n, int fd, int upper);
+int	ft_putptr_fd_f(void *ptr, int fd);
+int	ft_printf(const char *format, ...);
 
 #endif

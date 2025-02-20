@@ -1,31 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex_bonus.h                                      :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/04 13:09:35 by aldferna          #+#    #+#             */
-/*   Updated: 2025/02/05 19:09:08 by aldferna         ###   ########.fr       */
+/*   Created: 2024/09/28 13:34:11 by lumartin          #+#    #+#             */
+/*   Updated: 2024/10/05 22:30:51 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_BONUS_H
-# define PIPEX_BONUS_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
-# define END_COMD 0
-# define OUTFILE 1
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 32
+# endif
 
-# include "libft/libft.h"
-# include <fcntl.h>
+# ifndef MAX_FD
+#  define MAX_FD 1024
+# endif
+
 # include <stdio.h>
 # include <stdlib.h>
-# include <string.h>
-# include <sys/types.h>
-# include <sys/wait.h>
 # include <unistd.h>
 
-char	**search_path(char **env, char *comnd);
-int		ok_args(int argc, char **arg);
+char	*get_next_line(int fd);
+size_t	ft_strlen(const char *str);
+char	*ft_strjoin_gnl(char *s1, const char *s2, int len);
 
 #endif
