@@ -1,11 +1,11 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g3 #-fsanitize=address -g3
+CFLAGS = -Wall -Wextra -Werror #-fsanitize=address -g3
 RM = rm -f
 
-SRC = main.c \
-	pipex.c pipex_utils.c \
-	history.c \
+SRC = src/main.c \
+	src/pipex.c src/pipex_utils.c \
+	src/history.c \
 
 INCLUDE = -I libft -I.
 

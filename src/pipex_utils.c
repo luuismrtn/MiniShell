@@ -6,11 +6,11 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 13:09:26 by aldferna          #+#    #+#             */
-/*   Updated: 2025/02/20 15:38:37 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/02/20 18:26:18 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "inc/pipex.h"
+#include "../inc/pipex.h"
 
 char	**search_path(char **env, char *comnd)
 {
