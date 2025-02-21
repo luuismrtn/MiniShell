@@ -6,11 +6,12 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/02/20 18:26:20 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/02/21 21:56:13 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
+#include "../inc/minishell.h"
 
 void	exe(char **env, char **comnd)
 {

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:57:25 by lumartin          #+#    #+#             */
-/*   Updated: 2025/02/20 18:29:12 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/02/21 21:55:56 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,18 +30,18 @@ int	ft_read_history(char *history_file)
 		free(line);
 		line = get_next_line(fd);
 	}
-	close(fd);
+    close(fd);
 	return (SUCCESS);
 }
 
-static char	*return_last_command(int fd)
+char *return_last_command(int fd)
 {
-	char	*a_line;
-	char	*p_line;
+	char *a_line;
+	char *p_line;
 
 	a_line = get_next_line(fd);
 	if (a_line == NULL)
-		return ("\0");
+		return NULL;
 	p_line = a_line;
 	while (a_line != NULL)
 	{
@@ -51,28 +51,27 @@ static char	*return_last_command(int fd)
 	return (p_line);
 }
 
-int	write_line_history(char *history_file, char *line)
+int	write_line_history(char *history_file, char* line)
 {
 	int		fd;
-	char	*line_clean;
-	char	*last_command;
+	char 	*line_clean;
 
-	fd = open(history_file, O_CREAT | O_RDWR | O_APPEND, 0644);
+	fd = open(history_file, O_CREAT | O_WRONLY | O_APPEND, 0200);
 	if (fd < 0)
-		return (perror("error opening history file"), ERROR);
-	line_clean = ft_strtrim(line, " ");
-	if (!line || !line_clean[0])
 	{
-		close(fd);
+		perror("error opening history file");
 		return (ERROR);
 	}
-	last_command = return_last_command(fd);
-	if (ft_strncmp(line_clean, last_command, ft_strlen(line_clean)))
+	line_clean = ft_strtrim(line, " ");
+    if (!line || !line_clean[0])
+    {
+        close(fd);
+        return (ERROR);
+    }
+	if (ft_strncmp(line_clean, return_last_command(fd), ft_strlen(line_clean)) == 0)
 	{
-		if (last_command[0] != '\0')
-			write(fd, "\n", 1);
-		add_history(line);
 		write(fd, line_clean, ft_strlen(line_clean));
+		write(fd, "\n", 1);
 		free(line_clean);
 		close(fd);
 	}

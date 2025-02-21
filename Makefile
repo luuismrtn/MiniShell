@@ -6,6 +6,7 @@ RM = rm -f
 SRC = src/main.c \
 	src/pipex.c src/pipex_utils.c \
 	src/history.c \
+	src/tokenize.c \
 
 INCLUDE = -I libft -I.
 
