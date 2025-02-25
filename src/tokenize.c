@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 20:53:45 by aldferna          #+#    #+#             */
-/*   Updated: 2025/02/24 19:46:53 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/02/25 17:26:40 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,21 @@ t_token	*create_node(t_token_value type, char *content)
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 		return (NULL);
+	// if (1er nodo) o en todos???
+	// 	añadir env;
+	// else
+	//  env a 0;
 	new_token->type = type;
 	new_token->content = content;
+	if (content[0] == '-')
+		new_token->args = content;
+	else
+		new_token->args = NULL;
 	new_token->next = NULL;
 	return (new_token);
 }
 
-static void	add_token(t_token **head, t_token_value type, char *content)
+void	add_token(t_token **head, t_token_value type, char *content)
 {
 	t_token	*aux;
 	t_token	*new_token;
@@ -92,7 +100,7 @@ static void	handle_word(t_token **tokens, char *input, int *i)
 	int		start;
 	char	*content;
 
-	// if (input[*i] == '-')
+	// if (input[*i] == '-') -> mantener el -
 	// 	(*i)++;
 	start = *i;
 	while (ft_isalpha(input[*i]) || ft_isdigit(input[*i]) || input[*i] == '-')
@@ -113,15 +121,50 @@ static void	handle_spaces(t_token **tokens, char *input, int *i)
 	add_token(tokens, T_SPACE, content);
 }
 
+int ft_len_var_name(char *str, int i)
+{
+	while (str[i] != ' ' || str[i] != '\"')
+		i++;
+	return i;
+}
+
 static void	handle_env(t_token **tokens, char *input, int *i) //guardar el valor expandido
 {
-	int		start;
-	char	*content;
+	// int		start;
+	// char	*content;
 
-	start = ++(*i);
-	while (ft_isalpha(input[*i])) // || input[*i] == '(' || input[*i] == ')' --> echo $(USER) = USER cmd not found
-		(*i)++;
-	content = ft_substr(input, start, *i - start);
+	// start = ++(*i);
+	// while (ft_isalpha(input[*i]))
+	// 	(*i)++;
+	// content = ft_substr(input, start, *i - start);
+
+	int len_var_name;
+	char *var_name;
+	t_env *current_env_list;
+	int x;
+	int j;
+	char *content;
+
+	(*i)++;
+	j = 0;
+	while (input[*i] && (input[*i] != ' ' || input[*i] != '\"'))
+	{
+		len_var_name = ft_len_var_name(input, *i);
+		var_name = ft_substr(input, *i, len_var_name);
+		current_env_list = (*tokens)->env_mshell;
+		while (current_env_list != NULL)
+		{
+			x = 0;
+			if (ft_strncmp(current_env_list->name, var_name, len_var_name) == SUCCESS)
+			{
+				while(current_env_list->content[x] != '\0')
+					content[j++] = current_env_list->content[x++];
+				break;
+			}
+			current_env_list = current_env_list->next;
+		}
+		free(var_name);
+	}
 	add_token(tokens, T_ENV, content);
 }
 
@@ -143,45 +186,112 @@ static void	handle_pipe(t_token **tokens, char input, t_token_value type)
 	add_token(tokens, type, ft_strdup(quotes));
 }
 
-static void handle_quotes(t_token **tokens, char *input, int *i, t_token_value type)
+char **len_in_quotes(t_token_value type, char *input, int i, t_token **tokens)
 {
-	int start;
-	char *in_quotes;
-	int j;
-	int len; //funncionnnn
+	char **len_and_content;
+	int count;
+	int count_quotes;
+	int num_of_quotes;
 
-	(*i)++;
-	start = *i;
+	count = 0;
+	count_quotes = 0;
+	//num_of_quotes = funcionnnn - 1;
 	if (type == T_D_QUOTE)
 	{
-		while (input[*i] != '\"')
+		//while (input[i] != "\"") //while count quotes < total quotes (lo que devuelva la funcion -1 (x la 1a))
+		{
+			if (input[i] == '\"')
+			{
+				i++;
+				count_quotes++;
+				if (count_quotes == num_of_quotes)
+				{
+					len_and_content[0] = ft_itoa(count);
+					return (len_and_content);
+				}
+			}
+			if (input[i] == '$')
+			{
+				i++;
+				//hacer aqui la busqueda en vez de en ambass funciones y devolver esto tb
+			}
+			count++;
+			i++;
+		}
+		return count;
+	}
+	else if (type == T_S_QUOTE)
+	{
+		
+	}
+	//y si devuelvo una matriz, en la 1a len y a 2a el contenido de la variable expandidda?
+}
+
+static void handle_quotes(t_token **tokens, char *input, int *i, t_token_value type)
+{
+	char *in_quotes;
+	char *var_name;
+	int len_var_name;
+	int j;
+	int x;
+	int len; //funncionnn
+	t_env *current_env_list;
+
+	(*i)++;
+	if (type == T_D_QUOTE)
+	{
+		j = 0;
+		len = len_in_quotes(type, input, *i, tokens);
+		in_quotes = malloc((len + 1) * sizeof(char));
+		while (j < len) //input[*i] != '\"'  
 		{
 			if (input[*i] == '$')
 			{
 				(*i)++;
-				//expandir
+				len_var_name = ft_len_var_name(input, *i);
+				var_name = ft_substr(input, *i, len_var_name);
+				current_env_list = (*tokens)->env_mshell;
+				while (current_env_list != NULL)
+				{
+					x = 0;
+					if (ft_strncmp(current_env_list->name, var_name, len_var_name) == SUCCESS)
+					{
+						while(current_env_list->content[x] != '\0')
+							in_quotes[j++] = current_env_list->content[x++];
+						break;
+					}
+					current_env_list = current_env_list->next;
+				}
+				free(var_name);
 			}
-			//ir guardando - obviar " dentro
-			//sustituir $loqsea despues?? o meter en in_quotes cd aparezca en input?
-		}
-	}
-	else if (type == T_S_QUOTE)
-	{
-		j = 0;
-		in_quotes = malloc(len * sizeof(char));
-		while(input[*i] != '\'')
-		{
-			if (input[*i] != '\'')
+			if (input[*i] == '\"')
 				(*i)++;
 			in_quotes[j] = input[*i];
 			(*i)++;
 			j++;
 		}
+		in_quotes[j] = '\0';
+		add_token(tokens, type, in_quotes);  ///aqui al final habria q sumarle len a (*i)
+	}
+	else if (type == T_S_QUOTE)
+	{
+		j = 0;
+		len = len_in_quotes(type, input, *i, tokens);
+		in_quotes = malloc((len + 1) * sizeof(char));
+		while(j < len) //input[*i] != '\''
+		{
+			if (input[*i] == '\'')
+				(*i)++;
+			in_quotes[j] = input[*i];
+			(*i)++;
+			j++;
+		}
+		in_quotes[j] = '\0';
 		add_token(tokens, type, in_quotes);
 	}
 }
 
-t_token	*tokenize(char *input)
+t_token	*tokenize(char *input, char **env)
 {
 	int		i;
 	t_token	*tokens;
@@ -189,7 +299,8 @@ t_token	*tokenize(char *input)
 	if (!input)
 		return (NULL);
 	i = 0;
-	tokens = NULL;
+	tokens = ft_memset(&tokens, 0, sizeof(t_token));
+	tokens->env_mshell = env_buildin(env);
 	while (input[i])
 	{
 		if (ft_isspace(input[i]))
@@ -255,26 +366,17 @@ int check_quotes(char *input)
 int	main(int argc, char **argv, char **env)
 {
 	(void)argc;
-	(void)argv;
-	char input[] = "ca't' -e $USER"; //"echo \"Hola mundo\"  kek  j l ++ > archivo.txt"
-	t_token *tokens = NULL;
-	t_env *env_mshell = NULL;
+	(void)argv; //"echo \"Hola mundo\"  kek  j l ++ > archivo.txt"
+	char input[] = "ca't' -e $USER"; //readline
+	t_token *tokens = NULL; 
 
 	if (check_quotes(input) == ERROR)
 		exit(1);
-	env_mshell = env_buildin(env);
-	// t_env *aux2 = env_mshell;
-	// while (aux2)
-	// {
-	// 	printf("Name: %s\n  content: %s\n", aux2->name, aux2->content);
-	// 	aux2 = aux2->next;
-	// }
-	
-	tokens = tokenize(input);
+	tokens = tokenize(input, env);
 	t_token *aux = tokens;
 	while (aux != NULL)
 	{
-		printf("Token type: %d, content: %s, expand: %s\n", aux->type, aux->content, aux->expanded);
+		printf("Token type: %d, content: %s\n", aux->type, aux->content);
 		aux = aux->next;
 	}
 	

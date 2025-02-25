@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/02/24 16:12:03 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/02/25 17:25:52 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,21 +40,22 @@ typedef enum s_token_value
 	T_ENV
 }					t_token_value;
 
-typedef struct s_token
-{
-	t_token_value	type;
-	char			*content;
-	char			*args;
-	char			*expanded;
-	struct s_token	*next;
-}					t_token;
-
 typedef struct s_env
 {
 	char			*name;
 	char			*content;
 	struct s_env	*next;
 }					t_env;
+
+typedef struct s_token
+{
+	t_env			*env_mshell; //en el 1er nodo
+	t_token_value	type;
+	char			*content;
+	char			*args;
+	//char			*expanded; creo q guardar ej: "$USER" y "aldferna" no hace falta
+	struct s_token	*next;
+}					t_token;
 
 //  PIPEX
 int					pipex(int argc, char **argv, char **env);
@@ -65,7 +66,7 @@ int					write_line_history(char *history_file, char *line);
 
 //  PARSE
 int					check_quotes(char *input);
-t_token				*tokenize(char *line);
+t_token				*tokenize(char *line, char **env);
 // clean_tokens -- juntar si no hay espacios: ca"t" + quitar espacios
 // automata
 // automata_functions
@@ -74,3 +75,6 @@ t_token				*tokenize(char *line);
 t_env				*env_buildin(char **env);
 
 #endif
+
+//el len
+//clean tokens
