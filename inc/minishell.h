@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/02/26 18:02:47 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/02/26 18:19:32 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ int					write_line_history(char *history_file, char *line);
 //  PARSE
 int					check_quotes(char *input);
 t_token				*tokenize(char *line, char **env);
-// clean_tokens -- juntar si no hay espacios: ca"t" + quitar espacios
+void				clean_tokens(t_token **tokens);
 // automata
 // automata_functions
 

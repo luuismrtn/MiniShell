@@ -7,7 +7,8 @@ SRC = src/main.c \
 	src/pipex.c src/pipex_utils.c \
 	src/history.c \
 	src/tokenize.c \
-	src/env_build_in.c 
+	src/env_build_in.c \
+	src/automata.c
 
 INCLUDE = -I libft -I.
 
