@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/02/25 17:25:52 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/02/26 16:58:23 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,19 @@ typedef struct s_env
 
 typedef struct s_token
 {
-	t_env			*env_mshell; //en el 1er nodo
+	t_env *env_mshell;
 	t_token_value	type;
 	char			*content;
 	char			*args;
-	//char			*expanded; creo q guardar ej: "$USER" y "aldferna" no hace falta
+	// char			*expanded; creo q guardar ej: "$USER" y "aldferna" no hace falta
 	struct s_token	*next;
 }					t_token;
+
+typedef struct s_result
+{
+	char			*content;
+	int				len;
+}					t_result;
 
 //  PIPEX
 int					pipex(int argc, char **argv, char **env);
@@ -76,5 +82,5 @@ t_env				*env_buildin(char **env);
 
 #endif
 
-//el len
-//clean tokens
+// el len
+// clean tokens

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_build_in.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 15:01:35 by aldferna          #+#    #+#             */
-/*   Updated: 2025/02/24 18:49:55 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/02/26 16:36:14 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ t_env *env_buildin(char **env)
 {
     t_env *env_mshell = NULL;
     t_env *node;
-    char *aux;
+    char *name;
+    char *content;
     int i;
     int x;
     
@@ -41,18 +42,21 @@ t_env *env_buildin(char **env)
         x = 0;
         while (env[i][x] && env[i][x] != '=')
             x++;
+        if (!env[i][x])
+            return (env_mshell);
         node = malloc(sizeof(t_env));
         if (!node)
             return NULL;
-        aux = ft_substr(env[i], 0, x);
-        if (!aux)
+        name = ft_substr(env[i], 0, x);
+        if (!name)
             return (free(node), NULL);
-        node->name = aux;
-        x++;
-        aux = ft_substr(env[i], x, ft_strlen(env[i]) - x);
-        if (!aux)
+        node->name = name;
+        if (env[i][x] == '=')  
+            x++;
+        content = ft_substr(env[i], x, ft_strlen(env[i]) - x);
+        if (!content)
             return (free(node->name), free(node), NULL);
-        node->content = aux;
+        node->content = content;
         node->next = NULL;
         add_last(&env_mshell, node);
         i++;
