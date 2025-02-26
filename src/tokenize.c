@@ -196,7 +196,7 @@ t_result	len_in_quotes(t_token_value type, char *input, int i,
 	ft_memset(&data, 0, sizeof(t_result));
 	if (type == T_D_QUOTE)
 	{
-		total_quotes = num_quotes(input, i, type) - 1;
+		total_quotes = num_quotes(input, i, type);
 		while (count_quotes < total_quotes) // input[i] != "\""
 		{
 			if (input[i] == '\"')
@@ -234,7 +234,7 @@ t_result	len_in_quotes(t_token_value type, char *input, int i,
 	}
 	else if (type == T_S_QUOTE)
 	{
-		total_quotes = num_quotes(input, i, type) - 1;
+		total_quotes = num_quotes(input, i, type);
 		while (count_quotes < total_quotes)
 		{
 			if (input[i] == '\'')
@@ -284,7 +284,8 @@ static void	handle_quotes(t_token **tokens, char *input, int *i,
 			j++;
 		}
 		in_quotes[j] = '\0';
-		add_token(tokens, type, in_quotes); /// no olvidar sumar a (*i)
+		if (data.len > 0)
+			add_token(tokens, T_WORD, in_quotes); /// no olvidar sumar a (*i)
 	}
 	else if (type == T_S_QUOTE)
 	{
@@ -300,7 +301,8 @@ static void	handle_quotes(t_token **tokens, char *input, int *i,
 			j++;
 		}
 		in_quotes[j] = '\0';
-		add_token(tokens, type, in_quotes); /// no olvidar sumar a (*i)
+		if (data.len > 0)
+			add_token(tokens, T_WORD, in_quotes);
 	}
 }
 
@@ -319,7 +321,6 @@ t_token	*tokenize(char *input, char **env)
 	tokens->env_mshell = env_buildin(env);
 	while (input[i])
 	{
-		printf("INPUT: %c\n", input[i]);
 		if (ft_isspace(input[i]))
 			handle_spaces(&tokens, input, &i);
 		else if (ft_isalpha(input[i]) || ft_isdigit(input[i])
@@ -343,25 +344,31 @@ t_token	*tokenize(char *input, char **env)
 	return (tokens);
 }
 
-void	clean_tokens(t_token *tokens)
+void	clean_tokens(t_token **tokens)
 {
 	t_token	*aux;
 
-	aux = tokens;
+	if (!tokens || !*tokens)
+		return ;
+
+	aux = *tokens;
+	aux = aux->next;
 	while (aux != NULL && aux->next != NULL)
 	{
-		while (aux->type != T_SPACE && aux->next->type != T_SPACE)
+		if (aux->type != T_SPACE && aux->next->type != T_SPACE)
 		{
 			aux->content = ft_strjoin(aux->content, aux->next->content);
-			free(aux->next->content);
 			aux->next = aux->next->next;
 		}
-		aux->next->content = "/0";
-		aux = aux->next;
+		else
+		{
+			aux = aux->next;
+			aux->content = "\0";
+			aux->type = T_WORD;
+		}
 	}
 }
 
-// esto 1er paso despues de history en main
 int	check_quotes(char *input)
 {
 	int	i;
@@ -398,17 +405,19 @@ int	main(int argc, char **argv, char **env)
 		exit(1);
 	tokens = tokenize(input, env);
 	aux = tokens;
+	aux = aux->next;
 	while (aux != NULL)
 	{
 		printf("Token type: %d, content: %s\n", aux->type, aux->content);
 		aux = aux->next;
 	}
-	// clean_tokens(tokens);
-	// t_token *aux1 = tokens;
-	// while (aux1 != NULL)
-	// {
-	// 	printf("C_Token type: %d, Content: %s, Expand: %s\n", aux1->type, aux1->content, aux1->expanded);
-	// 	aux1 = aux1->next;
-	// }
+	t_token *aux1 = tokens->next;
+	clean_tokens(&tokens);
+	printf("\n\n");
+	while (aux1 != NULL)
+	{
+		printf("C_Token type: %d, Content: %s\n", aux1->type, aux1->content);
+		aux1 = aux1->next;
+	}
 	free_tokens(tokens);
 }
