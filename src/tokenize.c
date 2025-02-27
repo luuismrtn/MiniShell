@@ -165,9 +165,14 @@ void	clean_tokens(t_token **tokens)
 		}
 		else
 		{
-			aux = aux->next;
-			aux->content = "\0";
-			aux->type = aux->next->type;
+			if (aux->next->next != NULL)
+			{
+				aux = aux->next;
+				aux->content = "\0";
+				aux->type = aux->next->type;
+			}
+			else
+				aux = aux->next;
 		}
 	}
 }
@@ -236,7 +241,7 @@ t_result	len_in_quotes(t_token_value type, char *input, int i,
 	}
 	else if (type == T_S_QUOTE)
 	{
-		//while (input[i] && input[i] != '\'')
+		// while (input[i] && input[i] != '\'')
 		while (input[i] && !(input[i] == '\'' && input[i - 1] != '\\'))
 		{
 			count++;
@@ -304,8 +309,8 @@ static void	handle_quotes(t_token **tokens, char *input, int *i,
 		data = len_in_quotes(type, input, *i, tokens);
 		in_quotes = malloc((data.len + 1) * sizeof(char));
 		if (!in_quotes)
-			return ; //while (j < data.len && input[*i] && input[*i] != '\'')
-		while (j < data.len && input[*i]) //para 'hola \' hey' todo en uno
+			return ;                       // while (j < data.len && input[*i] && input[*i] != '\'')
+		while (j < data.len && input[*i]) // para 'hola \' hey' todo en uno
 		{
 			in_quotes[j++] = input[*i];
 			(*i)++;
@@ -326,7 +331,7 @@ static void	handle_word(t_token **tokens, char *input, int *i)
 	char	*content;
 
 	start = *i;
-	if (input[*i] == '\\') //new para echo hola \" hey
+	if (input[*i] == '\\') // new para echo hola \" hey
 		start = (*i)++;
 	//(ft_isalpha(input[*i]) || ft_isdigit(input[*i]) || input[*i] == '-')
 	while (input[*i] && !ft_isspace(input[*i]))
@@ -355,9 +360,9 @@ t_token	*tokenize(char *input, char **env)
 	{
 		if (ft_isspace(input[i]))
 			handle_spaces(&tokens, input, &i);
-		//else if (ft_isalpha(input[i]) || ft_isdigit(input[i])
-			//|| input[i] == '-')
-			//handle_word(&tokens, input, &i);
+		// else if (ft_isalpha(input[i]) || ft_isdigit(input[i])
+		//|| input[i] == '-')
+		// handle_word(&tokens, input, &i);
 		else if (input[i] == '\'')
 			handle_quotes(&tokens, input, &i, T_S_QUOTE);
 		else if (input[i] == '\"')
@@ -368,9 +373,9 @@ t_token	*tokenize(char *input, char **env)
 			handle_pipe(&tokens, input[i], T_PIPE, &i);
 		else if (input[i] == '$')
 			handle_env(&tokens, input, &i);
-		//else
-			//i++;
-		else //new
+		// else
+		// i++;
+		else // new
 			handle_word(&tokens, input, &i);
 	}
 	return (tokens);
@@ -381,29 +386,40 @@ int	check_quotes_closed(char *input)
 	int	i;
 	int	count_s;
 	int	count_d;
+	int	in_d_quote;
+	int	in_s_quote;
 
 	i = 0;
 	count_s = 0;
 	count_d = 0;
+	in_d_quote = 0;
+	in_s_quote = 0;
 	while (input[i])
-	{ //para no contar las escapadas
-		if (input[i] == '\\' && (input[i + 1] == '\'' || input[i + 1] == '\"')) //if (input[i] == '\\')
-			i += 2; //i++;	
-		else if (input[i] == '\"')
+	{
+		if (input[i] == '\\' && input[i + 1] && (input[i + 1] == '\'' || input[i
+				+ 1] == '\"'))
 		{
-			i++;
-			count_d++;
-			while (input[i] && input[i] != '\"')
-				i++;
-			if (!input[i])
-				return (ERROR);
+			i += 2;
+			continue ;
+		}
+		if (input[i] == '\"' && !in_s_quote)
+		{
+			if (!in_d_quote)
+				in_d_quote = 1;
+			else
+				in_d_quote = 0;
 			count_d++;
 		}
-		else if (input[i] == '\'')
+		else if (input[i] == '\'' && !in_d_quote)
+		{
+			if (!in_s_quote)
+				in_s_quote = 1;
+			else
+				in_s_quote = 0;
 			count_s++;
+		}
 		i++;
 	}
-	printf("S: %d, D: %d\n", count_s, count_d);
 	if ((count_d % 2 == 0) && (count_s % 2 == 0))
 		return (SUCCESS);
 	return (ERROR);
@@ -414,9 +430,10 @@ int	main2(char *string, char **env)
 	t_token	*tokens;
 	t_token	*aux;
 	t_token	*aux1;
+	char	*input;
 
-	//char *input = "echo 'hola \" hey'"; // "echo \\' hey" 
-	char *input = string;
+	// char *input = "echo 'hola \" hey'"; // "echo \\' hey"
+	input = string;
 	printf("Input: %s\n", input);
 	tokens = NULL;
 	if (check_quotes_closed(input) == ERROR)
@@ -444,7 +461,6 @@ int	main2(char *string, char **env)
 	return (0);
 }
 
-
 /*
 
 int	main2(int argc, char **argv, char **env)
@@ -455,7 +471,7 @@ int	main2(int argc, char **argv, char **env)
 
 	(void)argc;
 	(void)argv;
-	char *input = "echo 'hola \" hey'"; // "echo \\' hey" 
+	char *input = "echo 'hola \" hey'"; // "echo \\' hey"
 	printf("Input: %s\n", input);
 	tokens = NULL;
 	if (check_quotes_closed(input) == ERROR)
