@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:57:25 by lumartin          #+#    #+#             */
-/*   Updated: 2025/02/21 21:55:56 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/02/27 23:52:39 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	write_line_history(char *history_file, char* line)
 	int		fd;
 	char 	*line_clean;
 
-	fd = open(history_file, O_CREAT | O_WRONLY | O_APPEND, 0200);
+	fd = open(history_file, O_CREAT | O_RDWR | O_APPEND, 0644);
 	if (fd < 0)
 	{
 		perror("error opening history file");
@@ -68,10 +68,11 @@ int	write_line_history(char *history_file, char* line)
         close(fd);
         return (ERROR);
     }
-	if (ft_strncmp(line_clean, return_last_command(fd), ft_strlen(line_clean)) == 0)
+	if (ft_strncmp(line_clean, return_last_command(fd), ft_strlen(line_clean)) != 0)
 	{
+		if (line_clean[0] != '\0')
+			write(fd, "\n", 1);
 		write(fd, line_clean, ft_strlen(line_clean));
-		write(fd, "\n", 1);
 		free(line_clean);
 		close(fd);
 	}

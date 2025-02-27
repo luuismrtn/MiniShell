@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/02/27 16:48:55 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/02/27 23:47:07 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,15 @@ void				clean_tokens(t_token **tokens);
 // ENV
 t_env				*env_buildin(char **env);
 
+
+
+int	main2(char *string, char **env);
+
+
 #endif
 
 // el len
 // clean tokens
+
+
+

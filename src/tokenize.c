@@ -409,14 +409,52 @@ int	check_quotes_closed(char *input)
 	return (ERROR);
 }
 
-int	main(int argc, char **argv, char **env)
+int	main2(char *string, char **env)
+{
+	t_token	*tokens;
+	t_token	*aux;
+	t_token	*aux1;
+
+	//char *input = "echo 'hola \" hey'"; // "echo \\' hey" 
+	char *input = string;
+	printf("Input: %s\n", input);
+	tokens = NULL;
+	if (check_quotes_closed(input) == ERROR)
+	{
+		printf("Error: quotes not closed\n");
+		exit(1);
+	}
+	tokens = tokenize(input, env);
+	aux = tokens;
+	aux = aux->next;
+	while (aux != NULL)
+	{
+		printf("Token type: %d, content: %s\n", aux->type, aux->content);
+		aux = aux->next;
+	}
+	aux1 = tokens->next;
+	clean_tokens(&tokens);
+	printf("\n\n");
+	while (aux1 != NULL)
+	{
+		printf("C_Token type: %d, Content: %s\n", aux1->type, aux1->content);
+		aux1 = aux1->next;
+	}
+	free_tokens(tokens);
+	return (0);
+}
+
+
+/*
+
+int	main2(int argc, char **argv, char **env)
 {
 	t_token	*tokens;
 	t_token	*aux;
 	t_token	*aux1;
 
 	(void)argc;
-	(void)argv; //"echo \\\" x -j hey"
+	(void)argv;
 	char *input = "echo 'hola \" hey'"; // "echo \\' hey" 
 	printf("Input: %s\n", input);
 	tokens = NULL;
@@ -443,3 +481,5 @@ int	main(int argc, char **argv, char **env)
 	}
 	free_tokens(tokens);
 }
+
+*/
