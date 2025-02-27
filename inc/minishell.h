@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/02/27 13:15:46 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/02/27 16:48:55 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 typedef enum s_token_value
 {
 	T_WORD,
+	T_FLAG,
 	T_SPACE,
 	T_HERE_DOC,
 	T_REDIR_LEFT,
@@ -37,8 +38,7 @@ typedef enum s_token_value
 	T_PIPE,
 	T_S_QUOTE,
 	T_D_QUOTE,
-	T_ENV,
-	T_FLAG
+	T_ENV
 }					t_token_value;
 
 typedef struct s_env
@@ -72,7 +72,7 @@ int					ft_read_history(char *history_file);
 int					write_line_history(char *history_file, char *line);
 
 //  PARSE
-int					check_quotes(char *input);
+int					check_quotes_closed(char *input);
 t_token				*tokenize(char *line, char **env);
 void				clean_tokens(t_token **tokens);
 // automata

@@ -89,21 +89,6 @@ static void	handle_redirections(t_token **tokens, char *input, int *i)
 	}
 }
 
-static void	handle_word(t_token **tokens, char *input, int *i)
-{
-	int		start;
-	char	*content;
-
-	start = *i;
-	while (ft_isalpha(input[*i]) || ft_isdigit(input[*i]) || input[*i] == '-')
-		(*i)++;
-	content = ft_substr(input, start, *i - start);
-	if (content[0] == '-')
-		add_token(tokens, T_FLAG, content);
-	else
-		add_token(tokens, T_WORD, content);
-}
-
 static void	handle_spaces(t_token **tokens, char *input, int *i)
 {
 	int		start;
@@ -156,6 +141,35 @@ static void	handle_pipe(t_token **tokens, char input, t_token_value type,
 	quotes[1] = '\0';
 	(*i)++;
 	add_token(tokens, type, ft_strdup(quotes));
+}
+
+void	clean_tokens(t_token **tokens)
+{
+	t_token	*aux;
+
+	if (!tokens || !*tokens)
+		return ;
+	aux = *tokens;
+	aux = aux->next;
+	while (aux != NULL && aux->next != NULL)
+	{
+		if (aux->type != T_SPACE && aux->next->type != T_SPACE)
+		{
+			if (aux->type == aux->next->type)
+			{
+				aux->content = ft_strjoin(aux->content, aux->next->content);
+				aux->next = aux->next->next;
+			}
+			else
+				aux = aux->next;
+		}
+		else
+		{
+			aux = aux->next;
+			aux->content = "\0";
+			aux->type = aux->next->type;
+		}
+	}
 }
 
 int	num_quotes(char *str, int i, t_token_value type)
@@ -222,7 +236,8 @@ t_result	len_in_quotes(t_token_value type, char *input, int i,
 	}
 	else if (type == T_S_QUOTE)
 	{
-		while (input[i] && input[i] != '\'')
+		//while (input[i] && input[i] != '\'')
+		while (input[i] && !(input[i] == '\'' && input[i - 1] != '\\'))
 		{
 			count++;
 			i++;
@@ -289,8 +304,8 @@ static void	handle_quotes(t_token **tokens, char *input, int *i,
 		data = len_in_quotes(type, input, *i, tokens);
 		in_quotes = malloc((data.len + 1) * sizeof(char));
 		if (!in_quotes)
-			return ;
-		while (j < data.len && input[*i] && input[*i] != '\'')
+			return ; //while (j < data.len && input[*i] && input[*i] != '\'')
+		while (j < data.len && input[*i]) //para 'hola \' hey' todo en uno
 		{
 			in_quotes[j++] = input[*i];
 			(*i)++;
@@ -303,6 +318,24 @@ static void	handle_quotes(t_token **tokens, char *input, int *i,
 		else
 			free(in_quotes);
 	}
+}
+
+static void	handle_word(t_token **tokens, char *input, int *i)
+{
+	int		start;
+	char	*content;
+
+	start = *i;
+	if (input[*i] == '\\') //new para echo hola \" hey
+		start = (*i)++;
+	//(ft_isalpha(input[*i]) || ft_isdigit(input[*i]) || input[*i] == '-')
+	while (input[*i] && !ft_isspace(input[*i]))
+		(*i)++;
+	content = ft_substr(input, start, *i - start);
+	if (content[0] == '-')
+		add_token(tokens, T_FLAG, content);
+	else
+		add_token(tokens, T_WORD, content);
 }
 
 t_token	*tokenize(char *input, char **env)
@@ -322,9 +355,9 @@ t_token	*tokenize(char *input, char **env)
 	{
 		if (ft_isspace(input[i]))
 			handle_spaces(&tokens, input, &i);
-		else if (ft_isalpha(input[i]) || ft_isdigit(input[i])
-			|| input[i] == '-')
-			handle_word(&tokens, input, &i);
+		//else if (ft_isalpha(input[i]) || ft_isdigit(input[i])
+			//|| input[i] == '-')
+			//handle_word(&tokens, input, &i);
 		else if (input[i] == '\'')
 			handle_quotes(&tokens, input, &i, T_S_QUOTE);
 		else if (input[i] == '\"')
@@ -335,42 +368,15 @@ t_token	*tokenize(char *input, char **env)
 			handle_pipe(&tokens, input[i], T_PIPE, &i);
 		else if (input[i] == '$')
 			handle_env(&tokens, input, &i);
-		else
-			i++;
+		//else
+			//i++;
+		else //new
+			handle_word(&tokens, input, &i);
 	}
 	return (tokens);
 }
 
-void	clean_tokens(t_token **tokens)
-{
-	t_token	*aux;
-
-	if (!tokens || !*tokens)
-		return ;
-	aux = *tokens;
-	aux = aux->next;
-	while (aux != NULL && aux->next != NULL)
-	{
-		if (aux->type != T_SPACE && aux->next->type != T_SPACE)
-		{
-			if (aux->type == aux->next->type)
-			{
-				aux->content = ft_strjoin(aux->content, aux->next->content);
-				aux->next = aux->next->next;
-			}
-			else
-				aux = aux->next;
-		}
-		else
-		{
-			aux = aux->next;
-			aux->content = "\0";
-			aux->type = aux->next->type;
-		}
-	}
-}
-
-int	check_quotes(char *input)
+int	check_quotes_closed(char *input)
 {
 	int	i;
 	int	count_s;
@@ -380,9 +386,9 @@ int	check_quotes(char *input)
 	count_s = 0;
 	count_d = 0;
 	while (input[i])
-	{
-		if (input[i] == '\\')
-			i++;
+	{ //para no contar las escapadas
+		if (input[i] == '\\' && (input[i + 1] == '\'' || input[i + 1] == '\"')) //if (input[i] == '\\')
+			i += 2; //i++;	
 		else if (input[i] == '\"')
 		{
 			i++;
@@ -393,7 +399,6 @@ int	check_quotes(char *input)
 				return (ERROR);
 			count_d++;
 		}
-			
 		else if (input[i] == '\'')
 			count_s++;
 		i++;
@@ -411,11 +416,11 @@ int	main(int argc, char **argv, char **env)
 	t_token	*aux1;
 
 	(void)argc;
-	(void)argv;
-	char *input = "echo \"hola \' hey\""; // argv[1]
+	(void)argv; //"echo \\\" x -j hey"
+	char *input = "echo 'hola \" hey'"; // "echo \\' hey" 
 	printf("Input: %s\n", input);
 	tokens = NULL;
-	if (check_quotes(input) == ERROR)
+	if (check_quotes_closed(input) == ERROR)
 	{
 		printf("Error: quotes not closed\n");
 		exit(1);
