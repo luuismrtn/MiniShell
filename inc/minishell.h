@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/02/26 18:19:32 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/02/27 13:15:46 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ typedef enum s_token_value
 	T_PIPE,
 	T_S_QUOTE,
 	T_D_QUOTE,
-	T_ENV
+	T_ENV,
+	T_FLAG
 }					t_token_value;
 
 typedef struct s_env

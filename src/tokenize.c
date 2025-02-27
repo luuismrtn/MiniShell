@@ -98,7 +98,10 @@ static void	handle_word(t_token **tokens, char *input, int *i)
 	while (ft_isalpha(input[*i]) || ft_isdigit(input[*i]) || input[*i] == '-')
 		(*i)++;
 	content = ft_substr(input, start, *i - start);
-	add_token(tokens, T_WORD, content);
+	if (content[0] == '-')
+		add_token(tokens, T_FLAG, content);
+	else
+		add_token(tokens, T_WORD, content);
 }
 
 static void	handle_spaces(t_token **tokens, char *input, int *i)
@@ -113,13 +116,12 @@ static void	handle_spaces(t_token **tokens, char *input, int *i)
 	add_token(tokens, T_SPACE, content);
 }
 
-int ft_len_var_name(char *str, int i)
+int	ft_len_var_name(char *str, int i)
 {
-    while (str[i] && str[i] != ' ' && str[i] != '\"')
-        i++;
-    return (i);
+	while (str[i] && str[i] != ' ' && str[i] != '\"')
+		i++;
+	return (i);
 }
-
 
 static void	handle_env(t_token **tokens, char *input, int *i)
 {
@@ -145,7 +147,8 @@ static void	handle_env(t_token **tokens, char *input, int *i)
 	(*i) += len_var_name - 1;
 }
 
-static void	handle_pipe(t_token **tokens, char input, t_token_value type, int *i)
+static void	handle_pipe(t_token **tokens, char input, t_token_value type,
+		int *i)
 {
 	char	quotes[2];
 
@@ -176,31 +179,22 @@ t_result	len_in_quotes(t_token_value type, char *input, int i,
 {
 	t_result	data;
 	int			count;
-	int			count_quotes;
-	int			total_quotes;
 	int			len_var_name;
 	char		*var_name;
 	t_env		*current_env_list;
 
 	count = 0;
-	count_quotes = 0;
 	ft_memset(&data, 0, sizeof(t_result));
 	if (type == T_D_QUOTE)
 	{
-		total_quotes = num_quotes(input, i, type);
-		while (count_quotes < total_quotes)
+		while (input[i] && !(input[i] == '\"' && input[i - 1] != '\\'))
 		{
-			if (input[i] == '\"')
+			if (input[i] == '\\' && input[i + 1] == '\"')
 			{
-				count_quotes++;
-				if (count_quotes == total_quotes)
-				{
-					data.len = count;
-					return (data);
-				}
 				i++;
+				count++;
 			}
-			if (input[i] == '$')
+			else if (input[i] == '$')
 			{
 				i++;
 				len_var_name = ft_len_var_name(input, i);
@@ -218,29 +212,22 @@ t_result	len_in_quotes(t_token_value type, char *input, int i,
 					current_env_list = current_env_list->next;
 				}
 				free(var_name);
+				i += len_var_name - 1;
 			}
-			count++;
+			else
+				count++;
 			i++;
 		}
+		data.len = count;
 	}
 	else if (type == T_S_QUOTE)
 	{
-		total_quotes = num_quotes(input, i, type);
-		while (count_quotes < total_quotes)
+		while (input[i] && input[i] != '\'')
 		{
-			if (input[i] == '\'')
-			{
-				count_quotes++;
-				if (count_quotes == total_quotes)
-				{
-					data.len = count;
-					return (data);
-				}
-				i++;
-			}
 			count++;
 			i++;
 		}
+		data.len = count;
 	}
 	return (data);
 }
@@ -252,6 +239,7 @@ static void	handle_quotes(t_token **tokens, char *input, int *i,
 	int			j;
 	int			x;
 	t_result	data;
+	int			len_var;
 
 	(*i)++;
 	if (type == T_D_QUOTE)
@@ -260,40 +248,60 @@ static void	handle_quotes(t_token **tokens, char *input, int *i,
 		j = 0;
 		data = len_in_quotes(type, input, *i, tokens);
 		in_quotes = malloc((data.len + 1) * sizeof(char));
-		while (j < data.len)
+		if (!in_quotes)
+			return ;
+		while (j < data.len && input[*i] && !(input[*i] == '\"' && input[*i
+				- 1] != '\\'))
 		{
+			if (input[*i] == '\\' && input[*i + 1] == '\"')
+			{
+				(*i)++;
+				in_quotes[j++] = input[*i];
+				(*i)++;
+				continue ;
+			}
 			if (input[*i] == '$')
 			{
-				(*i) += ft_len_var_name(input, *i) + 1;
-				while (data.content[x] != '\0')
-					in_quotes[j++] = data.content[x++];
-			}
-			if (input[*i] == '\"')
 				(*i)++;
-			in_quotes[j] = input[*i];
+				len_var = ft_len_var_name(input, *i);
+				if (data.content && data.content[0])
+				{
+					while (data.content[x] != '\0')
+						in_quotes[j++] = data.content[x++];
+				}
+				(*i) += len_var;
+				continue ;
+			}
+			in_quotes[j++] = input[*i];
 			(*i)++;
-			j++;
 		}
 		in_quotes[j] = '\0';
-		if (data.len > 0)
+		if (input[*i] == '\"')
+			(*i)++;
+		if (j > 0)
 			add_token(tokens, T_WORD, in_quotes);
+		else
+			free(in_quotes);
 	}
 	else if (type == T_S_QUOTE)
 	{
 		j = 0;
 		data = len_in_quotes(type, input, *i, tokens);
 		in_quotes = malloc((data.len + 1) * sizeof(char));
-		while (j < data.len)
+		if (!in_quotes)
+			return ;
+		while (j < data.len && input[*i] && input[*i] != '\'')
 		{
-			if (input[*i] == '\'')
-				(*i)++;
-			in_quotes[j] = input[*i];
+			in_quotes[j++] = input[*i];
 			(*i)++;
-			j++;
 		}
 		in_quotes[j] = '\0';
-		if (data.len > 0)
+		if (input[*i] == '\'')
+			(*i)++;
+		if (j > 0)
 			add_token(tokens, T_WORD, in_quotes);
+		else
+			free(in_quotes);
 	}
 }
 
@@ -307,7 +315,7 @@ t_token	*tokenize(char *input, char **env)
 	i = 0;
 	tokens = malloc(sizeof(t_token));
 	if (!tokens)
-		return NULL;
+		return (NULL);
 	ft_memset(tokens, 0, sizeof(t_token));
 	tokens->env_mshell = env_buildin(env);
 	while (input[i])
@@ -339,15 +347,19 @@ void	clean_tokens(t_token **tokens)
 
 	if (!tokens || !*tokens)
 		return ;
-
 	aux = *tokens;
 	aux = aux->next;
 	while (aux != NULL && aux->next != NULL)
 	{
 		if (aux->type != T_SPACE && aux->next->type != T_SPACE)
 		{
-			aux->content = ft_strjoin(aux->content, aux->next->content);
-			aux->next = aux->next->next;
+			if (aux->type == aux->next->type)
+			{
+				aux->content = ft_strjoin(aux->content, aux->next->content);
+				aux->next = aux->next->next;
+			}
+			else
+				aux = aux->next;
 		}
 		else
 		{
@@ -369,12 +381,24 @@ int	check_quotes(char *input)
 	count_d = 0;
 	while (input[i])
 	{
-		if (input[i] == '\"')
+		if (input[i] == '\\')
+			i++;
+		else if (input[i] == '\"')
+		{
+			i++;
 			count_d++;
+			while (input[i] && input[i] != '\"')
+				i++;
+			if (!input[i])
+				return (ERROR);
+			count_d++;
+		}
+			
 		else if (input[i] == '\'')
 			count_s++;
 		i++;
 	}
+	printf("S: %d, D: %d\n", count_s, count_d);
 	if ((count_d % 2 == 0) && (count_s % 2 == 0))
 		return (SUCCESS);
 	return (ERROR);
@@ -384,13 +408,18 @@ int	main(int argc, char **argv, char **env)
 {
 	t_token	*tokens;
 	t_token	*aux;
+	t_token	*aux1;
 
 	(void)argc;
-	(void)argv;                     
-	char *input = argv[1]; //"ca't' -e $USER"
+	(void)argv;
+	char *input = "echo \"hola \' hey\""; // argv[1]
+	printf("Input: %s\n", input);
 	tokens = NULL;
 	if (check_quotes(input) == ERROR)
+	{
+		printf("Error: quotes not closed\n");
 		exit(1);
+	}
 	tokens = tokenize(input, env);
 	aux = tokens;
 	aux = aux->next;
@@ -399,7 +428,7 @@ int	main(int argc, char **argv, char **env)
 		printf("Token type: %d, content: %s\n", aux->type, aux->content);
 		aux = aux->next;
 	}
-	t_token *aux1 = tokens->next;
+	aux1 = tokens->next;
 	clean_tokens(&tokens);
 	printf("\n\n");
 	while (aux1 != NULL)
