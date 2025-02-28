@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   history.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:57:25 by lumartin          #+#    #+#             */
-/*   Updated: 2025/02/27 23:52:39 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/02/28 14:06:08 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ char *return_last_command(int fd)
 	while (a_line != NULL)
 	{
 		p_line = a_line;
+		free(a_line);
 		a_line = get_next_line(fd);
 	}
 	return (p_line);

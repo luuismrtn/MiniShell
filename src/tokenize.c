@@ -331,9 +331,12 @@ static void	handle_word(t_token **tokens, char *input, int *i)
 	char	*content;
 
 	start = *i;
-	if (input[*i] == '\\') // new para echo hola \" hey
-		start = (*i)++;
 	//(ft_isalpha(input[*i]) || ft_isdigit(input[*i]) || input[*i] == '-')
+	if (input[*i] == '\\') // new para hola \" hey
+	{
+		(*i)++;
+	 	start++;
+	}
 	while (input[*i] && !ft_isspace(input[*i]))
 		(*i)++;
 	content = ft_substr(input, start, *i - start);
@@ -432,7 +435,6 @@ int	main2(char *string, char **env)
 	t_token	*aux1;
 	char	*input;
 
-	// char *input = "echo 'hola \" hey'"; // "echo \\' hey"
 	input = string;
 	printf("Input: %s\n", input);
 	tokens = NULL;
@@ -442,8 +444,7 @@ int	main2(char *string, char **env)
 		exit(1);
 	}
 	tokens = tokenize(input, env);
-	aux = tokens;
-	aux = aux->next;
+	aux = tokens->next;
 	while (aux != NULL)
 	{
 		printf("Token type: %d, content: %s\n", aux->type, aux->content);
