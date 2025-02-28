@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/02/28 17:55:07 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/02/28 22:34:03 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,9 @@ char				**search_path(char **env, char *comnd);
 
 //  PIPEX
 int					pipex(int argc, char **argv, char **env);
+
+//  BUILTINS
+void				handle_builtin(char **args, char **env);
 
 int					main2(char *string, char **env);
 

@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address 
+CFLAGS = -Wall -Wextra -Werror -g3 #-fsanitize=address 
 RM = rm -f
 
 SRC = src/main.c \
@@ -9,7 +9,8 @@ SRC = src/main.c \
 	src/tokenize.c \
 	src/env_build_in.c \
 	src/automata.c \
-	src/exe.c
+	src/exe.c \
+	src/builtins.c \
 
 INCLUDE = -I libft -I.
 
