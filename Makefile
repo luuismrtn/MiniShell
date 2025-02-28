@@ -43,7 +43,3 @@ re: fclean all
 
 # TODOLIST
 
-# 1. redirecciones sin pipe < >
-# 2. redirecciones con pipe < | >
-# 3. builtins
-# 
