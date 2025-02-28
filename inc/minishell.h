@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/02/28 15:12:02 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/02/28 17:55:07 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ typedef struct s_env
 
 typedef struct s_token
 {
-	t_env *env_mshell;
+	t_env			*env_mshell;
 	t_token_value	type;
 	char			*content;
 	char			*args;
@@ -64,9 +64,6 @@ typedef struct s_result
 	int				len;
 }					t_result;
 
-//  PIPEX
-int					pipex(int argc, char **argv, char **env);
-
 //  HISTORY
 int					ft_read_history(char *history_file);
 int					write_line_history(char *history_file, char *line);
@@ -75,23 +72,19 @@ int					write_line_history(char *history_file, char *line);
 int					check_quotes_closed(char *input);
 t_token				*tokenize(char *line, char **env);
 void				clean_tokens(t_token **tokens);
-// automata
-// automata_functions
+void				automata(t_token *tokens);
 
 // ENV
 t_env				*env_buildin(char **env);
 
+// EXE
+void				make_command(t_token *tokens, char **env);
+void				exe(char **env, char **comnd);
+char				**search_path(char **env, char *comnd);
 
+//  PIPEX
+int					pipex(int argc, char **argv, char **env);
 
-int	main2(char *string, char **env);
-
-void automata(t_token *tokens);
-
+int					main2(char *string, char **env);
 
 #endif
-
-// el len
-// clean tokens
-
-
-

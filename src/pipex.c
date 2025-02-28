@@ -6,37 +6,36 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/02/21 21:56:13 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/02/28 17:33:35 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/pipex.h"
 #include "../inc/minishell.h"
+#include "../inc/pipex.h"
 
-void	exe(char **env, char **comnd)
+static int	ok_args(int argc, char **arg)
 {
-	char	**paths;
-	int		i;
+	int	i;
+	int	x;
+	int	count;
 
-	if ((ft_strchr(comnd[0], '/') != NULL) && (access(comnd[0], X_OK) == 0))
-		execve(comnd[0], comnd, env);
-	else
+	count = 0;
+	i = 2;
+	while (i < argc - 1)
 	{
-		paths = search_path(env, comnd[0]);
-		i = 0;
-		while (paths[i] != NULL)
+		x = 0;
+		while (arg[i][x] != '\0')
 		{
-			if (access(paths[i], R_OK | X_OK) == 0)
-				execve(paths[i], comnd, env);
-			i++;
+			if (arg[i][x] != ' ' && arg[i][x] != '\t' && arg[i][x] != '\n')
+			{
+				count++;
+				break ;
+			}
+			x++;
 		}
-		i = 0;
-		while (paths[i])
-			free(paths[i++]);
-		free(paths);
+		i++;
 	}
-	perror("error command");
-	exit(9);
+	return (count);
 }
 
 int	first_command(char **argv, char **env)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   history.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:57:25 by lumartin          #+#    #+#             */
-/*   Updated: 2025/02/28 14:06:08 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/02/28 17:23:14 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,32 +30,32 @@ int	ft_read_history(char *history_file)
 		free(line);
 		line = get_next_line(fd);
 	}
-    close(fd);
+	close(fd);
 	return (SUCCESS);
 }
 
-char *return_last_command(int fd)
+char	*return_last_command(int fd)
 {
-	char *a_line;
-	char *p_line;
+	char	*a_line;
+	char	*p_line;
 
 	a_line = get_next_line(fd);
 	if (a_line == NULL)
-		return NULL;
+		return (NULL);
 	p_line = a_line;
 	while (a_line != NULL)
 	{
 		p_line = a_line;
-		free(a_line);
 		a_line = get_next_line(fd);
 	}
 	return (p_line);
 }
 
-int	write_line_history(char *history_file, char* line)
+int	write_line_history(char *history_file, char *line)
 {
 	int		fd;
-	char 	*line_clean;
+	char	*line_clean;
+	char	*last_command;
 
 	fd = open(history_file, O_CREAT | O_RDWR | O_APPEND, 0644);
 	if (fd < 0)
@@ -64,12 +64,14 @@ int	write_line_history(char *history_file, char* line)
 		return (ERROR);
 	}
 	line_clean = ft_strtrim(line, " ");
-    if (!line || !line_clean[0])
-    {
-        close(fd);
-        return (ERROR);
-    }
-	if (ft_strncmp(line_clean, return_last_command(fd), ft_strlen(line_clean)) != 0)
+	if (!line || !line_clean[0])
+	{
+		close(fd);
+		return (ERROR);
+	}
+	last_command = return_last_command(fd);
+	if (ft_strncmp(line_clean, last_command, ft_strlen(line_clean)
+			+ ft_strlen(last_command)) != 0)
 	{
 		if (line_clean[0] != '\0')
 			write(fd, "\n", 1);

@@ -1,16 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex_utils.c                                      :+:      :+:    :+:   */
+/*   exe.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/04 13:09:26 by aldferna          #+#    #+#             */
-/*   Updated: 2025/02/21 21:56:07 by lumartin         ###   ########.fr       */
+/*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
+/*   Updated: 2025/02/28 18:45:55 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
+
+void	exe(char **env, char **comnd)
+{
+	char	**paths;
+	int		i;
+
+	if ((ft_strchr(comnd[0], '/') != NULL) && (access(comnd[0], X_OK) == 0))
+		execve(comnd[0], comnd, env);
+	else
+	{
+		paths = search_path(env, comnd[0]);
+		i = 0;
+		while (paths[i] != NULL)
+		{
+			if (access(paths[i], R_OK | X_OK) == 0)
+				execve(paths[i], comnd, env);
+			i++;
+		}
+		i = 0;
+		while (paths[i])
+			free(paths[i++]);
+		free(paths);
+	}
+	perror("error command");
+	exit(1);
+}
 
 char	**search_path(char **env, char *comnd)
 {
@@ -39,29 +65,4 @@ char	**search_path(char **env, char *comnd)
 		i++;
 	}
 	return (paths);
-}
-
-int	ok_args(int argc, char **arg)
-{
-	int	i;
-	int	x;
-	int	count;
-
-	count = 0;
-	i = 2;
-	while (i < argc - 1)
-	{
-		x = 0;
-		while (arg[i][x] != '\0')
-		{
-			if (arg[i][x] != ' ' && arg[i][x] != '\t' && arg[i][x] != '\n')
-			{
-				count++;
-				break ;
-			}
-			x++;
-		}
-		i++;
-	}
-	return (count);
 }

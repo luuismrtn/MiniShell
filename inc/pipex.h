@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 13:09:35 by aldferna          #+#    #+#             */
-/*   Updated: 2025/02/20 15:38:07 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/02/28 17:34:37 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,5 @@
 # include <unistd.h>
 
 char	**search_path(char **env, char *comnd);
-int		ok_args(int argc, char **arg);
 
 #endif

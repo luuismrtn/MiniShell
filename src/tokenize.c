@@ -437,7 +437,7 @@ int	main2(char *string, char **env)
 	}
 
 	automata(tokens);
-	printf("SALIDA\n");
+	make_command(tokens, env);
 	
 	free_tokens(tokens);
 	return (0);
