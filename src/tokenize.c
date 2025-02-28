@@ -177,22 +177,6 @@ void	clean_tokens(t_token **tokens)
 	}
 }
 
-int	num_quotes(char *str, int i, t_token_value type)
-{
-	int	count;
-
-	count = 0;
-	while (str[i])
-	{
-		if (type == T_D_QUOTE && str[i] == '\"')
-			count++;
-		else if (type == T_S_QUOTE && str[i] == '\'')
-			count++;
-		i++;
-	}
-	return (count);
-}
-
 t_result	len_in_quotes(t_token_value type, char *input, int i,
 		t_token **tokens)
 {
@@ -241,7 +225,6 @@ t_result	len_in_quotes(t_token_value type, char *input, int i,
 	}
 	else if (type == T_S_QUOTE)
 	{
-		// while (input[i] && input[i] != '\'')
 		while (input[i] && !(input[i] == '\'' && input[i - 1] != '\\'))
 		{
 			count++;
@@ -309,8 +292,8 @@ static void	handle_quotes(t_token **tokens, char *input, int *i,
 		data = len_in_quotes(type, input, *i, tokens);
 		in_quotes = malloc((data.len + 1) * sizeof(char));
 		if (!in_quotes)
-			return ;                       // while (j < data.len && input[*i] && input[*i] != '\'')
-		while (j < data.len && input[*i]) // para 'hola \' hey' todo en uno
+			return ;
+		while (j < data.len && input[*i])
 		{
 			in_quotes[j++] = input[*i];
 			(*i)++;
@@ -331,13 +314,12 @@ static void	handle_word(t_token **tokens, char *input, int *i)
 	char	*content;
 
 	start = *i;
-	//(ft_isalpha(input[*i]) || ft_isdigit(input[*i]) || input[*i] == '-')
-	if (input[*i] == '\\') // new para hola \" hey
+	if (input[*i] == '\\')
 	{
 		(*i)++;
 	 	start++;
 	}
-	while (input[*i] && !ft_isspace(input[*i]))
+	while (input[*i] && !ft_isspace(input[*i]) && input[*i] != '\"' && input[*i] != '\'')
 		(*i)++;
 	content = ft_substr(input, start, *i - start);
 	if (content[0] == '-')
@@ -363,9 +345,6 @@ t_token	*tokenize(char *input, char **env)
 	{
 		if (ft_isspace(input[i]))
 			handle_spaces(&tokens, input, &i);
-		// else if (ft_isalpha(input[i]) || ft_isdigit(input[i])
-		//|| input[i] == '-')
-		// handle_word(&tokens, input, &i);
 		else if (input[i] == '\'')
 			handle_quotes(&tokens, input, &i, T_S_QUOTE);
 		else if (input[i] == '\"')
@@ -376,9 +355,7 @@ t_token	*tokenize(char *input, char **env)
 			handle_pipe(&tokens, input[i], T_PIPE, &i);
 		else if (input[i] == '$')
 			handle_env(&tokens, input, &i);
-		// else
-		// i++;
-		else // new
+		else
 			handle_word(&tokens, input, &i);
 	}
 	return (tokens);
@@ -458,45 +435,11 @@ int	main2(char *string, char **env)
 		printf("C_Token type: %d, Content: %s\n", aux1->type, aux1->content);
 		aux1 = aux1->next;
 	}
+
+	automata(tokens);
+	printf("SALIDA\n");
+	
 	free_tokens(tokens);
 	return (0);
 }
 
-/*
-
-int	main2(int argc, char **argv, char **env)
-{
-	t_token	*tokens;
-	t_token	*aux;
-	t_token	*aux1;
-
-	(void)argc;
-	(void)argv;
-	char *input = "echo 'hola \" hey'"; // "echo \\' hey"
-	printf("Input: %s\n", input);
-	tokens = NULL;
-	if (check_quotes_closed(input) == ERROR)
-	{
-		printf("Error: quotes not closed\n");
-		exit(1);
-	}
-	tokens = tokenize(input, env);
-	aux = tokens;
-	aux = aux->next;
-	while (aux != NULL)
-	{
-		printf("Token type: %d, content: %s\n", aux->type, aux->content);
-		aux = aux->next;
-	}
-	aux1 = tokens->next;
-	clean_tokens(&tokens);
-	printf("\n\n");
-	while (aux1 != NULL)
-	{
-		printf("C_Token type: %d, Content: %s\n", aux1->type, aux1->content);
-		aux1 = aux1->next;
-	}
-	free_tokens(tokens);
-}
-
-*/

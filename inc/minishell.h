@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/02/27 23:47:07 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/02/28 15:11:46 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,15 @@ typedef enum s_token_value
 {
 	T_WORD,
 	T_FLAG,
-	T_SPACE,
-	T_HERE_DOC,
-	T_REDIR_LEFT,
-	T_APPEND,
-	T_REDIR_RIGHT,
 	T_PIPE,
+	T_REDIR_LEFT,
+	T_REDIR_RIGHT,
+	T_HERE_DOC,
+	T_APPEND,
+	T_ENV,
+	T_SPACE,
 	T_S_QUOTE,
-	T_D_QUOTE,
-	T_ENV
+	T_D_QUOTE
 }					t_token_value;
 
 typedef struct s_env
@@ -84,6 +84,8 @@ t_env				*env_buildin(char **env);
 
 
 int	main2(char *string, char **env);
+
+void automata(t_token *tokens);
 
 
 #endif
