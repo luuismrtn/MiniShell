@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address 
+CFLAGS = -Wall -Wextra -Werror -g3 #-fsanitize=address 
 RM = rm -f
 
 SRC = src/main.c \
@@ -40,17 +40,23 @@ re: fclean all
 # LEAKS
 # quotes not closed -> leak + espacio final en clean_tokens
 # leaks con: hola... "no such file or directory"
+# con: ñ
 # leaks con: echo hola
 # despues de haber ejecutado algo, si se hace control d
+# al ejecutar cada builtin
+# echo $?
 
 # TODOLIST
-# cosas raras history
+# history a veces guarda espacios o \n //sigue guardando repetidos a veces??
 # make_command poner el env_mshell // env en el exe (y otros) (?? cd usar env / env_mshell)
-# gestionar quotes (con el tipo) en make command --> "ls -a" command not found //split...
+# gestionar quotes (con el tipo->hay que recuperarlo en el parseo) en make command --> "ls -a" command not found //split...
 # segfault al hacer control-d
 # guardar "shell level" y pwd al empezar
+# señales cd se ejecuta minishell dentro de minishell
+# revisar si dejamos fd's abiertos
 
-# señales
-# $? --> variable global (mirar que "$?" tb funcione)
+# $? (mirar que "$?" tb funcione) (actualizar en los builtins)
+    #cambiado en father despues de ejecutar (a 127) // control c (a 130)
 # export
 # env
+# meter pipex 

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   exe.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/02/28 18:45:55 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/03 20:19:39 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/pipex.h"
+#include "../inc/minishell.h"
 
 void	exe(char **env, char **comnd)
 {
@@ -34,8 +34,8 @@ void	exe(char **env, char **comnd)
 			free(paths[i++]);
 		free(paths);
 	}
-	perror("error command");
-	exit(1);
+	write(1, "error command\n", 14);
+	exit(127);
 }
 
 char	**search_path(char **env, char *comnd)

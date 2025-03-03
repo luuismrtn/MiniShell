@@ -115,6 +115,14 @@ static void	handle_env(t_token **tokens, char *input, int *i)
 	t_env	*current_env_list;
 
 	(*i)++;
+	if (input[*i] == '?')
+	{
+		(*i)++;
+		var_name = ft_itoa(exit_num);
+		printf("valor de $?: %s\n", var_name);
+		add_token(tokens, T_ENV, var_name);
+		return;
+	}
 	len_var_name = ft_len_var_name(input, *i);
 	var_name = ft_substr(input, *i, len_var_name);
 	current_env_list = (*tokens)->env_mshell;

@@ -6,25 +6,26 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/03 16:38:37 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/03 19:50:32 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
+unsigned char exit_num = 0;
+
 void handle_signal(int sig)
 {
-    if (sig == SIGINT) //$? 130
+    if (sig == SIGINT)
     {
+        exit_num = 130;
         write(1, "\n", 1);
         rl_replace_line("", 0);
         rl_on_new_line();
         rl_redisplay();
     }
     else if (sig == SIGQUIT)
-    {
         return ;
-    }
 }
 
 void signals()
@@ -62,10 +63,19 @@ int main(int argc, char **argv, char **env)
         line = readline("minishell ~ ");
         if (!line)
             break;
-        add_history(line);
-        write_line_history(HISTORY_FILE, line);
-        main2(line, env);
-        rl_on_new_line();
+        if (line[0] == '\0')
+        {
+            rl_replace_line("", 0);
+            rl_on_new_line();
+            rl_redisplay();
+        }
+        else 
+        {
+            add_history(line);
+            write_line_history(HISTORY_FILE, line);
+            main2(line, env);
+            rl_on_new_line();
+        }
     }
     return SUCCESS;
 }

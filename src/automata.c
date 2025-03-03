@@ -173,6 +173,8 @@ static void	parent_process(pid_t pid, char **full_command, int fd_in,
 	if (fd_out != STDOUT_FILENO)
 		close(fd_out);
 	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+        exit_num = WEXITSTATUS(status);
 	i = 0;
 	while (full_command[i])
 		free(full_command[i++]);
@@ -204,10 +206,10 @@ void	make_command(t_token *tokens, char **env)
 	fd_in = STDIN_FILENO;
 	fd_out = STDOUT_FILENO;
 	setup_redirections(tokens, &fd_in, &fd_out);
-	args = build_command_string(tokens);
+	args = build_command_string(tokens); //aqui
 	if (!args)
 		return ;
-	full_command = ft_split(args, ' ');
+	full_command = ft_split(args, ' '); //o aqui lo de "ls -a"
 	free(args);
 	if (!full_command)
 		return ;
@@ -224,8 +226,8 @@ void	make_command(t_token *tokens, char **env)
 		clean_resources(full_command, fd_in, fd_out);
 		return ;
 	}
-	else if (pid == 0) // Proceso hijo
+	else if (pid == 0)
 		child_process(full_command, env, fd_in, fd_out);
-	else // Proceso padre
+	else
 		parent_process(pid, full_command, fd_in, fd_out);
 }
