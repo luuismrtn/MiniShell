@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/02/28 22:34:03 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/03 13:54:16 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "pipex.h"
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>

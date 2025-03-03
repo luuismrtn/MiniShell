@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g3 #-fsanitize=address 
+CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address 
 RM = rm -f
 
 SRC = src/main.c \
@@ -36,10 +36,21 @@ re: fclean all
 
 .PHONY: all clean fclean re
 
-# quotes not closed - leak + espacio final en clean_tokens
-# cosas raras history
-# make_command poner el env_mshell
-# env en el exe
+
+# LEAKS
+# quotes not closed -> leak + espacio final en clean_tokens
+# leaks con: hola... "no such file or directory"
+# leaks con: echo hola
+# despues de haber ejecutado algo, si se hace control d
 
 # TODOLIST
+# cosas raras history
+# make_command poner el env_mshell // env en el exe (y otros) (?? cd usar env / env_mshell)
+# gestionar quotes (con el tipo) en make command --> "ls -a" command not found //split...
+# segfault al hacer control-d
+# guardar "shell level" y pwd al empezar
 
+# señales
+# $? --> variable global (mirar que "$?" tb funcione)
+# export
+# env

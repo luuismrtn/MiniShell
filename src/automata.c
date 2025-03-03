@@ -214,7 +214,7 @@ void	make_command(t_token *tokens, char **env)
 	i = 0;
 	while (full_command[i] != NULL)
 	{
-		printf("[%d]  %s\n", i, full_command[i]);
+		printf("full command [%d]  %s\n", i, full_command[i]);
 		i++;
 	}
 	pid = fork();
