@@ -12,11 +12,11 @@
 
 #include "../inc/minishell.h"
 
-void	automata(t_token *tokens)
+int	automata(t_token *tokens)
 {
 	int		current_state;
 	int		prev_token;
-	char	*elements[9] = {"command", "file", "|", "newline", "newline",
+	char	*elements[9] = {"command", "flag", "|", "newline", "newline",
 			"newline", "newline", "err"};
 
 	tokens = tokens->next;
@@ -37,11 +37,16 @@ void	automata(t_token *tokens)
 	}
 	if (current_state != 1 && current_state != 2)
 	{
-		printf("syntax error: %s\n", elements[prev_token]);
-		return ;
+		printf("syntax error: %s\n\n", elements[prev_token]);
+		printf("END\n\n");
+		return 1;
 	}
 	else
+	{
 		printf("correct\n");
+		return 0;
+	}
+	return 1;
 }
 
 static void	setup_redirections(t_token *tokens, int *fd_in, int *fd_out)
@@ -173,8 +178,12 @@ static void	parent_process(pid_t pid, char **full_command, int fd_in,
 	if (fd_out != STDOUT_FILENO)
 		close(fd_out);
 	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
+	if (WIFEXITED(status)) 
+	{
         exit_num = WEXITSTATUS(status);
+		if (exit_num == 1) //si hijo ok, devuelve 1
+			exit_num = 0;
+	}
 	i = 0;
 	while (full_command[i])
 		free(full_command[i++]);
@@ -194,7 +203,7 @@ static void	child_process(char **full_command, char **env, int fd_in,
 	exit(1);
 }
 
-void	make_command(t_token *tokens, char **env)
+void	make_exe_command(t_token *tokens, char **env)
 {
 	char	**full_command;
 	pid_t	pid;

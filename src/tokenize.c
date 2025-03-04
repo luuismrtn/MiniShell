@@ -426,7 +426,7 @@ int	main2(char *string, char **env)
 	if (check_quotes_closed(input) == ERROR)
 	{
 		printf("Error: quotes not closed\n");
-		exit(1);
+		return ERROR;
 	}
 	tokens = tokenize(input, env);
 	aux = tokens->next;
@@ -444,8 +444,8 @@ int	main2(char *string, char **env)
 		aux1 = aux1->next;
 	}
 
-	automata(tokens);
-	make_command(tokens, env);
+	if (automata(tokens) == 0)
+		make_exe_command(tokens, env);
 	
 	free_tokens(tokens);
 	return (0);

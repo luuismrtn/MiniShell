@@ -47,16 +47,20 @@ re: fclean all
 # echo $?
 
 # TODOLIST
-# history a veces guarda espacios o \n //sigue guardando repetidos a veces??
-# make_command poner el env_mshell // env en el exe (y otros) (?? cd usar env / env_mshell)
+# history a veces guarda espacios o \n //sigue guardando repetidos a veces?? //puede estar a 0 cd se re-ejecuta
+# make_command poner el env_mshell // env en el exe (y otros) (siempre usar env_mshell)
 # gestionar quotes (con el tipo->hay que recuperarlo en el parseo) en make command --> "ls -a" command not found //split...
-# segfault al hacer control-d
-# guardar "shell level" y pwd al empezar
-# señales cd se ejecuta minishell dentro de minishell
+# segfault al hacer control-d despues de una ejecución
+# guardar "shell level" y pwd al empezar -->en primer token cn el env
+# señal control-c cd se ejecuta minishell dentro de minishell
 # revisar si dejamos fd's abiertos
+# echo "$USER" > output (problema expansión)
+# lo del export; export e sale en export pero no en env (juego con otros niveles)
+# ultimo espacio en tokens a veces problemas(relacion con hist?): fullcommand [0]ls, full command [1] ' ' ls: cannot access ''$'\n': No such file or directory
 
-# $? (mirar que "$?" tb funcione) (actualizar en los builtins)
-    #cambiado en father despues de ejecutar (a 127) // control c (a 130)
+# $? ("$?" no funciona) (actualizar en los builtins ->(exit 300, echo $? da 44))
+    #cambiado en padre despues de ejecutar (a 127) // control c (a 130)
+
 # export
 # env
-# meter pipex 
+# meter pipex --> implementar si detecta un builtin

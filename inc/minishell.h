@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/03 18:09:18 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/04 15:41:41 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ typedef struct s_token
 	t_token_value	type;
 	char			*content;
 	char			*args;
-	// char			*expanded; creo q guardar ej: "$USER" y "aldferna" no hace falta
 	struct s_token	*next;
 }					t_token;
 
@@ -75,13 +74,13 @@ int					write_line_history(char *history_file, char *line);
 int					check_quotes_closed(char *input);
 t_token				*tokenize(char *line, char **env);
 void				clean_tokens(t_token **tokens);
-void				automata(t_token *tokens);
+int 				automata(t_token *tokens);
 
 // ENV
 t_env				*env_buildin(char **env);
 
 // EXE
-void				make_command(t_token *tokens, char **env);
+void				make_exe_command(t_token *tokens, char **env);
 void				exe(char **env, char **comnd);
 char				**search_path(char **env, char *comnd);
 
