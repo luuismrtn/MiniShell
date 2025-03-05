@@ -57,20 +57,15 @@ re: fclean all
 # lo del export; export 'e' sale en export pero no en env (juego con otros niveles)
 # eco $$ da un num
 # el heredoc (+ meterlo tb en el pipex)
-
+#
 # espacios por terminal (segfault o error command)
 # no parseo de espacios despues del ultimo token no espacio-> trim char *line
 #	 ultimo espacio en tokens a veces problemas(relacion con hist?): fullcommand [0]ls, full command [1] ' ' ls: cannot access ''$'\n': No such file or directory
 # gestionar quotes (con el tipo->hay que recuperarlo en el parseo) en make command --> "ls -a" command not found //split...
-#hoy:
-#exit //no puede ser hijo(???)
-#//mal lo de devolver 1 si too many args (y no cerrar) //da segfault
-# echo "$USER" (problema expansión) ("$?") -- problema sin "
-
-
-# $?: (actualizar en los builtins) ("$?")
+# exit: mal lo de devolver 1 si too many args (y no cerrar) //da segfault
+# $?: (actualizar en los builtins)
     #cambiado en padre despues de ejecutar (a 127) // control c (a 130) // (exit 300, echo $? da 44))
 
 # export
 # env
-# meter pipex --> implementar si detecta un builtin (si exit no hijo) tb lo de contruir el comando sin "</etc"
+# meter pipex --> implementar si detecta un builtin (solo 1 builtin, no hijo)
