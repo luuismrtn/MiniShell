@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/03 20:19:39 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/05 22:29:39 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ void	exe(char **env, char **comnd)
 {
 	char	**paths;
 	int		i;
+
+	printf("comnd[0]: %s\n", comnd[0]);
 
 	if ((ft_strchr(comnd[0], '/') != NULL) && (access(comnd[0], X_OK) == 0))
 		execve(comnd[0], comnd, env);

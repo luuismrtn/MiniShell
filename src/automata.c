@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   automata.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/05 20:30:04 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/05 21:05:43 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,15 +228,17 @@ void	make_exe_command(t_token *tokens, char **env)
 {
 	char	**full_command;
 	pid_t	pid;
-	int		fd_in;
-	int		fd_out;
+	int *fds;
 	char	*args;
 	int		i;
 
-	fd_in = STDIN_FILENO;
-	fd_out = STDOUT_FILENO;
-	setup_redirections(tokens, &fd_in, &fd_out);
-	args = build_command_string(tokens); 
+	fds = malloc(sizeof(int) * 2);
+	if (!fds)
+		return ;
+	fds[0] = STDIN_FILENO;
+	fds[1] = STDOUT_FILENO;
+	setup_redirections(tokens, &fds, 1, 0);
+	args = build_command_string(tokens,1 , 0); 
 	if (!args)
 		return ;
 	full_command = ft_split(args, ' '); 
@@ -255,11 +257,11 @@ void	make_exe_command(t_token *tokens, char **env)
 	if (pid == -1)
 	{
 		perror("minishell: fork");
-		clean_resources(full_command, fd_in, fd_out);
+		clean_resources(full_command, fds[0], fds[1]);
 		return ;
 	}
 	else if (pid == 0)
-		child_process(full_command, env, fd_in, fd_out);
+		child_process(full_command, env, fds[0], fds[1]);
 	else
-		parent_process(pid, full_command, fd_in, fd_out);
+		parent_process(pid, full_command, fds[0], fds[1]);
 }

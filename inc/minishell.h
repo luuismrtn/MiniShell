@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/05 20:22:06 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/05 22:32:59 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,13 +85,15 @@ void					exe(char **env, char **comnd);
 char					**search_path(char **env, char *comnd);
 
 //  PIPEX
-int						pipex(int argc, char **argv, char **env);
-void	setup_redirections(t_token *tokens, int (*fds)[2], int num_comd, int *count);
-char	*build_command_string(t_token *tokens,int num_comnd, int *count);
+int	pipex(char *argv, t_token *tokens, char **env);
+void					setup_redirections(t_token *tokens, int (*fds)[2],
+							int num_comd, int *count);
+char					*build_command_string(t_token *tokens, int num_comnd,
+							int *count);
 
 //  BUILTINS
 void					handle_builtin(char **args, char **env);
-void	ft_exit(char **arg);
+void					ft_exit(char **arg);
 
 int						main2(char *string, char **env);
 

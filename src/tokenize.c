@@ -419,6 +419,20 @@ int	check_quotes_closed(char *input)
 	return (ERROR);
 }
 
+int has_pipe(t_token *tokens)
+{
+	t_token	*aux;
+
+	aux = tokens->next;
+	while (aux != NULL)
+	{
+		if (aux->type == T_PIPE)
+			return (1);
+		aux = aux->next;
+	}
+	return (0);
+}
+
 int	main2(char *string, char **env)
 {
 	t_token	*tokens;
@@ -451,7 +465,15 @@ int	main2(char *string, char **env)
 	}
 
 	if (automata(tokens) == 0)
-		make_exe_command(tokens, env);
+	{
+		if (has_pipe(tokens))
+		{
+			printf("PipeX\n");
+			pipex(input, tokens, env);
+		}
+		else
+			make_exe_command(tokens, env);
+	}
 	
 	free_tokens(tokens);
 	return (0);
