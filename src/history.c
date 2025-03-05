@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   history.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:57:25 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/03 16:54:34 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/05 23:42:34 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	ft_read_history(char *history_file)
 	line = get_next_line(fd);
 	while (line)
 	{
-		add_history(line);
+		add_history(ft_strtrim(line, "\n"));
 		free(line);
 		line = get_next_line(fd);
 	}

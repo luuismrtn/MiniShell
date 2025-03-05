@@ -48,8 +48,6 @@ re: fclean all
 
 # TODOLIST
 # history a veces guarda espacios o \n //sigue guardando repetidos a veces?? //puede estar a 0 cd se re-ejecuta (si vacio da segfault)
-#    tb al moverse por los comandos se pone un \n
-# make_command poner el env_mshell // env en el exe (y otros) (siempre usar env_mshell)-ponerlo tb al inicio
 # segfault al hacer control-d despues de una ejecución
 # guardar "shell level" y pwd al empezar -->en primer token cn el env
 # señal control-c cd se ejecuta minishell dentro de minishell
@@ -67,5 +65,4 @@ re: fclean all
     #cambiado en padre despues de ejecutar (a 127) // control c (a 130) // (exit 300, echo $? da 44))
 
 # export
-# env
 # meter pipex --> implementar si detecta un builtin (solo 1 builtin, no hijo)
