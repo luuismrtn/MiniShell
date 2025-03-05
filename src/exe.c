@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/05 22:29:39 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/05 23:06:02 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ void	exe(char **env, char **comnd)
 {
 	char	**paths;
 	int		i;
-
-	printf("comnd[0]: %s\n", comnd[0]);
 
 	if ((ft_strchr(comnd[0], '/') != NULL) && (access(comnd[0], X_OK) == 0))
 		execve(comnd[0], comnd, env);
@@ -67,4 +65,32 @@ char	**search_path(char **env, char *comnd)
 		i++;
 	}
 	return (paths);
+}
+
+char	**join_env(t_env *env_mshell)
+{
+	char	**env;
+	t_env	*aux;
+	int		i;
+	
+	aux = env_mshell;
+	i = 0;
+	while (aux != NULL)
+	{
+		i++;
+		aux = aux->next;
+	}
+	env = malloc(sizeof(char *) * (i + 1));
+	if (!env)
+		return (NULL);
+	i = 0;
+	while (env_mshell != NULL)
+	{
+		env[i] = ft_strjoin(env_mshell->name, "=");
+		env[i] = ft_strjoin(env[i], env_mshell->content);
+		env_mshell = env_mshell->next;
+		i++;
+	}
+	env[i] = NULL;
+	return (env);
 }

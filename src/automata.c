@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/05 21:05:43 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/05 23:02:27 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	automata(t_token *tokens)
 		{2, 2, 5, 5, 5, 5, 5, 2}, // redireccion
 		{1, 5, 5, 3, 3, 3, 3, 2}, // pipe
 		{5, 5, 5, 5, 5, 5, 5, 5}  // err
-	};// w  f  |  <  > <<  >> $
+	};                            // w  f  |  <  > <<  >> $
 	current_state = 0;
 	while (current_state != 5 && tokens != NULL)
 	{
@@ -39,21 +39,22 @@ int	automata(t_token *tokens)
 	{
 		printf("syntax error: %s\n\n", elements[prev_token]);
 		printf("END\n\n");
-		return 1;
+		return (1);
 	}
 	else
 	{
 		printf("correct\n\n\n");
-		return 0;
+		return (0);
 	}
-	return 1;
+	return (1);
 }
 
-void	setup_redirections(t_token *tokens, int (*fds)[2], int num_comnd, int *count)
+void	setup_redirections(t_token *tokens, int (*fds)[2], int num_comnd,
+		int *count)
 {
-	t_token	*temp_tokens; //probar sin temporal
-	int		new_fd;
+	int	new_fd;
 
+	t_token *temp_tokens; // probar sin temporal
 	temp_tokens = tokens->next;
 	if (num_comnd > 1)
 	{
@@ -105,7 +106,7 @@ void	setup_redirections(t_token *tokens, int (*fds)[2], int num_comnd, int *coun
 			(*fds)[0] = new_fd;
 		}
 		else if (temp_tokens && temp_tokens->type == T_PIPE)
-			break;
+			break ;
 		temp_tokens = temp_tokens->next;
 	}
 }
@@ -114,8 +115,8 @@ char	*build_command_string(t_token *tokens, int num_comnd, int *count)
 {
 	char	*args;
 	char	*temp1;
-	t_token	*temp_tokens; //probar sin temporal
 
+	t_token *temp_tokens; // probar sin temporal
 	args = ft_strdup("");
 	if (!args)
 		return (NULL);
@@ -145,7 +146,7 @@ char	*build_command_string(t_token *tokens, int num_comnd, int *count)
 		free(temp1);
 		temp_tokens = temp_tokens->next;
 		if (temp_tokens && temp_tokens->type == T_PIPE)
-			break;
+			break ;
 	}
 	return (args);
 }
@@ -199,10 +200,10 @@ static void	parent_process(pid_t pid, char **full_command, int fd_in,
 	if (fd_out != STDOUT_FILENO)
 		close(fd_out);
 	waitpid(pid, &status, 0);
-	if (WIFEXITED(status)) 
+	if (WIFEXITED(status))
 	{
-        exit_num = WEXITSTATUS(status);
-		if (exit_num == 1) //si hijo ok, devuelve 1
+		exit_num = WEXITSTATUS(status);
+		if (exit_num == 1)
 			exit_num = 0;
 	}
 	i = 0;
@@ -224,24 +225,23 @@ static void	child_process(char **full_command, char **env, int fd_in,
 	exit(1);
 }
 
-void	make_exe_command(t_token *tokens, char **env)
+void	make_exe_command(t_token *tokens)
 {
 	char	**full_command;
 	pid_t	pid;
-	int *fds;
+	int		fds[2];
 	char	*args;
 	int		i;
+	char	**env;
 
-	fds = malloc(sizeof(int) * 2);
-	if (!fds)
-		return ;
+	env = join_env(tokens->env_mshell);
 	fds[0] = STDIN_FILENO;
 	fds[1] = STDOUT_FILENO;
 	setup_redirections(tokens, &fds, 1, 0);
-	args = build_command_string(tokens,1 , 0); 
+	args = build_command_string(tokens, 1, 0);
 	if (!args)
 		return ;
-	full_command = ft_split(args, ' '); 
+	full_command = ft_split(args, ' ');
 	free(args);
 	if (!full_command)
 		return ;
@@ -251,7 +251,7 @@ void	make_exe_command(t_token *tokens, char **env)
 		printf("full command [%d]  %s\n", i, full_command[i]);
 		i++;
 	}
-	if (ft_strncmp(full_command[0], "exit", 5) == 0) //y no pipes
+	if (ft_strncmp(full_command[0], "exit", 5) == 0) // y no pipes
 		ft_exit(&args);
 	pid = fork();
 	if (pid == -1)

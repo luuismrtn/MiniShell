@@ -469,10 +469,10 @@ int	main2(char *string, char **env)
 		if (has_pipe(tokens))
 		{
 			printf("PipeX\n");
-			pipex(input, tokens, env);
+			pipex(input, tokens);
 		}
 		else
-			make_exe_command(tokens, env);
+			make_exe_command(tokens);
 	}
 	
 	free_tokens(tokens);

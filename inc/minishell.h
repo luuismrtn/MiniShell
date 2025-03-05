@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/05 22:32:59 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/05 22:56:42 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,12 +80,13 @@ int						automata(t_token *tokens);
 t_env					*env_buildin(char **env);
 
 // EXE
-void					make_exe_command(t_token *tokens, char **env);
+void					make_exe_command(t_token *tokens);
+char					**join_env(t_env *env_mshell);
 void					exe(char **env, char **comnd);
 char					**search_path(char **env, char *comnd);
 
 //  PIPEX
-int	pipex(char *argv, t_token *tokens, char **env);
+int						pipex(char *argv, t_token *tokens);
 void					setup_redirections(t_token *tokens, int (*fds)[2],
 							int num_comd, int *count);
 char					*build_command_string(t_token *tokens, int num_comnd,

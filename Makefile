@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -g3 -fsanitize=address  #-Wall -Wextra -Werror 
+CFLAGS = -Wall -Wextra -Werror  -g3 -fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
