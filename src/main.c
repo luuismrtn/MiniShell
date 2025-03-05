@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/05 23:44:20 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/05 23:50:53 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,17 +63,17 @@ int	main(int argc, char **argv, char **env)
 		line = readline("minishell ~ ");
 		if (!line)
 			break ;
-		if (line[0] == '\0')
+		if (line[0] == '\0' || ft_strtrim(line, " \t\n\r\f\v")[0] == '\0')
 		{
-			rl_replace_line("", 0);
-			rl_on_new_line();
-			rl_redisplay();
+			free(line);
+			continue ;
 		}
 		else
 		{
 			add_history(line);
 			write_line_history(HISTORY_FILE, line);
 			main2(line, env);
+			free(line);
 		}
 	}
 	return (SUCCESS);
