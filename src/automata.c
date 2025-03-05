@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/02/28 14:41:01:0 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/05 20:30:04 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,18 +43,27 @@ int	automata(t_token *tokens)
 	}
 	else
 	{
-		printf("correct\n");
+		printf("correct\n\n\n");
 		return 0;
 	}
 	return 1;
 }
 
-static void	setup_redirections(t_token *tokens, int *fd_in, int *fd_out)
+void	setup_redirections(t_token *tokens, int (*fds)[2], int num_comnd, int *count)
 {
-	t_token	*temp_tokens;
+	t_token	*temp_tokens; //probar sin temporal
 	int		new_fd;
 
 	temp_tokens = tokens->next;
+	if (num_comnd > 1)
+	{
+		while (temp_tokens && (*count) < num_comnd)
+		{
+			if (temp_tokens->type == T_PIPE)
+				(*count)++;
+			temp_tokens = temp_tokens->next;
+		}
+	}
 	while (temp_tokens)
 	{
 		if (temp_tokens->type == T_REDIR_RIGHT && temp_tokens->next)
@@ -66,9 +75,9 @@ static void	setup_redirections(t_token *tokens, int *fd_in, int *fd_out)
 				perror("minishell: open");
 				return ;
 			}
-			if (*fd_out != STDOUT_FILENO)
-				close(*fd_out);
-			*fd_out = new_fd;
+			if ((*fds)[1] != STDOUT_FILENO)
+				close((*fds)[1]);
+			(*fds)[1] = new_fd;
 		}
 		else if (temp_tokens->type == T_APPEND && temp_tokens->next)
 		{
@@ -79,9 +88,9 @@ static void	setup_redirections(t_token *tokens, int *fd_in, int *fd_out)
 				perror("minishell: open");
 				return ;
 			}
-			if (*fd_out != STDOUT_FILENO)
-				close(*fd_out);
-			*fd_out = new_fd;
+			if ((*fds)[1] != STDOUT_FILENO)
+				close((*fds)[1]);
+			(*fds)[1] = new_fd;
 		}
 		else if (temp_tokens->type == T_REDIR_LEFT && temp_tokens->next)
 		{
@@ -91,24 +100,35 @@ static void	setup_redirections(t_token *tokens, int *fd_in, int *fd_out)
 				perror("minishell: open");
 				return ;
 			}
-			if (*fd_in != STDIN_FILENO)
-				close(*fd_in);
-			*fd_in = new_fd;
+			if ((*fds)[0] != STDIN_FILENO)
+				close((*fds)[0]);
+			(*fds)[0] = new_fd;
 		}
+		else if (temp_tokens && temp_tokens->type == T_PIPE)
+			break;
 		temp_tokens = temp_tokens->next;
 	}
 }
 
-static char	*build_command_string(t_token *tokens)
+char	*build_command_string(t_token *tokens, int num_comnd, int *count)
 {
 	char	*args;
 	char	*temp1;
-	t_token	*temp_tokens;
+	t_token	*temp_tokens; //probar sin temporal
 
 	args = ft_strdup("");
 	if (!args)
 		return (NULL);
 	temp_tokens = tokens->next;
+	if (num_comnd > 1)
+	{
+		while (temp_tokens && (*count) < num_comnd)
+		{
+			if (temp_tokens->type == T_PIPE)
+				(*count)++;
+			temp_tokens = temp_tokens->next;
+		}
+	}
 	while (temp_tokens != NULL)
 	{
 		if (temp_tokens->type == T_REDIR_RIGHT || temp_tokens->type == T_APPEND
@@ -124,6 +144,8 @@ static char	*build_command_string(t_token *tokens)
 		args = ft_strjoin(args, " ");
 		free(temp1);
 		temp_tokens = temp_tokens->next;
+		if (temp_tokens && temp_tokens->type == T_PIPE)
+			break;
 	}
 	return (args);
 }
@@ -146,8 +168,7 @@ static void	execute_command(char **full_command, char **env, int fd_in,
 		|| ft_strncmp(full_command[0], "pwd", 4) == 0
 		|| ft_strncmp(full_command[0], "env", 4) == 0
 		|| ft_strncmp(full_command[0], "export", 7) == 0
-		|| ft_strncmp(full_command[0], "unset", 6) == 0
-		|| ft_strncmp(full_command[0], "exit", 5) == 0)
+		|| ft_strncmp(full_command[0], "unset", 6) == 0)
 		handle_builtin(full_command, env);
 	else
 		exe(env, full_command);
@@ -215,10 +236,10 @@ void	make_exe_command(t_token *tokens, char **env)
 	fd_in = STDIN_FILENO;
 	fd_out = STDOUT_FILENO;
 	setup_redirections(tokens, &fd_in, &fd_out);
-	args = build_command_string(tokens); //aqui
+	args = build_command_string(tokens); 
 	if (!args)
 		return ;
-	full_command = ft_split(args, ' '); //o aqui lo de "ls -a"
+	full_command = ft_split(args, ' '); 
 	free(args);
 	if (!full_command)
 		return ;
@@ -228,6 +249,8 @@ void	make_exe_command(t_token *tokens, char **env)
 		printf("full command [%d]  %s\n", i, full_command[i]);
 		i++;
 	}
+	if (ft_strncmp(full_command[0], "exit", 5) == 0) //y no pipes
+		ft_exit(&args);
 	pid = fork();
 	if (pid == -1)
 	{

@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:21:08 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/03 19:23:42 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/05 16:59:16 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,22 @@ void	ft_env(char **env)
 	}
 }
 
-void	ft_exit(void)
+void	ft_exit(char **arg) 
 {
-	return ;
+	int exit_num;
+	int i;
+
+	i = 0;
+	while (arg[i])
+		i++;
+	if (i > 2)
+	{
+		write(2, "too many arguments\n", 20);
+		exit_num = 1;
+		return;
+	}
+	exit_num = ft_atoi(arg[1]);
+	exit(exit_num);
 }
 
 void	handle_builtin(char **args, char **env)
@@ -107,7 +120,7 @@ else if	(ft_strncmp(args[0], "unset", 6) == 0)
 	else if (ft_strncmp(args[0], "env", 4) == 0)
 		ft_env(env);
 	else if (ft_strncmp(args[0], "exit", 5) == 0)
-		ft_exit();
+		ft_exit(args);
 	else
 		return ;
 }

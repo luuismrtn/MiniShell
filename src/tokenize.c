@@ -101,45 +101,6 @@ static void	handle_spaces(t_token **tokens, char *input, int *i)
 	add_token(tokens, T_SPACE, content);
 }
 
-int	ft_len_var_name(char *str, int i)
-{
-	while (str[i] && str[i] != ' ' && str[i] != '\"')
-		i++;
-	return (i);
-}
-
-static void	handle_env(t_token **tokens, char *input, int *i)
-{
-	int		len_var_name;
-	char	*var_name;
-	t_env	*current_env_list;
-
-	(*i)++;
-	if (input[*i] == '?')
-	{
-		(*i)++;
-		var_name = ft_itoa(exit_num);
-		printf("valor de $?: %s\n", var_name);
-		add_token(tokens, T_ENV, var_name);
-		return;
-	}
-	len_var_name = ft_len_var_name(input, *i);
-	var_name = ft_substr(input, *i, len_var_name);
-	current_env_list = (*tokens)->env_mshell;
-	while (current_env_list != NULL)
-	{
-		if (ft_strncmp(current_env_list->name, var_name,
-				len_var_name) == SUCCESS)
-		{
-			free(var_name);
-			add_token(tokens, T_ENV, current_env_list->content);
-			break ;
-		}
-		current_env_list = current_env_list->next;
-	}
-	(*i) += len_var_name - 1;
-}
-
 static void	handle_pipe(t_token **tokens, char input, t_token_value type,
 		int *i)
 {
@@ -183,6 +144,19 @@ void	clean_tokens(t_token **tokens)
 				aux = aux->next;
 		}
 	}
+}
+
+int	ft_len_var_name(char *str, int i)
+{
+	int count;
+
+	count = 0;
+	while (str[i] && (str[i] != ' ' && str[i] != '\"'))
+	{
+		count++;
+		i++;
+	}
+	return (count);
 }
 
 t_result	len_in_quotes(t_token_value type, char *input, int i,
@@ -258,6 +232,7 @@ static void	handle_quotes(t_token **tokens, char *input, int *i,
 		x = 0;
 		j = 0;
 		data = len_in_quotes(type, input, *i, tokens);
+		printf("data.len = %d\n", data.len);
 		in_quotes = malloc((data.len + 1) * sizeof(char));
 		if (!in_quotes)
 			return ;
@@ -314,6 +289,37 @@ static void	handle_quotes(t_token **tokens, char *input, int *i,
 		else
 			free(in_quotes);
 	}
+}
+
+static void	handle_env(t_token **tokens, char *input, int *i)
+{
+	int		len_var_name;
+	char	*var_name;
+	t_env	*current_env_list;
+
+	(*i)++;
+	if (input[*i] == '?')
+	{
+		(*i)++;
+		var_name = ft_itoa(exit_num);
+		add_token(tokens, T_ENV, var_name);
+		return;
+	}
+	len_var_name = ft_len_var_name(input, *i);
+	var_name = ft_substr(input, *i, len_var_name);
+	current_env_list = (*tokens)->env_mshell;
+	while (current_env_list != NULL)
+	{
+		if (ft_strncmp(current_env_list->name, var_name,
+				len_var_name) == SUCCESS)
+		{
+			free(var_name);
+			add_token(tokens, T_ENV, current_env_list->content);
+			break ;
+		}
+		current_env_list = current_env_list->next;
+	}
+	(*i) += len_var_name;
 }
 
 static void	handle_word(t_token **tokens, char *input, int *i)

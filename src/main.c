@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/03 19:50:32 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/05 16:07:06 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int main(int argc, char **argv, char **env)
         line = readline("minishell ~ ");
         if (!line)
             break;
-        if (line[0] == '\0')
+        if (line[0] == '\0') //o todo espacios
         {
             rl_replace_line("", 0);
             rl_on_new_line();
