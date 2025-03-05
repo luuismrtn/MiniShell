@@ -47,7 +47,6 @@ re: fclean all
 # echo $?
 
 # TODOLIST
-# history a veces guarda espacios o \n //sigue guardando repetidos a veces?? //puede estar a 0 cd se re-ejecuta (si vacio da segfault)
 # segfault al hacer control-d despues de una ejecución
 # guardar "shell level" y pwd al empezar -->en primer token cn el env
 # señal control-c cd se ejecuta minishell dentro de minishell
@@ -55,10 +54,6 @@ re: fclean all
 # lo del export; export 'e' sale en export pero no en env (juego con otros niveles)
 # eco $$ da un num
 # el heredoc (+ meterlo tb en el pipex)
-#
-# espacios por terminal (segfault o error command)
-# no parseo de espacios despues del ultimo token no espacio-> trim char *line
-#	 ultimo espacio en tokens a veces problemas(relacion con hist?): fullcommand [0]ls, full command [1] ' ' ls: cannot access ''$'\n': No such file or directory
 # gestionar quotes (con el tipo->hay que recuperarlo en el parseo) en make command --> "ls -a" command not found //split...
 # exit: mal lo de devolver 1 si too many args (y no cerrar) //da segfault
 # $?: (actualizar en los builtins)

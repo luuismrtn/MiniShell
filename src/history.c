@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:57:25 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/05 23:42:34 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/05 23:56:01 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,14 +70,23 @@ int	write_line_history(char *history_file, char *line)
 		return (ERROR);
 	}
 	last_command = return_last_command(fd);
-	if (ft_strncmp(line_clean, last_command, ft_strlen(line_clean)
-			+ ft_strlen(last_command)) != 0)
+	if (last_command == NULL)
 	{
-		if (line_clean[0] != '\0')
-			write(fd, "\n", 1);
 		write(fd, line_clean, ft_strlen(line_clean));
 		free(line_clean);
 		close(fd);
+	}
+	else
+	{
+		if (ft_strncmp(line_clean, last_command, ft_strlen(line_clean)
+				+ ft_strlen(last_command)) != 0)
+		{
+			if (line_clean[0] != '\0')
+				write(fd, "\n", 1);
+			write(fd, line_clean, ft_strlen(line_clean));
+			free(line_clean);
+			close(fd);
+		}
 	}
 	return (SUCCESS);
 }
