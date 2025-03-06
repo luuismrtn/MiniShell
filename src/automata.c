@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   automata.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/05 23:02:27 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/06 22:02:53 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	automata(t_token *tokens)
 }
 
 void	setup_redirections(t_token *tokens, int (*fds)[2], int num_comnd,
-		int *count)
+		int count)
 {
 	int	new_fd;
 
@@ -58,10 +58,10 @@ void	setup_redirections(t_token *tokens, int (*fds)[2], int num_comnd,
 	temp_tokens = tokens->next;
 	if (num_comnd > 1)
 	{
-		while (temp_tokens && (*count) < num_comnd)
+		while (temp_tokens && count < num_comnd)
 		{
 			if (temp_tokens->type == T_PIPE)
-				(*count)++;
+				count++;
 			temp_tokens = temp_tokens->next;
 		}
 	}
@@ -111,15 +111,30 @@ void	setup_redirections(t_token *tokens, int (*fds)[2], int num_comnd,
 	}
 }
 
-char	*build_command_string(t_token *tokens, int num_comnd, int *count)
+int count_args(t_token *tokens)
 {
-	char	*args;
-	char	*temp1;
+	int count;
 
+	count = 0;
+	tokens = tokens->next;
+	while (tokens)
+	{
+		if (tokens->type == T_WORD || tokens->type == T_FLAG || tokens->type == T_ENV)
+			count++;
+		if (tokens->type == T_PIPE)
+			break;
+		tokens = tokens->next;
+	}
+	return count;
+}
+
+char	**build_command_string(t_token *tokens, int num_comnd, int *count)
+{
+	char	**args;
+	int num_args;
+	int i;
 	t_token *temp_tokens; // probar sin temporal
-	args = ft_strdup("");
-	if (!args)
-		return (NULL);
+
 	temp_tokens = tokens->next;
 	if (num_comnd > 1)
 	{
@@ -130,24 +145,31 @@ char	*build_command_string(t_token *tokens, int num_comnd, int *count)
 			temp_tokens = temp_tokens->next;
 		}
 	}
-	while (temp_tokens != NULL)
+	num_args = count_args(temp_tokens); //q le llege desde donde me he quedado antes
+	args = malloc((num_args + 1) * sizeof(char *));
+	if (!args)
+		return NULL;
+	i = 0;
+	while ((i < num_args) && temp_tokens)
 	{
+		if (temp_tokens->type == T_WORD || temp_tokens->type == T_FLAG || temp_tokens->type == T_ENV)
+		{
+			args[i] = ft_strdup(temp_tokens->content);
+			if (!args[i])
+				return (free(args), NULL);			
+			i++;
+		}
+		if (temp_tokens && temp_tokens->type == T_PIPE)
+			break ;
 		if (temp_tokens->type == T_REDIR_RIGHT || temp_tokens->type == T_APPEND
 			|| temp_tokens->type == T_REDIR_LEFT)
 		{
 			temp_tokens = temp_tokens->next->next;
 			continue ;
 		}
-		temp1 = args;
-		args = ft_strjoin(args, temp_tokens->content);
-		free(temp1);
-		temp1 = args;
-		args = ft_strjoin(args, " ");
-		free(temp1);
 		temp_tokens = temp_tokens->next;
-		if (temp_tokens && temp_tokens->type == T_PIPE)
-			break ;
 	}
+	args[i] = NULL;
 	return (args);
 }
 

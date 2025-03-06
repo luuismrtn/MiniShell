@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror  -g3 #-fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -61,3 +61,6 @@ re: fclean all
 
 # export
 # meter pipex --> implementar si detecta un builtin (solo 1 builtin, no hijo)
+
+#cat < out no va
+#"ls -l" bucle infinito

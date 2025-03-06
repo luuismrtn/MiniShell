@@ -6,7 +6,7 @@
 /*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/06 13:50:37 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/06 22:05:17 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	num_pipes(char *str)
 	return (count);
 }
 
-int num_redir(char *str)
+int num_redir_and_file(char *str)
 {
 	int i;
 	int count;
@@ -38,11 +38,25 @@ int num_redir(char *str)
 	count = 0;
 	while(str[i])
 	{
-		if (str[i] && str[i + 1] && (str[i] == '<' || str[i] == '>'))
+		if (str[i] && (str[i] == '<' || str[i] == '>'))
 		{
 			count++;
-			if (str[i + 1] == '>')
+			i++;
+			if (str[i] == '>')
+			{
+				count++;
 				i++;
+			}
+			while (ft_isspace(str[i]) && str[i])
+			{
+				count++;
+				i++;
+			}
+			while (!ft_isspace(str[i]) && str[i])
+			{
+				count++;
+				i++;	
+			}
 		}
 		i++;
 	}
@@ -58,7 +72,9 @@ char *clean_redirections(char *str)
 
 	i = 0;
 	j = 0;
-	len = ft_strlen(str) - num_redir(str);
+	printf("str: %s\n", str);
+	len = ft_strlen(str) - num_redir_and_file(str);
+	printf("len: %d\n", len);
 	new_str = malloc((len + 1) * sizeof(char));
 	if (!new_str)
 		return NULL;
@@ -69,58 +85,20 @@ char *clean_redirections(char *str)
 			j++;
 			if (str[j + 1] == '>')
 				j++;
-		}	
-		new_str[i++] = str[j++];
+			while (ft_isspace(str[i]) && str[i])
+				j++;
+			while (!ft_isspace(str[i]) && str[i])
+				j++;
+		}
+		j++;
+		printf("str[%c]\n", str[j]);
+		new_str[i] = str[j];
+		i++;
+		j++;
 	}
+	printf("clean str; %s\n", new_str);
 	new_str[i] = '\0';
 	return (new_str);
-}
-
-int	first_command(char **argv, char **env, t_token *tokens, int num_commands)
-{
-	int		fds[2];
-	int		connect[2];
-	char	*clean_comnd;
-	char	**full_command;
-
-	fds[0] = STDIN_FILENO;
-	fds[1] = STDOUT_FILENO;
-	setup_redirections(tokens, &fds, num_commands, 0);
-	clean_comnd = clean_redirections(argv[0]);
-	//args = build_command_string(tokens, 1, count);
-	if (!clean_comnd)
-		return (ERROR);
-	full_command = ft_split(clean_comnd, ' ');
-	if (!full_command)
-		return (free(clean_comnd), ERROR);
-	int i = 0;
-	while (full_command[i] != NULL)
-	{
-		printf("full command [%d]  %s\n", i, full_command[i]);
-		i++;
-	}
-	free(clean_comnd);
-	pipe(connect);
-	if (fork() == 0)
-	{
-		close(connect[0]);
-		dup2(connect[1], 1);
-		close(connect[1]);
-		if (fds[1] != STDOUT_FILENO)
-		{
-			dup2(fds[1], STDOUT_FILENO);
-			close(fds[1]);		
-		}
-		if (fds[0] != STDIN_FILENO)
-		{
-			dup2(fds[0], STDIN_FILENO);
-			close(fds[0]);		
-		}
-		exe(env, full_command);
-		exit(EXIT_FAILURE);
-	}
-	close(connect[1]);
-	return (connect[0]);
 }
 
 int	middle_command(char **argv, int i, char **env, int fd_in)
@@ -175,22 +153,69 @@ void	final_command(char **cmd_array, int *pos, char **env, int fd_in)
 		close(fd_in);
 }
 
+int	first_command(char **env, t_token *tokens, int num_commands, int *count)
+{
+	int		fds[2];
+	int		connect[2];
+	char	**args;
+
+	fds[0] = STDIN_FILENO;
+	fds[1] = STDOUT_FILENO;
+	setup_redirections(tokens, &fds, num_commands, *count); //no mod count aqui
+	args = build_command_string(tokens, num_commands, count); //para q aqui llegue ok
+	if (!args)
+		return (ERROR);
+	int i = 0;
+	while (args[i])
+	{
+		printf("full command [%d]  %s\n", i, args[i]);
+		i++;
+	}
+	pipe(connect);
+	if (fork() == 0)
+	{
+		close(connect[0]);
+		dup2(connect[1], 1);
+		close(connect[1]);
+		if (fds[1] != STDOUT_FILENO)
+		{
+			dup2(fds[1], STDOUT_FILENO);
+			close(fds[1]);
+		}
+		if (fds[0] != STDIN_FILENO)
+		{
+			dup2(fds[0], STDIN_FILENO);
+			close(fds[0]);
+		}
+		exe(env, args);
+		exit(EXIT_FAILURE);
+	}
+	while (args[i])
+	{
+		free(args[i]);
+		i++;
+	}
+	free(args);
+	close(connect[1]);
+	return (connect[0]);
+}
+
 int	pipex(char *argv_str, t_token *tokens)
 {
 	int		fd_in;
-	int		pos[2];
+	//int		pos[2];
 	int		num_commands;
 	int		i;
-	char	**cmd_array;
 	char	**env;
+	int count;
 
 	env = join_env(tokens->env_mshell);
-	cmd_array = ft_split(argv_str, '|');
-	if (!cmd_array)
-		return (ERROR);
 	num_commands = num_pipes(argv_str) + 1;
-	fd_in = first_command(cmd_array, env, tokens, num_commands);
-	i = 1;
+	count = 0;
+	fd_in = first_command(env, tokens, num_commands, &count);
+	if (num_commands == 1)
+		close (fd_in);
+	/*i = 1;
 	while (i < num_commands - 1)
 	{
 		if (cmd_array[i] != NULL)
@@ -204,7 +229,7 @@ int	pipex(char *argv_str, t_token *tokens)
 		pos[END_COMD] = i;
 		pos[OUTFILE] = i;
 		final_command(cmd_array, pos, env, fd_in);
-	}
+	}*/
 	i = 0;
 	while (i < num_commands)
 	{
@@ -212,11 +237,5 @@ int	pipex(char *argv_str, t_token *tokens)
 		i++;
 	}
 	i = 0;
-	while (cmd_array[i])
-	{
-		free(cmd_array[i]);
-		i++;
-	}
-	free(cmd_array);
 	return (0);
 }
