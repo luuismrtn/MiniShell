@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+         #
+#    By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/16 16:41:39 by lumartin          #+#    #+#              #
-#    Updated: 2025/03/04 14:37:34 by aldferna         ###   ########.fr        #
+#    Updated: 2025/03/06 11:35:06 by adrianafern      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 

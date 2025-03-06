@@ -466,13 +466,13 @@ int	main2(char *string, char **env)
 
 	if (automata(tokens) == 0)
 	{
-		if (has_pipe(tokens))
-		{
-			printf("PipeX\n");
+		//if (has_pipe(tokens))
+		//{
+			//printf("PipeX\n");
 			pipex(input, tokens);
-		}
-		else
-			make_exe_command(tokens);
+		//}
+		//else
+			//make_exe_command(tokens);
 	}
 	
 	free_tokens(tokens);

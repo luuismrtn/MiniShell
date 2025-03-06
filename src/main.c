@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/05 23:50:53 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/06 11:38:42 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	handle_signal(int sig)
 	{
 		exit_num = 130;
 		write(1, "\n", 1);
-		rl_replace_line("", 0);
+		//rl_replace_line("", 0); VOLVER A PONER
 		rl_on_new_line();
 		rl_redisplay();
 	}
