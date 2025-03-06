@@ -6,7 +6,7 @@
 /*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/06 13:39:57 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/06 13:50:37 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int num_redir(char *str)
 	count = 0;
 	while(str[i])
 	{
-		if (str[i] == '<' || str[i] == '>')
+		if (str[i] && str[i + 1] && (str[i] == '<' || str[i] == '>'))
 		{
 			count++;
 			if (str[i + 1] == '>')
@@ -62,9 +62,9 @@ char *clean_redirections(char *str)
 	new_str = malloc((len + 1) * sizeof(char));
 	if (!new_str)
 		return NULL;
-	while (new_str)
+	while (str[j])
 	{
-		if (str[j] == '<' || str[j] == '>')
+		if (str[j] && str[j + 1] && (str[j] == '<' || str[j] == '>'))
 		{
 			j++;
 			if (str[j + 1] == '>')
