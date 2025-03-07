@@ -62,5 +62,4 @@ re: fclean all
 # export
 # meter pipex --> implementar si detecta un builtin (solo 1 builtin, no hijo)
 
-#cat < out no va
 #"ls -l" bucle infinito

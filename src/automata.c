@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   automata.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/06 22:02:53 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/07 01:40:09 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,6 @@ int count_args(t_token *tokens)
 	int count;
 
 	count = 0;
-	tokens = tokens->next;
 	while (tokens)
 	{
 		if (tokens->type == T_WORD || tokens->type == T_FLAG || tokens->type == T_ENV)
@@ -133,7 +132,7 @@ char	**build_command_string(t_token *tokens, int num_comnd, int *count)
 	char	**args;
 	int num_args;
 	int i;
-	t_token *temp_tokens; // probar sin temporal
+	t_token *temp_tokens;
 
 	temp_tokens = tokens->next;
 	if (num_comnd > 1)
@@ -145,7 +144,7 @@ char	**build_command_string(t_token *tokens, int num_comnd, int *count)
 			temp_tokens = temp_tokens->next;
 		}
 	}
-	num_args = count_args(temp_tokens); //q le llege desde donde me he quedado antes
+	num_args = count_args(temp_tokens);
 	args = malloc((num_args + 1) * sizeof(char *));
 	if (!args)
 		return NULL;
@@ -252,7 +251,6 @@ void	make_exe_command(t_token *tokens)
 	char	**full_command;
 	pid_t	pid;
 	int		fds[2];
-	char	*args;
 	int		i;
 	char	**env;
 
@@ -260,13 +258,11 @@ void	make_exe_command(t_token *tokens)
 	fds[0] = STDIN_FILENO;
 	fds[1] = STDOUT_FILENO;
 	setup_redirections(tokens, &fds, 1, 0);
-	args = build_command_string(tokens, 1, 0);
-	if (!args)
-		return ;
-	full_command = ft_split(args, ' ');
-	free(args);
+	full_command = build_command_string(tokens, 1, 0);
 	if (!full_command)
 		return ;
+	printf("full command\n");
+	print_2(full_command);
 	i = 0;
 	while (full_command[i] != NULL)
 	{
@@ -274,7 +270,7 @@ void	make_exe_command(t_token *tokens)
 		i++;
 	}
 	if (ft_strncmp(full_command[0], "exit", 5) == 0) // y no pipes
-		ft_exit(&args);
+		ft_exit(full_command);
 	pid = fork();
 	if (pid == -1)
 	{
