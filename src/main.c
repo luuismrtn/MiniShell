@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/07 02:58:51 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/07 03:13:38 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,24 @@ void	free_array(char **array)
 		i++;
 	}
 	free(array);
+}
+
+char	*get_history_path(void)
+{
+	char	*history_path;
+	char	*home_dir;
+
+	history_path = NULL;
+	if (!history_path)
+	{
+		home_dir = getenv("HOME");
+		if (home_dir)
+			history_path = ft_strjoin(home_dir,
+					"/MiniShell/.minishell_history");
+		else
+			history_path = ft_strdup("./.minishell_history");
+	}
+	return (history_path);
 }
 
 int	main(int argc, char **argv, char **env)

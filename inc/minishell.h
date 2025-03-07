@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/07 02:55:31 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/07 03:12:28 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ extern unsigned char	exit_num;
 # define SUCCESS 0
 # define ERROR 1
 
-# define HISTORY_FILE ".minishell_history"
+# define HISTORY_FILE (get_history_path())
 
 typedef enum s_token_value
 {
