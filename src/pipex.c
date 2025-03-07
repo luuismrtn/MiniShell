@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/07 02:41:36 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/07 14:56:35 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	num_pipes(char *str)
 	return (count);
 }
 
-int	num_redir_and_file(char *str)
+/*int	num_redir_and_file(char *str)
 {
 	int	i;
 	int	count;
@@ -99,7 +99,7 @@ char	*clean_redirections(char *str)
 	printf("clean str; %s\n", new_str);
 	new_str[i] = '\0';
 	return (new_str);
-}
+}*/
 
 int	middle_command(char **args, int i, t_token *tokens, int fd_in)
 {
@@ -232,9 +232,9 @@ int	first_command(char **env, t_token *tokens, int num_commands, int *count)
 
 	fds[0] = STDIN_FILENO;
 	fds[1] = STDOUT_FILENO;
-	setup_redirections(tokens, &fds, num_commands, *count);
-	args = build_command_string(tokens, num_commands, count);
-	if (!args)
+	setup_redirections(tokens, &fds, *count);
+	args = build_command_string(tokens, count);
+	if (!args || !args[0])
 		return (ERROR);
 	i = 0;
 	while (args[i])
@@ -376,7 +376,7 @@ int	pipex(char *argv_str, t_token *tokens)
 	num_commands = num_pipes(argv_str) + 1;
 	printf("num_commands: %d\n", num_commands);
 	count = 0;
-	fd_in = first_command(env, tokens, num_commands, &count);
+	fd_in = first_command(env, tokens, 1, &count); //se pdria pasar directamente 0 en vez de count
 	if (fd_in < 0)
 	{
 		free_array(env);
@@ -392,6 +392,7 @@ int	pipex(char *argv_str, t_token *tokens)
 	}
 	if (num_commands > 1)
 	{
+		count = 1;
 		cmd_array = ft_split(argv_str, '|');
 		if (!cmd_array)
 		{

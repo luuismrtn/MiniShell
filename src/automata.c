@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   automata.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/07 02:02:35 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/07 14:57:48 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,21 +49,19 @@ int	automata(t_token *tokens)
 	return (1);
 }
 
-void	setup_redirections(t_token *tokens, int (*fds)[2], int num_comnd,
-		int count)
+void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 {
 	int	new_fd;
+	int aux_move;
 
 	t_token *temp_tokens; // probar sin temporal
 	temp_tokens = tokens->next;
-	if (num_comnd > 1)
+	aux_move = count;
+	while (aux_move > 0)
 	{
-		while (temp_tokens && count < num_comnd)
-		{
-			if (temp_tokens->type == T_PIPE)
-				count++;
-			temp_tokens = temp_tokens->next;
-		}
+		if (temp_tokens->type == T_PIPE)
+			aux_move--;
+		temp_tokens = temp_tokens->next;
 	}
 	while (temp_tokens)
 	{
@@ -128,24 +126,28 @@ int	count_args(t_token *tokens)
 	return (count);
 }
 
-char	**build_command_string(t_token *tokens, int num_comnd, int *count)
+char	**build_command_string(t_token *tokens, int *count)
 {
 	char	**args;
 	int		num_args;
 	int		i;
-	t_token	*temp_tokens;
+	t_token	*temp_tokens; //esto se podria quitar
+	int aux_move;
 
 	temp_tokens = tokens->next;
-	if (num_comnd > 1)
+	aux_move = (*count);
+	while (aux_move > 0)
 	{
-		while (temp_tokens && (*count) < num_comnd)
+		if (temp_tokens->type == T_PIPE)
 		{
-			if (temp_tokens->type == T_PIPE)
-				(*count)++;
-			temp_tokens = temp_tokens->next;
+			(*count)++;
+			aux_move--;
 		}
+		temp_tokens = temp_tokens->next;
 	}
+	printf("count comds; %d\n", (*count));
 	num_args = count_args(temp_tokens);
+	printf("num_Args %d\n", num_args);
 	args = malloc((num_args + 1) * sizeof(char *));
 	if (!args)
 		return (NULL);
@@ -171,6 +173,8 @@ char	**build_command_string(t_token *tokens, int num_comnd, int *count)
 		temp_tokens = temp_tokens->next;
 	}
 	args[i] = NULL;
+	printf("dentro de build args\n");
+	print_2(args);
 	return (args);
 }
 
@@ -257,8 +261,8 @@ void	make_exe_command(t_token *tokens)
 
 	fds[0] = STDIN_FILENO;
 	fds[1] = STDOUT_FILENO;
-	setup_redirections(tokens, &fds, 1, 0);
-	full_command = build_command_string(tokens, 1, 0);
+	setup_redirections(tokens, &fds, 0);
+	full_command = build_command_string(tokens, 0);
 	if (!full_command)
 		return ;
 	printf("full command\n");

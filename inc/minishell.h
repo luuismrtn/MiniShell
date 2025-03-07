@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/07 03:12:28 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/07 14:54:29 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,8 @@ int						is_builtin(char **cmnd);
 
 //  PIPEX
 int						pipex(char *argv, t_token *tokens);
-void					setup_redirections(t_token *tokens, int (*fds)[2],
-							int num_comd, int count);
-char					**build_command_string(t_token *tokens, int num_comnd,
-							int *count);
+void					setup_redirections(t_token *tokens, int (*fds)[2], int count);
+char					**build_command_string(t_token *tokens, int *count);
 
 //  BUILTINS
 void					handle_builtin(char **args, t_token *tokens);

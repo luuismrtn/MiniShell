@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/07 03:13:38 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/07 13:03:02 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	handle_signal(int sig)
 	{
 		exit_num = 130;
 		write(1, "\n", 1);
-		rl_replace_line("", 0);
+		//rl_replace_line("", 0); PONER DE NUEVO
 		rl_on_new_line();
 		rl_redisplay();
 	}
@@ -86,7 +86,7 @@ char	*get_history_path(void)
 		home_dir = getenv("HOME");
 		if (home_dir)
 			history_path = ft_strjoin(home_dir,
-					"/MiniShell/.minishell_history");
+					"/Desktop/MiniShell/.minishell_history"); //quitar Desktop
 		else
 			history_path = ft_strdup("./.minishell_history");
 	}
@@ -100,7 +100,6 @@ int	main(int argc, char **argv, char **env)
 
 	(void)argc;
 	(void)argv;
-	// lo primero, antes de recibir cualquier cosa=> guadar env
 	tokens = malloc(sizeof(t_token));
 	ft_memset(tokens, 0, sizeof(t_token));
 	tokens->env_mshell = env_buildin(env);

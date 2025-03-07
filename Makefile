@@ -41,9 +41,9 @@ re: fclean all
 # quotes not closed -> leak + espacio final en clean_tokens
 # leaks con: hola... "no such file or directory"
 # con: ñ
-# leaks con: echo hola
 # despues de haber ejecutado algo, si se hace control d
 # al ejecutar cada builtin
+# leaks con: echo hola
 # echo $?
 
 # TODOLIST
@@ -52,7 +52,10 @@ re: fclean all
 # revisar si dejamos fd's abiertos
 # eco $$ da un num
 # el heredoc (+ meterlo tb en el pipex)
-# gestionar quotes (con el tipo->hay que recuperarlo en el parseo) en make command --> "ls -a" command not found //split...
 # exit: mal lo de devolver 1 si too many args (y no cerrar) //da segfault
 # $?: (actualizar en los builtins)
     #cambiado en padre despues de ejecutar (a 127) // control c (a 130) // (exit 300, echo $? da 44))
+
+# clonado en un sitio q no sea HOME.. .hystory??
+# decidir q hacer si ponen solo 'export' --> imprimir env+var exportadas o nada???
+# first_command: un if si solo es un comando, o se puede hacer en el ultimo if y luego cerrar la pipe?

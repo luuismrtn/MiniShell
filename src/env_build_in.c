@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   env_build_in.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 15:01:35 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/07 02:44:28 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/07 12:22:16 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-void add_last(t_env **head, t_env *node) //alguna forma de generalizar esta funcion
+void add_last(t_env **head, t_env *node)
 {
     t_env *aux;
     
