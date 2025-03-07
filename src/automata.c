@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/07 01:40:09 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/07 02:02:35 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,28 +111,29 @@ void	setup_redirections(t_token *tokens, int (*fds)[2], int num_comnd,
 	}
 }
 
-int count_args(t_token *tokens)
+int	count_args(t_token *tokens)
 {
-	int count;
+	int	count;
 
 	count = 0;
 	while (tokens)
 	{
-		if (tokens->type == T_WORD || tokens->type == T_FLAG || tokens->type == T_ENV)
+		if (tokens->type == T_WORD || tokens->type == T_FLAG
+			|| tokens->type == T_ENV)
 			count++;
 		if (tokens->type == T_PIPE)
-			break;
+			break ;
 		tokens = tokens->next;
 	}
-	return count;
+	return (count);
 }
 
 char	**build_command_string(t_token *tokens, int num_comnd, int *count)
 {
 	char	**args;
-	int num_args;
-	int i;
-	t_token *temp_tokens;
+	int		num_args;
+	int		i;
+	t_token	*temp_tokens;
 
 	temp_tokens = tokens->next;
 	if (num_comnd > 1)
@@ -147,15 +148,16 @@ char	**build_command_string(t_token *tokens, int num_comnd, int *count)
 	num_args = count_args(temp_tokens);
 	args = malloc((num_args + 1) * sizeof(char *));
 	if (!args)
-		return NULL;
+		return (NULL);
 	i = 0;
 	while ((i < num_args) && temp_tokens)
 	{
-		if (temp_tokens->type == T_WORD || temp_tokens->type == T_FLAG || temp_tokens->type == T_ENV)
+		if (temp_tokens->type == T_WORD || temp_tokens->type == T_FLAG
+			|| temp_tokens->type == T_ENV)
 		{
 			args[i] = ft_strdup(temp_tokens->content);
 			if (!args[i])
-				return (free(args), NULL);			
+				return (free(args), NULL);
 			i++;
 		}
 		if (temp_tokens && temp_tokens->type == T_PIPE)
@@ -172,7 +174,7 @@ char	**build_command_string(t_token *tokens, int num_comnd, int *count)
 	return (args);
 }
 
-static void	execute_command(char **full_command, char **env, int fd_in,
+static void	execute_command(char **full_command, t_token *tokens, int fd_in,
 		int fd_out)
 {
 	if (fd_in != STDIN_FILENO)
@@ -191,9 +193,9 @@ static void	execute_command(char **full_command, char **env, int fd_in,
 		|| ft_strncmp(full_command[0], "env", 4) == 0
 		|| ft_strncmp(full_command[0], "export", 7) == 0
 		|| ft_strncmp(full_command[0], "unset", 6) == 0)
-		handle_builtin(full_command, env);
+		handle_builtin(full_command, tokens);
 	else
-		exe(env, full_command);
+		exe(join_env(tokens->env_mshell), full_command);
 }
 
 static void	clean_resources(char **full_command, int fd_in, int fd_out)
@@ -233,12 +235,12 @@ static void	parent_process(pid_t pid, char **full_command, int fd_in,
 	free(full_command);
 }
 
-static void	child_process(char **full_command, char **env, int fd_in,
+static void	child_process(char **full_command, t_token *tokens, int fd_in,
 		int fd_out)
 {
 	int	i;
 
-	execute_command(full_command, env, fd_in, fd_out);
+	execute_command(full_command, tokens, fd_in, fd_out);
 	i = 0;
 	while (full_command[i])
 		free(full_command[i++]);
@@ -252,9 +254,7 @@ void	make_exe_command(t_token *tokens)
 	pid_t	pid;
 	int		fds[2];
 	int		i;
-	char	**env;
 
-	env = join_env(tokens->env_mshell);
 	fds[0] = STDIN_FILENO;
 	fds[1] = STDOUT_FILENO;
 	setup_redirections(tokens, &fds, 1, 0);
@@ -279,7 +279,7 @@ void	make_exe_command(t_token *tokens)
 		return ;
 	}
 	else if (pid == 0)
-		child_process(full_command, env, fds[0], fds[1]);
+		child_process(full_command, tokens, fds[0], fds[1]);
 	else
 		parent_process(pid, full_command, fds[0], fds[1]);
 }

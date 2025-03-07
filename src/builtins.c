@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:21:08 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/05 16:59:16 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/07 02:29:15 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,17 +40,17 @@ void	ft_echo(char **args)
 
 void	ft_cd(char **args)
 {
-    char *path;
+	char	*path;
 
-    path = args[1];
+	path = args[1];
 	if (path == NULL)
 	{
-        path = getenv("HOME");
-        if (path == NULL || chdir(path) != 0)
+		path = getenv("HOME");
+		if (path == NULL || chdir(path) != 0)
 			perror("minishell");
 	}
-	else if (chdir(path) != 0) 
-        perror("minihsell"); 
+	else if (chdir(path) != 0)
+		perror("minihsell");
 }
 
 void	ft_pwd(void)
@@ -62,33 +62,74 @@ void	ft_pwd(void)
 	else
 		perror("minishell");
 }
-/*
-void	ft_export(char *var)
+void	ft_export(t_token *tokens, char **args)
 {
+	t_env	*current;
+	t_env	*new_env;
+	char	*var_name;
+	char	*var_content;
+	int		i;
+
+	printf("export\n");
+	i = 1;
+	while (args[i])
+	{
+		if (ft_strchr(args[i], '='))
+		{
+			var_name = ft_substr(args[i], 0, ft_strchr(args[i], '=') - args[i]);
+			var_content = ft_strchr(args[i], '=') + 1;
+			current = tokens->env_mshell;
+			while (current)
+			{
+				if (ft_strncmp(current->name, var_name,
+						ft_strlen(var_name)) == 0)
+				{
+					free(current->content);
+					current->content = ft_strdup(var_content);
+					break ;
+				}
+				current = current->next;
+			}
+			if (!current)
+			{
+				new_env = malloc(sizeof(t_env));
+				if (!new_env)
+					return ;
+				new_env->name = ft_strdup(var_name);
+				new_env->content = ft_strdup(var_content);
+				new_env->next = tokens->env_mshell;
+				tokens->env_mshell = new_env;
+			}
+			free(var_name);
+		}
+		i++;
+	}
 }
 
-
+/*
 void	ft_unset(char *var)
 {
 }
 */
 
-void	ft_env(char **env)
+void	ft_env(t_env *env)
 {
-	int	i;
+	t_env	*current;
 
-	i = 0;
-	while (env[i])
+	current = env;
+	while (current)
 	{
-		ft_putendl_fd(env[i], 1);
-		i++;
+		ft_putstr_fd(current->name, 1);
+		ft_putchar_fd('=', 1);
+		ft_putendl_fd(current->content, 1);
+		current = current->next;
 	}
 }
 
-void	ft_exit(char **arg) 
+void	ft_exit(char **arg)
 {
-	int exit_num;
-	int i;
+	int	exit_num;
+	int	i;
 
 	i = 0;
 	while (arg[i])
@@ -97,13 +138,13 @@ void	ft_exit(char **arg)
 	{
 		write(2, "too many arguments\n", 20);
 		exit_num = 1;
-		return;
+		return ;
 	}
 	exit_num = ft_atoi(arg[1]);
 	exit(exit_num);
 }
 
-void	handle_builtin(char **args, char **env)
+void	handle_builtin(char **args, t_token *tokens)
 {
 	if (ft_strncmp(args[0], "echo", 5) == 0)
 		ft_echo(args);
@@ -111,14 +152,14 @@ void	handle_builtin(char **args, char **env)
 		ft_cd(args);
 	else if (ft_strncmp(args[0], "pwd", 4) == 0)
 		ft_pwd();
+	else if (ft_strncmp(args[0], "export", 7) == 0)
+		ft_export(tokens, args);
 	/*
-else if	(ft_strncmp(args[0], "export", 7) == 0)
-	ft_export(args[1]);
 else if	(ft_strncmp(args[0], "unset", 6) == 0)
 	ft_unset(args[1]);
 	*/
 	else if (ft_strncmp(args[0], "env", 4) == 0)
-		ft_env(env);
+		ft_env(tokens->env_mshell);
 	else if (ft_strncmp(args[0], "exit", 5) == 0)
 		ft_exit(args);
 	else

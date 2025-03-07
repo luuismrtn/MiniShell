@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  -g3 #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror  -g3 -fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -47,19 +47,12 @@ re: fclean all
 # echo $?
 
 # TODOLIST
-# segfault al hacer control-d despues de una ejecución
 # guardar "shell level" y pwd al empezar -->en primer token cn el env
 # señal control-c cd se ejecuta minishell dentro de minishell
 # revisar si dejamos fd's abiertos
-# lo del export; export 'e' sale en export pero no en env (juego con otros niveles)
 # eco $$ da un num
 # el heredoc (+ meterlo tb en el pipex)
 # gestionar quotes (con el tipo->hay que recuperarlo en el parseo) en make command --> "ls -a" command not found //split...
 # exit: mal lo de devolver 1 si too many args (y no cerrar) //da segfault
 # $?: (actualizar en los builtins)
     #cambiado en padre despues de ejecutar (a 127) // control c (a 130) // (exit 300, echo $? da 44))
-
-# export
-# meter pipex --> implementar si detecta un builtin (solo 1 builtin, no hijo)
-
-#"ls -l" bucle infinito

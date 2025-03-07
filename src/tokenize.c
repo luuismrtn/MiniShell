@@ -63,6 +63,33 @@ void	add_token(t_token **head, t_token_value type, char *content)
 	}
 }
 
+void	delete_tokens(t_token **tokens)
+{
+	t_env	*env;
+	t_token	*aux;
+	t_token	*next;
+
+	env = NULL;
+	if (!tokens || !*tokens)
+		return ;
+	if (*tokens)
+		env = (*tokens)->env_mshell;
+	aux = *tokens;
+	while (aux != NULL)
+	{
+		next = aux->next;
+		if (aux->content)
+			free(aux->content);
+		free(aux);
+		aux = next;
+	}
+	*tokens = malloc(sizeof(t_token));
+	if (!*tokens)
+		return ;
+	ft_memset(*tokens, 0, sizeof(t_token));
+	(*tokens)->env_mshell = env;
+}
+
 static void	handle_redirections(t_token **tokens, char *input, int *i)
 {
 	if (input[*i] == '<')
@@ -148,7 +175,7 @@ void	clean_tokens(t_token **tokens)
 
 int	ft_len_var_name(char *str, int i)
 {
-	int count;
+	int	count;
 
 	count = 0;
 	while (str[i] && (str[i] != ' ' && str[i] != '\"'))
@@ -303,7 +330,7 @@ static void	handle_env(t_token **tokens, char *input, int *i)
 		(*i)++;
 		var_name = ft_itoa(exit_num);
 		add_token(tokens, T_ENV, var_name);
-		return;
+		return ;
 	}
 	len_var_name = ft_len_var_name(input, *i);
 	var_name = ft_substr(input, *i, len_var_name);
@@ -331,9 +358,10 @@ static void	handle_word(t_token **tokens, char *input, int *i)
 	if (input[*i] == '\\')
 	{
 		(*i)++;
-	 	start++;
+		start++;
 	}
-	while (input[*i] && !ft_isspace(input[*i]) && input[*i] != '\"' && input[*i] != '\'')
+	while (input[*i] && !ft_isspace(input[*i]) && input[*i] != '\"'
+		&& input[*i] != '\'')
 		(*i)++;
 	content = ft_substr(input, start, *i - start);
 	if (content[0] == '-')
@@ -342,19 +370,13 @@ static void	handle_word(t_token **tokens, char *input, int *i)
 		add_token(tokens, T_WORD, content);
 }
 
-t_token	*tokenize(char *input, char **env)
+t_token	*tokenize(char *input, t_token *tokens)
 {
-	int		i;
-	t_token	*tokens;
+	int	i;
 
 	if (!input)
 		return (NULL);
 	i = 0;
-	tokens = malloc(sizeof(t_token));
-	if (!tokens)
-		return (NULL);
-	ft_memset(tokens, 0, sizeof(t_token));
-	tokens->env_mshell = env_buildin(env);
 	while (input[i])
 	{
 		if (ft_isspace(input[i]))
@@ -419,7 +441,7 @@ int	check_quotes_closed(char *input)
 	return (ERROR);
 }
 
-int has_pipe(t_token *tokens)
+int	has_pipe(t_token *tokens)
 {
 	t_token	*aux;
 
@@ -433,22 +455,20 @@ int has_pipe(t_token *tokens)
 	return (0);
 }
 
-int	main2(char *string, char **env)
+int	main2(char *string, t_token *tokens)
 {
-	t_token	*tokens;
 	t_token	*aux;
 	t_token	*aux1;
 	char	*input;
 
 	input = string;
 	printf("Input: %s\n", input);
-	tokens = NULL;
 	if (check_quotes_closed(input) == ERROR)
 	{
 		printf("Error: quotes not closed\n");
-		return ERROR;
+		return (ERROR);
 	}
-	tokens = tokenize(input, env);
+	tokens = tokenize(input, tokens);
 	aux = tokens->next;
 	while (aux != NULL)
 	{
@@ -463,19 +483,15 @@ int	main2(char *string, char **env)
 		printf("C_Token type: %d, Content: %s\n", aux1->type, aux1->content);
 		aux1 = aux1->next;
 	}
-
 	if (automata(tokens) == 0)
 	{
-		//if (has_pipe(tokens))
+		// if (has_pipe(tokens))
 		//{
-			//printf("PipeX\n");
-			pipex(input, tokens);
+		// printf("PipeX\n");
+		pipex(input, tokens);
 		//}
-		//else
-			//make_exe_command(tokens);
+		// else
+		// make_exe_command(tokens);
 	}
-	
-	free_tokens(tokens);
 	return (0);
 }
-

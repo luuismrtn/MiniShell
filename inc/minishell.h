@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/07 01:33:26 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/07 02:55:31 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,8 @@ int						write_line_history(char *history_file, char *line);
 
 //  PARSE
 int						check_quotes_closed(char *input);
-t_token					*tokenize(char *line, char **env);
+t_token					*tokenize(char *input, t_token *tokens);
+void					delete_tokens(t_token **tokens);
 void					clean_tokens(t_token **tokens);
 int						automata(t_token *tokens);
 
@@ -84,6 +85,7 @@ void					make_exe_command(t_token *tokens);
 char					**join_env(t_env *env_mshell);
 void					exe(char **env, char **comnd);
 char					**search_path(char **env, char *comnd);
+int						is_builtin(char **cmnd);
 
 //  PIPEX
 int						pipex(char *argv, t_token *tokens);
@@ -93,11 +95,13 @@ char					**build_command_string(t_token *tokens, int num_comnd,
 							int *count);
 
 //  BUILTINS
-void					handle_builtin(char **args, char **env);
+void					handle_builtin(char **args, t_token *tokens);
 void					ft_exit(char **arg);
+void					ft_env(t_env *env);
 
-int						main2(char *string, char **env);
+int						main2(char *string, t_token *tokens);
 
 void					print_2(char **str);
+void					free_array(char **array);
 
 #endif

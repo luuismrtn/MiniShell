@@ -1,5 +1,11 @@
 {
-    "files.associations": {
-        "minishell.h": "c"
-    }
+  "files.associations": {
+    "*.h": "c",
+    "minishell.h": "c",
+    "array": "c",
+    "memory": "c",
+    "functional": "c",
+    "tuple": "c",
+    "utility": "c"
+  }
 }

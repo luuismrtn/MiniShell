@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/07 01:51:48 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/07 02:41:36 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,13 +101,57 @@ char	*clean_redirections(char *str)
 	return (new_str);
 }
 
-int	middle_command(char **argv, int i, char **env, int fd_in)
+int	middle_command(char **args, int i, t_token *tokens, int fd_in)
 {
 	char	**comnd1;
 	int		connect[2];
+	int		original_stdin;
+	int		original_stdout;
+	pid_t	pid;
 
-	pipe(connect);
-	if (fork() == 0)
+	comnd1 = ft_split(args[i], ' ');
+	if (!comnd1)
+		return (ERROR);
+	if (is_builtin(comnd1) == 1)
+	{
+		original_stdin = -1;
+		original_stdout = -1;
+		if (pipe(connect) == -1)
+		{
+			perror("pipe");
+			free_array(comnd1);
+			return (ERROR);
+		}
+		original_stdin = dup(STDIN_FILENO);
+		original_stdout = dup(STDOUT_FILENO);
+		dup2(fd_in, STDIN_FILENO);
+		dup2(connect[1], STDOUT_FILENO);
+		handle_builtin(comnd1, tokens);
+		dup2(original_stdin, STDIN_FILENO);
+		dup2(original_stdout, STDOUT_FILENO);
+		close(original_stdin);
+		close(original_stdout);
+		close(connect[1]);
+		close(fd_in);
+		free_array(comnd1);
+		return (connect[0]);
+	}
+	if (pipe(connect) == -1)
+	{
+		perror("pipe");
+		free_array(comnd1);
+		return (ERROR);
+	}
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("fork");
+		close(connect[0]);
+		close(connect[1]);
+		free_array(comnd1);
+		return (ERROR);
+	}
+	else if (pid == 0) // Proceso hijo
 	{
 		close(connect[0]);
 		if (fd_in < 0)
@@ -115,42 +159,65 @@ int	middle_command(char **argv, int i, char **env, int fd_in)
 			perror("error input");
 			exit(3);
 		}
-		comnd1 = ft_split(argv[i], ' ');
-		if (!comnd1)
-			exit(4);
-		dup2(fd_in, 0);
+		dup2(fd_in, STDIN_FILENO);
 		close(fd_in);
-		dup2(connect[1], 1);
+		dup2(connect[1], STDOUT_FILENO);
 		close(connect[1]);
-		exe(env, comnd1);
+		exe(join_env(tokens->env_mshell), comnd1);
+		exit(EXIT_FAILURE);
 	}
+	// Proceso padre
 	close(connect[1]);
 	close(fd_in);
+	free_array(comnd1);
 	return (connect[0]);
 }
 
-void	final_command(char **cmd_array, int *pos, char **env, int fd_in)
+void	final_command(char **args, int *pos, t_token *tokens, int fd_in)
 {
 	char	**comnd2;
+	int		original_stdin;
+	pid_t	pid;
 
-	if (fork() == 0)
+	printf("cmd_array[pos[END_COMD]] = %s\n", args[pos[END_COMD]]);
+	comnd2 = ft_split(ft_strtrim(args[pos[END_COMD]], "\n"), ' ');
+	if (!comnd2)
+		return ;
+	// Si es un builtin, ejecutarlo directamente
+	if (is_builtin(comnd2) == 1)
+	{
+		original_stdin = -1;
+		original_stdin = dup(STDIN_FILENO);
+		dup2(fd_in, STDIN_FILENO);
+		handle_builtin(comnd2, tokens);
+		dup2(original_stdin, STDIN_FILENO);
+		close(original_stdin);
+		close(fd_in);
+		free_array(comnd2);
+		return ;
+	}
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("fork");
+		free_array(comnd2);
+		close(fd_in);
+		return ;
+	}
+	else if (pid == 0) // Proceso hijo
 	{
 		if (fd_in < 0)
 		{
 			perror("error output file");
 			exit(7);
 		}
-		printf("cmd_array[pos[END_COMD]] = %s\n", cmd_array[pos[END_COMD]]);
-		comnd2 = ft_split(ft_strtrim(cmd_array[pos[END_COMD]], "\n"), ' ');
-		if (!comnd2)
-			exit(1);
 		dup2(fd_in, STDIN_FILENO);
 		close(fd_in);
-		exe(env, comnd2);
+		exe(join_env(tokens->env_mshell), comnd2);
 		exit(EXIT_FAILURE);
 	}
-	else
-		close(fd_in);
+	close(fd_in);
+	free_array(comnd2);
 }
 
 int	first_command(char **env, t_token *tokens, int num_commands, int *count)
@@ -160,6 +227,8 @@ int	first_command(char **env, t_token *tokens, int num_commands, int *count)
 	char	**args;
 	int		i;
 	pid_t	pid;
+	int		original_stdin;
+	int		original_stdout;
 
 	fds[0] = STDIN_FILENO;
 	fds[1] = STDOUT_FILENO;
@@ -173,6 +242,41 @@ int	first_command(char **env, t_token *tokens, int num_commands, int *count)
 		printf("full command [%d] %s\n", i, args[i]);
 		i++;
 	}
+	if (is_builtin(args) == 1)
+	{
+		original_stdin = -1;
+		original_stdout = -1;
+		if (fds[0] != STDIN_FILENO)
+		{
+			original_stdin = dup(STDIN_FILENO);
+			dup2(fds[0], STDIN_FILENO);
+		}
+		if (fds[1] != STDOUT_FILENO)
+		{
+			original_stdout = dup(STDOUT_FILENO);
+			dup2(fds[1], STDOUT_FILENO);
+		}
+		handle_builtin(args, tokens);
+		if (original_stdin != -1)
+		{
+			dup2(original_stdin, STDIN_FILENO);
+			close(original_stdin);
+		}
+		if (original_stdout != -1)
+		{
+			dup2(original_stdout, STDOUT_FILENO);
+			close(original_stdout);
+		}
+		if (fds[0] != STDIN_FILENO)
+			close(fds[0]);
+		if (fds[1] != STDOUT_FILENO)
+			close(fds[1]);
+		i = 0;
+		while (args[i])
+			free(args[i++]);
+		free(args);
+		return (STDOUT_FILENO);
+	}
 	if (num_commands == 1)
 	{
 		pid = fork();
@@ -181,7 +285,7 @@ int	first_command(char **env, t_token *tokens, int num_commands, int *count)
 			perror("fork");
 			return (ERROR);
 		}
-		else if (pid == 0)
+		else if (pid == 0) // Proceso hijo
 		{
 			if (fds[0] != STDIN_FILENO)
 			{
@@ -239,6 +343,7 @@ int	first_command(char **env, t_token *tokens, int num_commands, int *count)
 			exe(env, args);
 			exit(EXIT_FAILURE);
 		}
+		// Proceso padre
 		i = 0;
 		while (args[i])
 			free(args[i++]);
@@ -274,23 +379,15 @@ int	pipex(char *argv_str, t_token *tokens)
 	fd_in = first_command(env, tokens, num_commands, &count);
 	if (fd_in < 0)
 	{
-		free(env);
+		free_array(env);
 		return (ERROR);
 	}
 	if (num_commands == 1)
 	{
 		if (fd_in != STDOUT_FILENO)
 			close(fd_in);
-		pid_wait = waitpid(-1, &status, 0);
-		if (pid_wait == -1)
-			perror("waitpid");
-		if (env)
-		{
-			i = 0;
-			while (env[i])
-				free(env[i++]);
-			free(env);
-		}
+		waitpid(-1, &status, 0);
+		free_array(env);
 		return (0);
 	}
 	if (num_commands > 1)
@@ -298,14 +395,14 @@ int	pipex(char *argv_str, t_token *tokens)
 		cmd_array = ft_split(argv_str, '|');
 		if (!cmd_array)
 		{
-			free(env);
+			free_array(env);
 			return (ERROR);
 		}
 		i = 1;
 		while (i < num_commands - 1)
 		{
 			if (cmd_array[i] != NULL)
-				fd_in = middle_command(cmd_array, i, env, fd_in);
+				fd_in = middle_command(cmd_array, i, tokens, fd_in);
 			else
 				break ;
 			i++;
@@ -314,27 +411,19 @@ int	pipex(char *argv_str, t_token *tokens)
 		{
 			pos[END_COMD] = i;
 			pos[OUTFILE] = i;
-			final_command(cmd_array, pos, env, fd_in);
+			final_command(cmd_array, pos, tokens, fd_in);
 		}
-		i = 0;
-		while (cmd_array[i])
-			free(cmd_array[i++]);
-		free(cmd_array);
+		free_array(cmd_array);
 		i = 0;
 		while (i < num_commands)
 		{
-			pid_wait = waitpid(-1, &status, 0);
-			if (pid_wait == -1)
+			pid_wait = waitpid(-1, &status, WNOHANG);
+			if (pid_wait <= 0)
 				break ;
+			waitpid(pid_wait, &status, 0);
 			i++;
 		}
 	}
-	if (env)
-	{
-		i = 0;
-		while (env[i])
-			free(env[i++]);
-		free(env);
-	}
+	free_array(env);
 	return (0);
 }

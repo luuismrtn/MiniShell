@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/07 01:33:14 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/07 02:58:51 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,9 @@ void	signals(void)
 	}
 }
 
-void print_2(char **str)
+void	print_2(char **str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i])
@@ -60,13 +60,32 @@ void print_2(char **str)
 	}
 }
 
+void	free_array(char **array)
+{
+	int	i;
+
+	i = 0;
+	if (!array)
+		return ;
+	while (array[i])
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	char	*line;
+	t_token	*tokens;
 
 	(void)argc;
 	(void)argv;
 	// lo primero, antes de recibir cualquier cosa=> guadar env
+	tokens = malloc(sizeof(t_token));
+	ft_memset(tokens, 0, sizeof(t_token));
+	tokens->env_mshell = env_buildin(env);
 	if (ft_read_history(HISTORY_FILE) == ERROR)
 		return (ERROR);
 	signals();
@@ -84,9 +103,10 @@ int	main(int argc, char **argv, char **env)
 		{
 			add_history(line);
 			write_line_history(HISTORY_FILE, line);
-			main2(line, env);
+			main2(line, tokens);
 			free(line);
 		}
+		delete_tokens(&tokens);
 	}
 	return (SUCCESS);
 }
