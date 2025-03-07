@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/07 13:03:02 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/07 17:09:28 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	handle_signal(int sig)
 	{
 		exit_num = 130;
 		write(1, "\n", 1);
-		//rl_replace_line("", 0); PONER DE NUEVO
+		rl_replace_line("", 0);
 		rl_on_new_line();
 		rl_redisplay();
 	}
@@ -86,7 +86,7 @@ char	*get_history_path(void)
 		home_dir = getenv("HOME");
 		if (home_dir)
 			history_path = ft_strjoin(home_dir,
-					"/Desktop/MiniShell/.minishell_history"); //quitar Desktop
+					"/Desktop/MiniShell/.minishell_history"); //quitar Desktop!¡
 		else
 			history_path = ft_strdup("./.minishell_history");
 	}

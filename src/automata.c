@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   automata.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/07 14:57:48 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/07 17:16:11 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -273,8 +273,6 @@ void	make_exe_command(t_token *tokens)
 		printf("full command [%d]  %s\n", i, full_command[i]);
 		i++;
 	}
-	if (ft_strncmp(full_command[0], "exit", 5) == 0) // y no pipes
-		ft_exit(full_command);
 	pid = fork();
 	if (pid == -1)
 	{

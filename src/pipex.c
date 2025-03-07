@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/07 14:56:35 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/07 19:12:36 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,7 +242,7 @@ int	first_command(char **env, t_token *tokens, int num_commands, int *count)
 		printf("full command [%d] %s\n", i, args[i]);
 		i++;
 	}
-	if (is_builtin(args) == 1)
+	if (is_builtin(args) == 1 && num_commands == 1)
 	{
 		original_stdin = -1;
 		original_stdout = -1;
@@ -267,7 +267,7 @@ int	first_command(char **env, t_token *tokens, int num_commands, int *count)
 			dup2(original_stdout, STDOUT_FILENO);
 			close(original_stdout);
 		}
-		if (fds[0] != STDIN_FILENO)
+		if (fds[0] != STDIN_FILENO) //esto arriba??
 			close(fds[0]);
 		if (fds[1] != STDOUT_FILENO)
 			close(fds[1]);
@@ -312,6 +312,7 @@ int	first_command(char **env, t_token *tokens, int num_commands, int *count)
 	}
 	else
 	{
+		printf("deberia entrar aqui\n"); //exit | ls
 		if (pipe(connect) == -1)
 		{
 			perror("pipe");
@@ -340,8 +341,16 @@ int	first_command(char **env, t_token *tokens, int num_commands, int *count)
 				dup2(fds[1], STDOUT_FILENO);
 				close(fds[1]);
 			}
-			exe(env, args);
-			exit(EXIT_FAILURE);
+			if (is_builtin(args) == 1)
+			{
+				handle_builtin(args, tokens);
+				exit (0);
+			}
+			else
+			{
+				exe(env, args);
+				exit(EXIT_FAILURE);	
+			}
 		}
 		// Proceso padre
 		i = 0;
@@ -367,7 +376,7 @@ int	pipex(char *argv_str, t_token *tokens)
 	int		count;
 	char	**cmd_array;
 	int		status;
-	pid_t	pid_wait;
+	//pid_t	pid_wait;
 
 	cmd_array = NULL;
 	env = join_env(tokens->env_mshell);
@@ -376,7 +385,7 @@ int	pipex(char *argv_str, t_token *tokens)
 	num_commands = num_pipes(argv_str) + 1;
 	printf("num_commands: %d\n", num_commands);
 	count = 0;
-	fd_in = first_command(env, tokens, 1, &count); //se pdria pasar directamente 0 en vez de count
+	fd_in = first_command(env, tokens, num_commands, &count);
 	if (fd_in < 0)
 	{
 		free_array(env);
@@ -418,10 +427,10 @@ int	pipex(char *argv_str, t_token *tokens)
 		i = 0;
 		while (i < num_commands)
 		{
-			pid_wait = waitpid(-1, &status, WNOHANG);
-			if (pid_wait <= 0)
-				break ;
-			waitpid(pid_wait, &status, 0);
+			// pid_wait = waitpid(-1, &status, WNOHANG);
+			// if (pid_wait <= 0)
+			// 	break ;
+			waitpid(-1, &status, 0);
 			i++;
 		}
 	}

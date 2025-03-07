@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:21:08 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/07 02:29:15 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/07 19:10:33 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,11 +137,19 @@ void	ft_exit(char **arg)
 	if (i > 2)
 	{
 		write(2, "too many arguments\n", 20);
-		exit_num = 1;
-		return ;
+		exit(1);
 	}
-	exit_num = ft_atoi(arg[1]);
-	exit(exit_num);
+	if (arg[1])
+	{
+		exit_num = ft_atoi(arg[1]);
+		if (exit_num == 0 && arg[1][0] != '0') //cambiarrrr
+		{	
+			write(2, "numeric argument required\n",27);
+			exit(2);
+		}
+		exit(exit_num);
+	}
+	exit(0);
 }
 
 void	handle_builtin(char **args, t_token *tokens)

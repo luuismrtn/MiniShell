@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror  -g3 #-fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -56,6 +56,10 @@ re: fclean all
 # $?: (actualizar en los builtins)
     #cambiado en padre despues de ejecutar (a 127) // control c (a 130) // (exit 300, echo $? da 44))
 
+
 # clonado en un sitio q no sea HOME.. .hystory??
 # decidir q hacer si ponen solo 'export' --> imprimir env+var exportadas o nada???
-# first_command: un if si solo es un comando, o se puede hacer en el ultimo if y luego cerrar la pipe?
+# first_command: un if si solo es un comando, o se puede hacer en el ultimo if y luego cerrar la pipe?/el return cambia
+
+#1: solo 1 built; en padre, mas de 1; en hijo// middle en hijo // last en padre
+#construccion del comando

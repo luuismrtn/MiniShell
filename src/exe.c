@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/07 02:08:21 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/07 17:18:08 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,5 +100,6 @@ int	is_builtin(char **cmnd)
 	return ((ft_strncmp(cmnd[0], "echo", 5) == 0 || ft_strncmp(cmnd[0], "cd",
 				3) == 0 || ft_strncmp(cmnd[0], "pwd", 4) == 0
 			|| ft_strncmp(cmnd[0], "env", 4) == 0 || ft_strncmp(cmnd[0],
-				"export", 7) == 0 || ft_strncmp(cmnd[0], "unset", 6) == 0));
+				"export", 7) == 0 || ft_strncmp(cmnd[0], "unset", 6) == 0 
+			|| ft_strncmp(cmnd[0], "exit", 5) == 0));
 }
