@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/07 19:12:36 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/08 21:16:17 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,18 +101,33 @@ char	*clean_redirections(char *str)
 	return (new_str);
 }*/
 
-int	middle_command(char **args, int i, t_token *tokens, int fd_in)
+int	middle_command(int *count, t_token *tokens, int fd_in) //(char *args, int i, t_token *tokens, int fd_in)
 {
-	char	**comnd1;
+	//char	**comnd1;
+	int 	fds[2];
 	int		connect[2];
-	int		original_stdin;
-	int		original_stdout;
+	char 	**args;
+	//int		original_stdin;
+	//int		original_stdout;
 	pid_t	pid;
+	int i;
 
-	comnd1 = ft_split(args[i], ' ');
-	if (!comnd1)
+	fds[0] = STDIN_FILENO;
+	fds[1] = STDOUT_FILENO;
+	setup_redirections(tokens, &fds, *count);
+	args = build_command_string(tokens, count);
+	if (!args || !args[0])
 		return (ERROR);
-	if (is_builtin(comnd1) == 1)
+	i = 0;
+	while (args[i])
+	{
+		printf("full mid command [%d] %s\n", i, args[i]);
+		i++;
+	}
+	//comnd1 = ft_split(args[i], ' ');
+	//if (!comnd1)
+	//	return (ERROR);
+	/*if (is_builtin(comnd1) == 1)
 	{
 		original_stdin = -1;
 		original_stdout = -1;
@@ -135,11 +150,11 @@ int	middle_command(char **args, int i, t_token *tokens, int fd_in)
 		close(fd_in);
 		free_array(comnd1);
 		return (connect[0]);
-	}
+	}*/
 	if (pipe(connect) == -1)
 	{
 		perror("pipe");
-		free_array(comnd1);
+		//free_array(comnd1);
 		return (ERROR);
 	}
 	pid = fork();
@@ -148,12 +163,11 @@ int	middle_command(char **args, int i, t_token *tokens, int fd_in)
 		perror("fork");
 		close(connect[0]);
 		close(connect[1]);
-		free_array(comnd1);
+		//free_array(comnd1);
 		return (ERROR);
 	}
-	else if (pid == 0) // Proceso hijo
-	{
-		close(connect[0]);
+	//else if pid == 0
+		/*close(connect[0]);
 		if (fd_in < 0)
 		{
 			perror("error input");
@@ -164,60 +178,173 @@ int	middle_command(char **args, int i, t_token *tokens, int fd_in)
 		dup2(connect[1], STDOUT_FILENO);
 		close(connect[1]);
 		exe(join_env(tokens->env_mshell), comnd1);
-		exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);*/
+	else if (pid == 0) // Proceso hijo
+	{
+		close(connect[0]);
+		if (fd_in >= 0)
+		{
+			dup2(fd_in, STDIN_FILENO); //
+			close(fd_in); //	
+		}
+		else
+		{
+			perror("fd_in\n");
+			exit(1);
+		}
+		dup2(connect[1], STDOUT_FILENO);
+		close(connect[1]);
+		if (fds[0] != STDIN_FILENO)
+		{
+			dup2(fds[0], STDIN_FILENO);
+			close(fds[0]);
+		}
+		if (fds[1] != STDOUT_FILENO)
+		{
+			dup2(fds[1], STDOUT_FILENO);
+			close(fds[1]);
+		}
+		if (is_builtin(args) == 1)
+		{
+			handle_builtin(args, tokens);
+			exit (0);
+		}
+		else
+		{
+			exe(join_env(tokens->env_mshell), args);
+			exit(EXIT_FAILURE);	
+		}
 	}
 	// Proceso padre
+	free_array(args);
 	close(connect[1]);
+	//cerrar los fds de las redirecciones:
+	if (fds[0] != STDIN_FILENO)
+			close(fds[0]);
+	if (fds[1] != STDOUT_FILENO)
+			close(fds[1]);
+	//new^
 	close(fd_in);
-	free_array(comnd1);
 	return (connect[0]);
 }
 
-void	final_command(char **args, int *pos, t_token *tokens, int fd_in)
+void	final_command(int *count, t_token *tokens, int fd_in)
 {
-	char	**comnd2;
-	int		original_stdin;
+	//char	**comnd2;
 	pid_t	pid;
+	int 	fds[2];
+	char 	**args;
+	int 	i;
+	int		original_stdin;
+	int		original_stdout;
 
-	printf("cmd_array[pos[END_COMD]] = %s\n", args[pos[END_COMD]]);
-	comnd2 = ft_split(ft_strtrim(args[pos[END_COMD]], "\n"), ' ');
-	if (!comnd2)
+	fds[0] = STDIN_FILENO;
+	fds[1] = STDOUT_FILENO;
+	setup_redirections(tokens, &fds, *count);
+	args = build_command_string(tokens, count);
+	if (!args || !args[0])
 		return ;
-	// Si es un builtin, ejecutarlo directamente
-	if (is_builtin(comnd2) == 1)
+	i = 0;
+	while (args[i])
+	{
+		printf("full final command [%d] %s\n", i, args[i]);
+		i++;
+	}
+	//printf("cmd_array[pos[END_COMD]] = %s\n", args[pos[END_COMD]]);
+	//comnd2 = ft_split(ft_strtrim(args[pos[END_COMD]], "\n"), ' ');
+	//if (!comnd2)
+	//	return ;
+	/*if (is_builtin(args) == 1)
 	{
 		original_stdin = -1;
 		original_stdin = dup(STDIN_FILENO);
 		dup2(fd_in, STDIN_FILENO);
-		handle_builtin(comnd2, tokens);
+		handle_builtin(args, tokens);
 		dup2(original_stdin, STDIN_FILENO);
 		close(original_stdin);
 		close(fd_in);
-		free_array(comnd2);
+		free_array(args);
+		return ;
+	}*/
+	if (is_builtin(args) == 1)
+	{
+		original_stdin = -1;
+		original_stdout = -1;
+		original_stdin = dup(STDIN_FILENO); //
+		original_stdout = dup(STDOUT_FILENO); //
+		if (fd_in >= 0)
+		{
+			dup2(fd_in, STDIN_FILENO); //
+			close(fd_in); //
+		}
+		else
+		{
+			perror("fd_in\n");
+			exit(1);
+		}
+		if (fds[0] != STDIN_FILENO) //N
+		{
+			original_stdin = dup(STDIN_FILENO);
+			dup2(fds[0], STDIN_FILENO);
+		}
+		if (fds[1] != STDOUT_FILENO)
+		{
+			original_stdout = dup(STDOUT_FILENO);
+			dup2(fds[1], STDOUT_FILENO);
+		}
+		handle_builtin(args, tokens);
+		if (original_stdin != -1)
+		{
+			dup2(original_stdin, STDIN_FILENO);
+			close(original_stdin);
+		}
+		if (original_stdout != -1)
+		{
+			dup2(original_stdout, STDOUT_FILENO);
+			close(original_stdout);
+		}
+		if (fds[0] != STDIN_FILENO) //esto arriba??
+			close(fds[0]);
+		if (fds[1] != STDOUT_FILENO)
+			close(fds[1]);
+		i = 0;
+		while (args[i])
+			free(args[i++]);
+		free(args);
 		return ;
 	}
 	pid = fork();
 	if (pid == -1)
 	{
 		perror("fork");
-		free_array(comnd2);
+		free_array(args);
 		close(fd_in);
 		return ;
 	}
 	else if (pid == 0) // Proceso hijo
 	{
+		dup2(fd_in, STDIN_FILENO);
+		close(fd_in);
 		if (fd_in < 0)
 		{
 			perror("error output file");
 			exit(7);
 		}
-		dup2(fd_in, STDIN_FILENO);
-		close(fd_in);
-		exe(join_env(tokens->env_mshell), comnd2);
+		if (fds[1] != STDOUT_FILENO) //
+		{
+			dup2(fds[1], STDOUT_FILENO); //
+			close(fds[1]); //
+		}
+		if (fds[0] != STDIN_FILENO) //
+		{
+			dup2(fds[0], STDIN_FILENO); //
+			close(fds[0]); //
+		}
+		exe(join_env(tokens->env_mshell), args);
 		exit(EXIT_FAILURE);
 	}
 	close(fd_in);
-	free_array(comnd2);
+	free_array(args);
 }
 
 int	first_command(char **env, t_token *tokens, int num_commands, int *count)
@@ -312,7 +439,6 @@ int	first_command(char **env, t_token *tokens, int num_commands, int *count)
 	}
 	else
 	{
-		printf("deberia entrar aqui\n"); //exit | ls
 		if (pipe(connect) == -1)
 		{
 			perror("pipe");
@@ -353,10 +479,7 @@ int	first_command(char **env, t_token *tokens, int num_commands, int *count)
 			}
 		}
 		// Proceso padre
-		i = 0;
-		while (args[i])
-			free(args[i++]);
-		free(args);
+		free_array(args);
 		close(connect[1]);
 		if (fds[0] != STDIN_FILENO)
 			close(fds[0]);
@@ -369,16 +492,16 @@ int	first_command(char **env, t_token *tokens, int num_commands, int *count)
 int	pipex(char *argv_str, t_token *tokens)
 {
 	int		fd_in;
-	int		pos[2];
+	//int		pos[2];
 	int		num_commands;
 	int		i;
 	char	**env;
 	int		count;
-	char	**cmd_array;
+	//char	**cmd_array;
 	int		status;
 	//pid_t	pid_wait;
 
-	cmd_array = NULL;
+	//cmd_array = NULL;
 	env = join_env(tokens->env_mshell);
 	if (!env)
 		return (ERROR);
@@ -393,37 +516,40 @@ int	pipex(char *argv_str, t_token *tokens)
 	}
 	if (num_commands == 1)
 	{
-		if (fd_in != STDOUT_FILENO)
-			close(fd_in);
-		waitpid(-1, &status, 0);
+		if (fd_in != STDOUT_FILENO) //si es solo 1cmnd esto no se cumple nunca no?
+			close(fd_in);//xq no se hace pipe
+		//if (!is_builtin())
+		waitpid(-1, &status, 0);  //probar a hacer solo un builtin a ver q onda con esto
 		free_array(env);
 		return (0);
 	}
 	if (num_commands > 1)
 	{
 		count = 1;
-		cmd_array = ft_split(argv_str, '|');
+		printf("count: %d\n", count);
+		/*cmd_array = ft_split(argv_str, '|');
 		if (!cmd_array)
 		{
 			free_array(env);
 			return (ERROR);
-		}
-		i = 1;
-		while (i < num_commands - 1)
+		}*/
+		i = 1; //este menos???????????
+		while (i < num_commands - 1) //(count < num_commands - 1)
 		{
-			if (cmd_array[i] != NULL)
-				fd_in = middle_command(cmd_array, i, tokens, fd_in);
-			else
-				break ;
+			printf("count bucle middle: %d\n", count);
+			//if (cmd_array[i] != NULL)
+				fd_in = middle_command(&count, tokens, fd_in); //(cmd_array, i, tokens, fd_in)
+			//else
+			//	break ;
 			i++;
-		}
-		if (i < num_commands && cmd_array[i] != NULL)
+		} //count
+		if (i < num_commands) //(i < num_commands && cmd_array[i] != NULL)
 		{
-			pos[END_COMD] = i;
-			pos[OUTFILE] = i;
-			final_command(cmd_array, pos, tokens, fd_in);
+			//pos[END_COMD] = i;
+			//pos[OUTFILE] = i;
+			final_command(&count, tokens, fd_in); //(cmd_array, pos, tokens, fd_in)
 		}
-		free_array(cmd_array);
+		//free_array(cmd_array);
 		i = 0;
 		while (i < num_commands)
 		{

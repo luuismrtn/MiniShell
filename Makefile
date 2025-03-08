@@ -58,8 +58,8 @@ re: fclean all
 
 
 # clonado en un sitio q no sea HOME.. .hystory??
-# decidir q hacer si ponen solo 'export' --> imprimir env+var exportadas o nada???
-# first_command: un if si solo es un comando, o se puede hacer en el ultimo if y luego cerrar la pipe?/el return cambia
+# si solo 'export' imprimir las variables exportadas+env
 
-#1: solo 1 built; en padre, mas de 1; en hijo// middle en hijo // last en padre
-#construccion del comando
+#bash-3.2$ echo < 1 | echo < 2 | echo < 3
+#bash: echo: write error: Broken pipe
+#acabar exit + unset

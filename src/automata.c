@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   automata.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/07 17:16:11 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/08 20:41:12 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,8 +173,6 @@ char	**build_command_string(t_token *tokens, int *count)
 		temp_tokens = temp_tokens->next;
 	}
 	args[i] = NULL;
-	printf("dentro de build args\n");
-	print_2(args);
 	return (args);
 }
 
