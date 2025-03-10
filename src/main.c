@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/10 21:57:28 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/10 22:13:22 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,9 @@ int	main(int argc, char **argv, char **env)
 {
 	char	*line;
 	t_token	*tokens;
+	char	*HISTORY_FILE;
 
+	HISTORY_FILE = get_history_path();
 	(void)argc;
 	(void)argv;
 	tokens = malloc(sizeof(t_token));
