@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/10 19:01:44 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/10 21:57:28 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,7 @@ void	handle_signal(int sig)
 		return ;
 }
 
-
-void handle_signal_child(int sig)
+void	handle_signal_child(int sig)
 {
 	if (sig == SIGINT)
 	{
@@ -41,7 +40,6 @@ void handle_signal_child(int sig)
 	else if (sig == SIGQUIT)
 		return ;
 }
-
 
 void	signals(char c)
 {
@@ -69,7 +67,7 @@ void	signals(char c)
 void	ign_signal(void)
 {
 	struct sigaction	sa;
-	
+
 	sa.sa_handler = SIG_IGN;
 	sa.sa_flags = SA_RESTART;
 	sigemptyset(&sa.sa_mask);
@@ -114,20 +112,17 @@ void	free_array(char **array)
 
 char	*get_history_path(void)
 {
-	char	*history_path;
-	char	*home_dir;
+	char	*path;
+	char	*cwd;
 
-	history_path = NULL;
-	if (!history_path)
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
 	{
-		home_dir = getenv("HOME");
-		if (home_dir)
-			history_path = ft_strjoin(home_dir,
-					"/Desktop/MiniShell/.minishell_history"); //quitar Desktop!¡
-		else
-			history_path = ft_strdup("./.minishell_history");
+		perror("getcwd");
+		exit(EXIT_FAILURE);
 	}
-	return (history_path);
+	path = ft_strjoin(cwd, "/.minishell_history");
+	return (path);
 }
 
 int	main(int argc, char **argv, char **env)
