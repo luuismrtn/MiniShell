@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/07 18:53:12 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/10 19:02:59 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,13 +89,18 @@ int						is_builtin(char **cmnd);
 
 //  PIPEX
 int						pipex(char *argv, t_token *tokens);
-void					setup_redirections(t_token *tokens, int (*fds)[2], int count);
+void					setup_redirections(t_token *tokens, int (*fds)[2],
+							int count);
 char					**build_command_string(t_token *tokens, int *count);
 
 //  BUILTINS
 void					handle_builtin(char **args, t_token *tokens);
 void					ft_exit(char **arg);
 void					ft_env(t_env *env);
+
+//	SIGNALS
+void					signals(char c);
+void					ign_signal(void);
 
 int						main2(char *string, t_token *tokens);
 

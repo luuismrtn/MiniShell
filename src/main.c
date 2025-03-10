@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/08 18:25:35 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/10 19:01:44 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	handle_signal(int sig)
 	{
 		exit_num = 130;
 		write(1, "\n", 1);
-		//rl_replace_line("", 0); DESCOMENTAR!
+		rl_replace_line("", 0);
 		rl_on_new_line();
 		rl_redisplay();
 	}
@@ -28,19 +28,56 @@ void	handle_signal(int sig)
 		return ;
 }
 
-void	signals(void)
+
+void handle_signal_child(int sig)
+{
+	if (sig == SIGINT)
+	{
+		exit_num = 130;
+		write(1, "\n", 1);
+		rl_replace_line("", 0);
+		rl_on_new_line();
+	}
+	else if (sig == SIGQUIT)
+		return ;
+}
+
+
+void	signals(char c)
 {
 	struct sigaction	sa;
 
-	sa.sa_handler = handle_signal;
-	sa.sa_flags = 0;
-	// sigemptyser(&sa.sa_mask); //limpiar señales bloqueadas
+	if (c == 'f')
+		sa.sa_handler = handle_signal;
+	else if (c == 'c')
+		sa.sa_handler = handle_signal_child;
+	sa.sa_flags = SA_RESTART;
+	sigemptyset(&sa.sa_mask);
 	if (sigaction(SIGINT, &sa, NULL) == -1)
 	{
 		perror("sigaction1 \n");
 		exit(1);
 	}
 	sa.sa_handler = SIG_IGN;
+	if (sigaction(SIGQUIT, &sa, NULL) == -1)
+	{
+		perror("sigaction2 \n");
+		exit(1);
+	}
+}
+
+void	ign_signal(void)
+{
+	struct sigaction	sa;
+	
+	sa.sa_handler = SIG_IGN;
+	sa.sa_flags = SA_RESTART;
+	sigemptyset(&sa.sa_mask);
+	if (sigaction(SIGINT, &sa, NULL) == -1)
+	{
+		perror("sigaction1 \n");
+		exit(1);
+	}
 	if (sigaction(SIGQUIT, &sa, NULL) == -1)
 	{
 		perror("sigaction2 \n");
@@ -105,7 +142,7 @@ int	main(int argc, char **argv, char **env)
 	tokens->env_mshell = env_buildin(env);
 	if (ft_read_history(HISTORY_FILE) == ERROR)
 		return (ERROR);
-	signals();
+	signals('f');
 	while (1)
 	{
 		line = readline("minishell ~ ");

@@ -47,7 +47,6 @@ re: fclean all
 # echo $?
 
 # TODOLIST
-# guardar "shell level" y pwd al empezar -->en primer token cn el env
 # señal control-c cd se ejecuta minishell dentro de minishell
 # revisar si dejamos fd's abiertos
 # eco $$ da un num
@@ -56,10 +55,12 @@ re: fclean all
 # $?: (actualizar en los builtins)
     #cambiado en padre despues de ejecutar (a 127) // control c (a 130) // (exit 300, echo $? da 44))
 
-
 # clonado en un sitio q no sea HOME.. .hystory??
-# si solo 'export' imprimir las variables exportadas+env
+# si solo 'export' imprimir las variables exportadas
 
 #bash-3.2$ echo < 1 | echo < 2 | echo < 3
-#bash: echo: write error: Broken pipe
+#    bash: echo: write error: Broken pipe //meter un if en ecchooo??
+# guardar $SHLVL (si ./minishell)->env// y $PWD (cuado haces cd) ->env
+#    cambiar shellevl  ((Si ./mini SI sube, pero ./mini | ./mini NO))
+#    modify_env no actualiza bien
 #acabar exit + unset
