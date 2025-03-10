@@ -66,20 +66,21 @@ void	add_token(t_token **head, t_token_value type, char *content)
 void	delete_tokens(t_token **tokens)
 {
 	t_env	*env;
+	char	*content;
 	t_token	*aux;
 	t_token	*next;
 
 	env = NULL;
 	if (!tokens || !*tokens)
 		return ;
-	if (*tokens)
-		env = (*tokens)->env_mshell;
+	env = (*tokens)->env_mshell;
+	content = (*tokens)->content;
 	aux = *tokens;
 	while (aux != NULL)
 	{
 		next = aux->next;
 		if (aux->content)
-			free(aux->content);
+			aux->content = NULL;
 		free(aux);
 		aux = next;
 	}
@@ -88,6 +89,7 @@ void	delete_tokens(t_token **tokens)
 		return ;
 	ft_memset(*tokens, 0, sizeof(t_token));
 	(*tokens)->env_mshell = env;
+	(*tokens)->content = content;
 }
 
 static void	handle_redirections(t_token **tokens, char *input, int *i)
@@ -328,7 +330,9 @@ static void	handle_env(t_token **tokens, char *input, int *i)
 	if (input[*i] == '?')
 	{
 		(*i)++;
-		var_name = ft_itoa(exit_num);
+		printf("CONTENT: %s\n", (*tokens)->content);
+		var_name = (*tokens)->content;
+		printf("var_name: %s\n", var_name);
 		add_token(tokens, T_ENV, var_name);
 		return ;
 	}
@@ -484,14 +488,6 @@ int	main2(char *string, t_token *tokens)
 		aux1 = aux1->next;
 	}
 	if (automata(tokens) == 0)
-	{
-		// if (has_pipe(tokens))
-		//{
-		// printf("PipeX\n");
 		pipex(input, tokens);
-		//}
-		// else
-		// make_exe_command(tokens);
-	}
 	return (0);
 }

@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  -g3 #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror  -g3 -fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -11,6 +11,7 @@ SRC = src/main.c \
 	src/automata.c \
 	src/exe.c \
 	src/builtins.c \
+	src/question_mark.c \
 
 INCLUDE = -I libft -I.
 

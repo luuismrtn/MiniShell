@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/10 20:16:47 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:15:24 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void modify_env(t_token **tokens, char *var)
 	(*tokens)->env_mshell = new_var;
 }
 
-int	middle_command(int *count, t_token *tokens, int fd_in) //(char *args, int i, t_token *tokens, int fd_in)
+int	middle_command(int *count, t_token **tokens, int fd_in) //(char *args, int i, t_token *tokens, int fd_in)
 {
 	int 	fds[2];
 	int		connect[2];
@@ -68,8 +68,8 @@ int	middle_command(int *count, t_token *tokens, int fd_in) //(char *args, int i,
 
 	fds[0] = STDIN_FILENO;
 	fds[1] = STDOUT_FILENO;
-	setup_redirections(tokens, &fds, *count);
-	args = build_command_string(tokens, count);
+	setup_redirections((*tokens), &fds, *count);
+	args = build_command_string((*tokens), count);
 	if (!args || !args[0])
 		return (ERROR);
 	i = 0;
@@ -120,13 +120,14 @@ int	middle_command(int *count, t_token *tokens, int fd_in) //(char *args, int i,
 		}
 		if (is_builtin(args) == 1)
 		{
-			handle_builtin(args, tokens);
+			handle_builtin(args, (*tokens));
 			exit (0);
 		}
 		else
 		{
-			exe(join_env(tokens->env_mshell), args);
-			exit(EXIT_FAILURE);	
+			exe(join_env((*tokens)->env_mshell), args, tokens);
+			printf("TOKENS2: %s\n", (*tokens)->content);
+			return (STDOUT_FILENO);
 		}
 	}
 	// Proceso padre
@@ -140,7 +141,7 @@ int	middle_command(int *count, t_token *tokens, int fd_in) //(char *args, int i,
 	return (connect[0]);
 }
 
-void	final_command(int *count, t_token *tokens, int fd_in)
+void	final_command(int *count, t_token **tokens, int fd_in)
 {
 	pid_t	pid;
 	int 	fds[2];
@@ -151,8 +152,8 @@ void	final_command(int *count, t_token *tokens, int fd_in)
 
 	fds[0] = STDIN_FILENO;
 	fds[1] = STDOUT_FILENO;
-	setup_redirections(tokens, &fds, *count);
-	args = build_command_string(tokens, count);
+	setup_redirections((*tokens), &fds, *count);
+	args = build_command_string((*tokens), count);
 	if (!args || !args[0])
 		return ;
 	i = 0;
@@ -187,7 +188,7 @@ void	final_command(int *count, t_token *tokens, int fd_in)
 			original_stdout = dup(STDOUT_FILENO);
 			dup2(fds[1], STDOUT_FILENO);
 		}
-		handle_builtin(args, tokens);
+		handle_builtin(args, (*tokens));
 		if (original_stdin != -1)
 		{
 			dup2(original_stdin, STDIN_FILENO);
@@ -208,7 +209,7 @@ void	final_command(int *count, t_token *tokens, int fd_in)
 		free(args);
 		return ;
 	}
-	signals('c');
+	signals('c', tokens);
 	if (ft_strncmp(args[0] , "./minishell", 12) == 0) //
 		ign_signal();
 	pid = fork();
@@ -238,11 +239,12 @@ void	final_command(int *count, t_token *tokens, int fd_in)
 			dup2(fds[0], STDIN_FILENO);
 			close(fds[0]);
 		}
-		exe(join_env(tokens->env_mshell), args);
-		exit(EXIT_FAILURE);
+		exe(join_env((*tokens)->env_mshell), args, tokens);
+
+		return ;
 	}
 	waitpid(pid, NULL, 0); //control c
-	signals('f'); //coontrrol c
+	signals('f', tokens); //coontrrol c
 	close(fd_in);
 	free_array(args);
 }
@@ -306,7 +308,7 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 	}
 	if (num_commands == 1)
 	{
-		signals('c');
+		signals('c', tokens);
 		if (ft_strncmp(args[0] , "./minishell", 12) == 0)
 		{
 			ign_signal();
@@ -330,8 +332,8 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 				dup2(fds[1], STDOUT_FILENO);
 				close(fds[1]);
 			}
-			exe(env, args);
-			exit(EXIT_FAILURE);
+			exe(env, args, tokens);
+			return (STDOUT_FILENO);
 		}
 		i = 0;
 		while (args[i])
@@ -342,7 +344,7 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 		if (fds[1] != STDOUT_FILENO)
 			close(fds[1]);
 		waitpid(pid, NULL, 0); //control c despues de contrl d
-		signals('f'); //control c
+		signals('f', tokens); //control c
 		return (STDOUT_FILENO);
 	}
 	else
@@ -387,8 +389,8 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 			}
 			else
 			{
-				exe(env, args);
-				exit(EXIT_FAILURE);	
+				exe(env, args, tokens);
+				return (STDOUT_FILENO);
 			}
 		}
 		// Proceso padre
@@ -440,11 +442,11 @@ int	pipex(char *argv_str, t_token *tokens)
 		while (i < num_commands - 1)
 		{
 			printf("count bucle middle: %d\n", count);
-			fd_in = middle_command(&count, tokens, fd_in);
+			fd_in = middle_command(&count, &tokens, fd_in);
 			i++;
 		}
 		if (i < num_commands)
-			final_command(&count, tokens, fd_in);
+			final_command(&count, &tokens, fd_in);
 		i = 0;
 		while (i < num_commands)
 		{

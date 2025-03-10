@@ -3,20 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   exe.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/07 17:18:08 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:17:49 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-void	exe(char **env, char **comnd)
+void	exe(char **env, char **comnd, t_token **tokens)
 {
 	char	**paths;
 	int		i;
-
+	
+	change_question_mark((*tokens), 0);
 	if ((ft_strchr(comnd[0], '/') != NULL) && (access(comnd[0], X_OK) == 0))
 		execve(comnd[0], comnd, env);
 	else
@@ -34,8 +35,8 @@ void	exe(char **env, char **comnd)
 			free(paths[i++]);
 		free(paths);
 	}
-	write(1, "error command\n", 14);
-	exit(127);
+	printf("%s: command not found\n", comnd[0]);
+	change_question_mark((*tokens), 127);
 }
 
 char	**search_path(char **env, char *comnd)

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/10 22:12:40 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:14:16 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,9 +79,8 @@ int						automata(t_token *tokens);
 t_env					*env_buildin(char **env);
 
 // EXE
-void					make_exe_command(t_token *tokens);
 char					**join_env(t_env *env_mshell);
-void					exe(char **env, char **comnd);
+void					exe(char **env, char **comnd, t_token **tokens);
 char					**search_path(char **env, char *comnd);
 int						is_builtin(char **cmnd);
 
@@ -93,16 +92,22 @@ char					**build_command_string(t_token *tokens, int *count);
 
 //  BUILTINS
 void					handle_builtin(char **args, t_token *tokens);
-void					ft_exit(char **arg);
+void					ft_exit(t_token *tokens, char **arg);
 void					ft_env(t_env *env);
 
 //	SIGNALS
-void					signals(char c);
+void					signals(char c, t_token **tokens);
 void					ign_signal(void);
+
+
+//  QUESTION_MARK
+void					change_question_mark(t_token *tokens, int status);
+int						get_question_mark(t_token *tokens);
 
 int						main2(char *string, t_token *tokens);
 
 void					print_2(char **str);
 void					free_array(char **array);
+
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:21:08 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/10 22:14:47 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/10 23:15:34 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ void	ft_env(t_env *env)
 	}
 }
 
-void	ft_exit(char **arg)
+void	ft_exit(t_token *tokens, char **arg)
 {
 	int	exit_num;
 	int	i;
@@ -161,20 +161,21 @@ void	ft_exit(char **arg)
 		i++;
 	if (i > 2)
 	{
-		write(2, "too many arguments\n", 20);
-		exit(1);
+		write(2, "exit: too many arguments\n", 25);
 	}
-	if (arg[1])
+	else if (arg[1])
 	{
 		exit_num = ft_atoi(arg[1]);
-		if (exit_num == 0 && arg[1][0] != '0') // cambiarrrr
+		if (exit_num < 0 || exit_num > 255)
 		{
-			write(2, "numeric argument required\n", 27);
-			exit(2);
+			printf("exit: %s\n", tokens->content);
+			exit(get_question_mark(tokens));
 		}
-		exit(exit_num);
+		else
+			exit(exit_num);
 	}
-	exit(0);
+	else
+		exit(0);
 }
 
 void	handle_builtin(char **args, t_token *tokens)
@@ -192,7 +193,7 @@ void	handle_builtin(char **args, t_token *tokens)
 	else if (ft_strncmp(args[0], "env", 4) == 0)
 		ft_env(tokens->env_mshell);
 	else if (ft_strncmp(args[0], "exit", 5) == 0)
-		ft_exit(args);
+		ft_exit(tokens, args);
 	else
 		return ;
 }
