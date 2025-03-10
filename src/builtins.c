@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:21:08 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/07 19:10:33 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/10 22:14:47 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,11 +106,36 @@ void	ft_export(t_token *tokens, char **args)
 	}
 }
 
-/*
-void	ft_unset(char *var)
+void	ft_unset(t_token *tokens, char **args)
 {
+	t_env	*current;
+	t_env	*prev;
+	int		i;
+
+	i = 1;
+	while (args[i])
+	{
+		current = tokens->env_mshell;
+		prev = NULL;
+		while (current)
+		{
+			if (ft_strncmp(current->name, args[i], ft_strlen(args[i])) == 0)
+			{
+				if (prev)
+					prev->next = current->next;
+				else
+					tokens->env_mshell = current->next;
+				free(current->name);
+				free(current->content);
+				free(current);
+				break ;
+			}
+			prev = current;
+			current = current->next;
+		}
+		i++;
+	}
 }
-*/
 
 void	ft_env(t_env *env)
 {
@@ -142,9 +167,9 @@ void	ft_exit(char **arg)
 	if (arg[1])
 	{
 		exit_num = ft_atoi(arg[1]);
-		if (exit_num == 0 && arg[1][0] != '0') //cambiarrrr
-		{	
-			write(2, "numeric argument required\n",27);
+		if (exit_num == 0 && arg[1][0] != '0') // cambiarrrr
+		{
+			write(2, "numeric argument required\n", 27);
 			exit(2);
 		}
 		exit(exit_num);
@@ -162,10 +187,8 @@ void	handle_builtin(char **args, t_token *tokens)
 		ft_pwd();
 	else if (ft_strncmp(args[0], "export", 7) == 0)
 		ft_export(tokens, args);
-	/*
-else if	(ft_strncmp(args[0], "unset", 6) == 0)
-	ft_unset(args[1]);
-	*/
+	else if (ft_strncmp(args[0], "unset", 6) == 0)
+		ft_unset(tokens, args);
 	else if (ft_strncmp(args[0], "env", 4) == 0)
 		ft_env(tokens->env_mshell);
 	else if (ft_strncmp(args[0], "exit", 5) == 0)
