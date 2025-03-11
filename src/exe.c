@@ -6,41 +6,13 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/12 00:24:56 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/12 00:38:29 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-void	exe(char **env, char **comnd, int stdout)
-{
-	char	**paths;
-	int		i;
-
-	if ((ft_strchr(comnd[0], '/') != NULL) && (access(comnd[0], X_OK) == 0))
-		execve(comnd[0], comnd, env);
-	else
-	{
-		paths = search_path(env, comnd[0]);
-		i = 0;
-		while (paths[i] != NULL)
-		{
-			if (access(paths[i], R_OK | X_OK) == 0)
-				execve(paths[i], comnd, env);
-			i++;
-		}
-		i = 0;
-		while (paths[i])
-			free(paths[i++]);
-		free(paths);
-	}
-	dup2(stdout, STDOUT_FILENO);
-	close(stdout);
-	printf("%s: command not found\n", comnd[0]); // perroor
-	exit(127);
-}
-
-char	**search_path(char **env, char *comnd)
+static char	**search_path(char **env, char *comnd)
 {
 	char	**paths;
 	char	*aux;
@@ -67,6 +39,34 @@ char	**search_path(char **env, char *comnd)
 		i++;
 	}
 	return (paths);
+}
+
+void	exe(t_token *tokens, char **comnd, int stdout)
+{
+	char	**paths;
+	int		i;
+
+	if ((ft_strchr(comnd[0], '/') != NULL) && (access(comnd[0], X_OK) == 0))
+		execve(comnd[0], comnd, join_env(tokens->env_mshell));
+	else
+	{
+		paths = search_path(join_env(tokens->env_mshell), comnd[0]);
+		i = 0;
+		while (paths[i] != NULL)
+		{
+			if (access(paths[i], R_OK | X_OK) == 0)
+				execve(paths[i], comnd, join_env(tokens->env_mshell));
+			i++;
+		}
+		i = 0;
+		while (paths[i])
+			free(paths[i++]);
+		free(paths);
+	}
+	dup2(stdout, STDOUT_FILENO);
+	close(stdout);
+	printf("%s: command not found\n", comnd[0]); // perroor
+	exit(127);
 }
 
 char	**join_env(t_env *env_mshell)

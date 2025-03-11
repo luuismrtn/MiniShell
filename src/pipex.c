@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/11 16:45:13 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/12 00:40:04 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
-#include "../inc/pipex.h"
 
 int	num_pipes(char *str)
 {
@@ -127,7 +126,7 @@ int	middle_command(int *count, t_token **tokens, int fd_in) //(char *args, int i
 		}
 		else
 		{
-			exe(join_env((*tokens)->env_mshell), args, original_stdout);
+			exe((*tokens), args, original_stdout);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -242,7 +241,7 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 			dup2(fds[0], STDIN_FILENO);
 			close(fds[0]);
 		}
-		exe(join_env((*tokens)->env_mshell), args, original_stdout);
+		exe((*tokens), args, original_stdout);
 		exit(EXIT_FAILURE);
 	}
 	waitpid(pid, &status, 0); 
@@ -252,7 +251,7 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 	free_array(args);
 }
 
-int	first_command(char **env, t_token **tokens, int num_commands, int *count)
+int	first_command(t_token **tokens, int num_commands, int *count)
 {
 	int		fds[2];
 	int		connect[2];
@@ -336,7 +335,7 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 				dup2(fds[1], STDOUT_FILENO);
 				close(fds[1]);
 			}
-			exe(join_env((*tokens)->env_mshell), args, original_stdout);
+			exe((*tokens), args, original_stdout);
 			exit(EXIT_FAILURE);
 		}
 		i = 0;
@@ -395,7 +394,7 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 			}
 			else
 			{
-				exe(env, args, original_stdout);
+				exe((*tokens), args, original_stdout);
 				exit(EXIT_FAILURE);
 			}
 		}
@@ -425,7 +424,7 @@ int	pipex(char *argv_str, t_token *tokens)
 	num_commands = num_pipes(argv_str) + 1;
 	printf("num_commands: %d\n", num_commands);
 	count = 0;
-	fd_in = first_command(env, &tokens, num_commands, &count);
+	fd_in = first_command(&tokens, num_commands, &count);
 	if (fd_in < 0)
 	{
 		free_array(env);

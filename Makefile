@@ -57,14 +57,8 @@ re: fclean all
 # revisar si dejamos fd's abiertos
 # echo $$ da un num
 # el heredoc (+ meterlo tb en el pipex)
-# $?: (actualizar en los builtins)
-    #cambiado en padre despues de ejecutar (a 127) // control c (a 130) // (exit 300, echo $? da 44))
-
-# clonado en un sitio q no sea HOME.. .hystory??
 # si solo 'export' imprimir las variables exportadas
-
 #bash-3.2$ echo < 1 | echo < 2 | echo < 3
 #    bash: echo: write error: Broken pipe //meter un if en ecchooo??
 # guardar $PWD (cuado haces cd) 
-# cambiar getenv por nuestro getenv
 

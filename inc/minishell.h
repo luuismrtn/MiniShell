@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/12 00:20:52 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/12 00:39:40 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,15 @@
 # define MINISHELL_H
 
 # include "../libft/libft.h"
-# include "pipex.h"
+# include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <string.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 # include <unistd.h>
 
 extern unsigned char	exit_num;
@@ -80,8 +83,7 @@ t_env					*env_buildin(char **env);
 
 // EXE
 char					**join_env(t_env *env_mshell);
-void					exe(char **env, char **comnd, int stdout);
-char					**search_path(char **env, char *comnd);
+void					exe(t_token *tokens, char **comnd, int stdout);
 int						is_builtin(char **cmnd);
 
 //  PIPEX
