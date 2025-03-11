@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/11 01:21:21 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/11 14:55:18 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ t_env					*env_buildin(char **env);
 
 // EXE
 char					**join_env(t_env *env_mshell);
-void					exe(char **env, char **comnd);
+void					exe(char **env, char **comnd, int stdout);
 char					**search_path(char **env, char *comnd);
 int						is_builtin(char **cmnd);
 
@@ -92,7 +92,7 @@ char					**build_command_string(t_token *tokens, int *count);
 
 //  BUILTINS
 void					handle_builtin(char **args, t_token *tokens);
-void					ft_exit(t_token *tokens, char **arg);
+void					ft_exit(char **arg);
 void					ft_env(t_env *env);
 
 //	SIGNALS

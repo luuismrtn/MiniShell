@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:21:08 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/11 14:03:39 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/11 14:10:46 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,10 +165,9 @@ int arg_isdigit(char *str)
 	return 1;
 }
 
-void	ft_exit(t_token *tokens, char **arg)
+void	ft_exit(char **arg)
 {
 	int	i;
-	(void)tokens;
 
 	i = 0;
 	while (arg[i])
@@ -208,7 +207,7 @@ void	handle_builtin(char **args, t_token *tokens)
 	else if (ft_strncmp(args[0], "env", 4) == 0)
 		ft_env(tokens->env_mshell);
 	else if (ft_strncmp(args[0], "exit", 5) == 0)
-		ft_exit(tokens, args);
+		ft_exit(args);
 	else
 		return ;
 }

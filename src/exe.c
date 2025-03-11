@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exe.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/11 00:35:28 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/11 15:13:24 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-void	exe(char **env, char **comnd)
+void	exe(char **env, char **comnd, int stdout)
 {
 	char	**paths;
 	int		i;
@@ -34,7 +34,9 @@ void	exe(char **env, char **comnd)
 			free(paths[i++]);
 		free(paths);
 	}
-	printf("%s: command not found\n", comnd[0]);
+	dup2(stdout, STDOUT_FILENO);
+	close(stdout);
+	printf("%s: command not found\n", comnd[0]); //perroor
 	exit(127);
 }
 

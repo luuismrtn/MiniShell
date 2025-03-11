@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/11 01:21:02 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/11 15:20:46 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ int	middle_command(int *count, t_token **tokens, int fd_in) //(char *args, int i
 	char 	**args;
 	pid_t	pid;
 	int i;
+	int original_stdout;
 
 	fds[0] = STDIN_FILENO;
 	fds[1] = STDOUT_FILENO;
@@ -108,6 +109,7 @@ int	middle_command(int *count, t_token **tokens, int fd_in) //(char *args, int i
 		}
 		dup2(connect[1], STDOUT_FILENO);
 		close(connect[1]);
+		original_stdout = dup(STDOUT_FILENO);
 		if (fds[0] != STDIN_FILENO)
 		{
 			dup2(fds[0], STDIN_FILENO);
@@ -125,7 +127,7 @@ int	middle_command(int *count, t_token **tokens, int fd_in) //(char *args, int i
 		}
 		else
 		{
-			exe(join_env((*tokens)->env_mshell), args);
+			exe(join_env((*tokens)->env_mshell), args, original_stdout);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -229,6 +231,7 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 			perror("error output file");
 			exit(7);
 		}
+		original_stdout = dup(STDOUT_FILENO);
 		if (fds[1] != STDOUT_FILENO)
 		{
 			dup2(fds[1], STDOUT_FILENO);
@@ -239,7 +242,7 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 			dup2(fds[0], STDIN_FILENO);
 			close(fds[0]);
 		}
-		exe(join_env((*tokens)->env_mshell), args);
+		exe(join_env((*tokens)->env_mshell), args, original_stdout);
 		exit(EXIT_FAILURE);
 	}
 	waitpid(pid, &status, 0); 
@@ -323,6 +326,7 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 		}
 		else if (pid == 0) // Proceso hijo
 		{
+			original_stdout = dup(STDOUT_FILENO);
 			if (fds[0] != STDIN_FILENO)
 			{
 				dup2(fds[0], STDIN_FILENO);
@@ -333,7 +337,7 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 				dup2(fds[1], STDOUT_FILENO);
 				close(fds[1]);
 			}
-			exe(env, args);
+			exe(env, args, original_stdout);
 			exit(EXIT_FAILURE);
 		}
 		i = 0;
@@ -356,7 +360,7 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 			perror("pipe");
 			return (ERROR);
 		}
-		if (ft_strncmp(args[0] , "./minishell", 12) == 0) //./minishell | ./minishell
+		if (ft_strncmp(args[0] , "./minishell", 12) == 0)
 		{
 			close(connect[0]);
 			return (connect[0]);
@@ -374,6 +378,7 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 			close(connect[0]);
 			dup2(connect[1], STDOUT_FILENO);
 			close(connect[1]);
+			original_stdout = dup(STDOUT_FILENO);
 			if (fds[0] != STDIN_FILENO)
 			{
 				dup2(fds[0], STDIN_FILENO);
@@ -391,7 +396,7 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 			}
 			else
 			{
-				exe(env, args);
+				exe(env, args, original_stdout);
 				exit(EXIT_FAILURE);
 			}
 		}
