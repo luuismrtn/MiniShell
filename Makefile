@@ -63,4 +63,3 @@ re: fclean all
 # guardar $SHLVL (si ./minishell)->env// y $PWD (cuado haces cd) ->env
 #    cambiar shellevl  ((Si ./mini SI sube, pero ./mini | ./mini NO))
 #    modify_env cambia en padre no en hijo?
-# error catsrttgt Makefile > hola.txt

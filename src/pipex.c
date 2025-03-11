@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/11 15:20:46 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/11 16:08:45 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ void modify_env(t_token **tokens, char *var)
 		if (strncmp(aux->name, var, strlen(var)) == 0)
 		{
 			shlvl = ft_atoi(aux->content) + 1;
-			printf("AQUII %d\n", shlvl);
 			free(aux->content);
 			aux->content = ft_itoa(shlvl);
+			printf("AQUII %s\n", aux->content);
 			return;
 		}
 		aux = aux->next;
@@ -314,10 +314,7 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 	{
 		signals('c');
 		if (ft_strncmp(args[0] , "./minishell", 12) == 0)
-		{
 			ign_signal();
-			modify_env(tokens, "SHLVL");
-		}
 		pid = fork();
 		if (pid == -1)
 		{
@@ -326,6 +323,8 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 		}
 		else if (pid == 0) // Proceso hijo
 		{
+			if (ft_strncmp(args[0] , "./minishell", 12) == 0)
+				modify_env(tokens, "SHLVL");
 			original_stdout = dup(STDOUT_FILENO);
 			if (fds[0] != STDIN_FILENO)
 			{
@@ -337,7 +336,7 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 				dup2(fds[1], STDOUT_FILENO);
 				close(fds[1]);
 			}
-			exe(env, args, original_stdout);
+			exe(join_env((*tokens)->env_mshell), args, original_stdout);
 			exit(EXIT_FAILURE);
 		}
 		i = 0;
