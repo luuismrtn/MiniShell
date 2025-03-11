@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/11 14:55:18 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/11 16:44:48 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,5 @@ int						main2(char *string, t_token *tokens);
 
 void					print_2(char **str);
 void					free_array(char **array);
-
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:21:08 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/11 14:10:46 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/11 17:19:21 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,48 @@ void	ft_echo(char **args)
 	if (!n)
 		ft_putchar_fd('\n', 1);
 }
+void modify_pwd(t_token **tokens, char *var, char *dir) //if dir = .. (borrar enterior)
+{
+	t_env *aux;
+	t_env *new_var;
+	char *new_pwd;
+	char *path;
 
-void	ft_cd(char **args)
+	if (ft_strncmp(dir, ".", 2) == 0)
+		return;
+	// if (ft_strncmp(dir, "..", 2) == 0)
+	// {
+		
+	// }
+	aux = (*tokens)->env_mshell;
+	while (aux)
+	{
+		if (strncmp(aux->name, var, strlen(var)) == 0)
+		{
+			path = ft_strjoin("/", dir);
+			new_pwd = ft_strjoin(aux->content, path);
+			free (path);
+			free (aux->content);
+			aux->content = new_pwd;
+			printf("modify pwd %s\n", aux->content);
+			return;
+		}
+		aux = aux->next;
+	}
+	new_var = malloc(sizeof(t_env));
+	if (!new_var)
+		return;
+	new_var->name = ft_strdup(var);
+	path = ft_strjoin("/", dir);
+	new_var->content = ft_strjoin(getenv("HOME"), path);
+	free (path);
+	if (!new_var->content)
+		return (free(new_var));
+	new_var->next = (*tokens)->env_mshell;
+	(*tokens)->env_mshell = new_var;
+}
+
+void	ft_cd(char **args, t_token **tokens)
 {
 	char	*path;
 
@@ -47,10 +87,18 @@ void	ft_cd(char **args)
 	{
 		path = getenv("HOME");
 		if (path == NULL || chdir(path) != 0)
+		{
+			exit_num = 1;
 			perror("minishell");
+		}
 	}
-	else if (chdir(path) != 0)
-		perror("minihsell");
+	else if (chdir(path) == 0)
+		modify_pwd(tokens, "PWD", path);
+	else
+	{
+		exit_num = 1;	
+		perror("minishell");
+	}
 }
 
 void	ft_pwd(void)
@@ -60,7 +108,10 @@ void	ft_pwd(void)
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
 		ft_putendl_fd(cwd, 1);
 	else
+	{
+		exit_num = 1;	
 		perror("minishell");
+	}
 }
 void	ft_export(t_token *tokens, char **args)
 {
@@ -197,7 +248,7 @@ void	handle_builtin(char **args, t_token *tokens)
 	if (ft_strncmp(args[0], "echo", 5) == 0)
 		ft_echo(args);
 	else if (ft_strncmp(args[0], "cd", 3) == 0)
-		ft_cd(args);
+		ft_cd(args, &tokens);
 	else if (ft_strncmp(args[0], "pwd", 4) == 0)
 		ft_pwd();
 	else if (ft_strncmp(args[0], "export", 7) == 0)

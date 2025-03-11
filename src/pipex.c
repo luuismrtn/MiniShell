@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/11 16:08:45 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/11 16:45:13 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	num_pipes(char *str)
 	return (count);
 }
 
-void modify_env(t_token **tokens, char *var)
+void modify_shlvl(t_token **tokens, char *var)
 {
 	t_env *aux;
 	t_env *new_var;
@@ -324,7 +324,7 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 		else if (pid == 0) // Proceso hijo
 		{
 			if (ft_strncmp(args[0] , "./minishell", 12) == 0)
-				modify_env(tokens, "SHLVL");
+				modify_shlvl(tokens, "SHLVL");
 			original_stdout = dup(STDOUT_FILENO);
 			if (fds[0] != STDIN_FILENO)
 			{
