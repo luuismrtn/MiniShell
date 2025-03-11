@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:21:08 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/11 01:19:50 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/11 14:03:39 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,10 +151,24 @@ void	ft_env(t_env *env)
 	}
 }
 
+int arg_isdigit(char *str)
+{
+	int i;
+
+	i = 0;
+	while(str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return 0;
+		i++;
+	}
+	return 1;
+}
+
 void	ft_exit(t_token *tokens, char **arg)
 {
-	int	exit_num;
 	int	i;
+	(void)tokens;
 
 	i = 0;
 	while (arg[i])
@@ -162,17 +176,18 @@ void	ft_exit(t_token *tokens, char **arg)
 	if (i > 2)
 	{
 		write(2, "exit: too many arguments\n", 25);
+		exit_num = 1;
 	}
 	else if (arg[1])
 	{
 		exit_num = ft_atoi(arg[1]);
-		if (exit_num < 0 || exit_num > 255)
-		{
-			printf("exit: %s\n", tokens->content);
-			exit(exit_num);
-		}
+		if (arg_isdigit(arg[1]))
+			exit (exit_num);
 		else
-			exit(exit_num);
+		{
+			write(2, "numeric argument required\n", 27);
+			exit(2);
+		}
 	}
 	else
 		exit(0);

@@ -62,5 +62,4 @@ re: fclean all
 #    bash: echo: write error: Broken pipe //meter un if en ecchooo??
 # guardar $SHLVL (si ./minishell)->env// y $PWD (cuado haces cd) ->env
 #    cambiar shellevl  ((Si ./mini SI sube, pero ./mini | ./mini NO))
-#    modify_env no actualiza bien
-#acabar exit + unset
+#    modify_env cambia en padre no en hijo?

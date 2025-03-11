@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/11 01:20:29 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/11 14:08:15 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,7 @@ void	signals(char c)
 		sa.sa_handler = handle_signal;
 	else if (c == 'c')
 		sa.sa_handler = handle_signal_child;
-	printf("exit_num = %d\n", exit_num);
-	sa.sa_flags = SA_RESTART;
-	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
 	if (sigaction(SIGINT, &sa, NULL) == -1)
 	{
 		perror("sigaction1 \n");
@@ -70,8 +68,7 @@ void	ign_signal(void)
 	struct sigaction	sa;
 
 	sa.sa_handler = SIG_IGN;
-	sa.sa_flags = SA_RESTART;
-	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
 	if (sigaction(SIGINT, &sa, NULL) == -1)
 	{
 		perror("sigaction1 \n");
