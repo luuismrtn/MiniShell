@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/11 00:18:45 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:56:17 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	signals(char c, t_token **tokens)
 		sa.sa_handler = handle_signal;
 	else if (c == 'c')
 		sa.sa_handler = handle_signal_child;
-	(*tokens)->content = ft_strdup("130");
+	printf("exit_num = %d\n", exit_num);
 	sa.sa_flags = SA_RESTART;
 	sigemptyset(&sa.sa_mask);
 	if (sigaction(SIGINT, &sa, NULL) == -1)

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/11 00:14:16 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:35:33 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ t_env					*env_buildin(char **env);
 
 // EXE
 char					**join_env(t_env *env_mshell);
-void					exe(char **env, char **comnd, t_token **tokens);
+void					exe(char **env, char **comnd);
 char					**search_path(char **env, char *comnd);
 int						is_builtin(char **cmnd);
 

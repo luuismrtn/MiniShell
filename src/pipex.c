@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/11 00:15:24 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/11 00:46:20 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,9 +125,8 @@ int	middle_command(int *count, t_token **tokens, int fd_in) //(char *args, int i
 		}
 		else
 		{
-			exe(join_env((*tokens)->env_mshell), args, tokens);
-			printf("TOKENS2: %s\n", (*tokens)->content);
-			return (STDOUT_FILENO);
+			exe(join_env((*tokens)->env_mshell), args);
+			exit(EXIT_FAILURE);
 		}
 	}
 	// Proceso padre
@@ -149,6 +148,7 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 	int 	i;
 	int		original_stdin;
 	int		original_stdout;
+	int		status;
 
 	fds[0] = STDIN_FILENO;
 	fds[1] = STDOUT_FILENO;
@@ -239,12 +239,12 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 			dup2(fds[0], STDIN_FILENO);
 			close(fds[0]);
 		}
-		exe(join_env((*tokens)->env_mshell), args, tokens);
-
-		return ;
+		exe(join_env((*tokens)->env_mshell), args);
+		exit(EXIT_FAILURE);
 	}
-	waitpid(pid, NULL, 0); //control c
-	signals('f', tokens); //coontrrol c
+	waitpid(pid, &status, 0); 
+	change_question_mark(*tokens, WEXITSTATUS(status));
+	signals('f', tokens);
 	close(fd_in);
 	free_array(args);
 }
@@ -258,6 +258,7 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 	pid_t	pid;
 	int		original_stdin;
 	int		original_stdout;
+	int status;
 
 	fds[0] = STDIN_FILENO;
 	fds[1] = STDOUT_FILENO;
@@ -332,8 +333,8 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 				dup2(fds[1], STDOUT_FILENO);
 				close(fds[1]);
 			}
-			exe(env, args, tokens);
-			return (STDOUT_FILENO);
+			exe(env, args);
+			exit(EXIT_FAILURE);
 		}
 		i = 0;
 		while (args[i])
@@ -343,8 +344,9 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 			close(fds[0]);
 		if (fds[1] != STDOUT_FILENO)
 			close(fds[1]);
-		waitpid(pid, NULL, 0); //control c despues de contrl d
-		signals('f', tokens); //control c
+		waitpid(pid, &status, 0); 
+		change_question_mark(*tokens, WEXITSTATUS(status));
+		signals('f', tokens);
 		return (STDOUT_FILENO);
 	}
 	else
@@ -389,8 +391,8 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 			}
 			else
 			{
-				exe(env, args, tokens);
-				return (STDOUT_FILENO);
+				exe(env, args);
+				exit(EXIT_FAILURE);
 			}
 		}
 		// Proceso padre
