@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/11 15:13:24 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/12 00:24:56 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	exe(char **env, char **comnd, int stdout)
 {
 	char	**paths;
 	int		i;
-	
+
 	if ((ft_strchr(comnd[0], '/') != NULL) && (access(comnd[0], X_OK) == 0))
 		execve(comnd[0], comnd, env);
 	else
@@ -36,7 +36,7 @@ void	exe(char **env, char **comnd, int stdout)
 	}
 	dup2(stdout, STDOUT_FILENO);
 	close(stdout);
-	printf("%s: command not found\n", comnd[0]); //perroor
+	printf("%s: command not found\n", comnd[0]); // perroor
 	exit(127);
 }
 
@@ -102,6 +102,6 @@ int	is_builtin(char **cmnd)
 	return ((ft_strncmp(cmnd[0], "echo", 5) == 0 || ft_strncmp(cmnd[0], "cd",
 				3) == 0 || ft_strncmp(cmnd[0], "pwd", 4) == 0
 			|| ft_strncmp(cmnd[0], "env", 4) == 0 || ft_strncmp(cmnd[0],
-				"export", 7) == 0 || ft_strncmp(cmnd[0], "unset", 6) == 0 
+				"export", 7) == 0 || ft_strncmp(cmnd[0], "unset", 6) == 0
 			|| ft_strncmp(cmnd[0], "exit", 5) == 0));
 }

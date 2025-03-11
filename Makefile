@@ -10,7 +10,14 @@ SRC = src/main.c \
 	src/env_build_in.c \
 	src/automata.c \
 	src/exe.c \
-	src/builtins.c \
+	src/builtins/builtins.c \
+	src/builtins/ft_cd.c \
+	src/builtins/ft_echo.c \
+	src/builtins/ft_env.c \
+	src/builtins/ft_exit.c \
+	src/builtins/ft_export.c \
+	src/builtins/ft_pwd.c \
+	src/builtins/ft_unset.c \
 
 INCLUDE = -I libft -I.
 
