@@ -60,5 +60,3 @@ re: fclean all
 # si solo 'export' imprimir las variables exportadas
 #bash-3.2$ echo < 1 | echo < 2 | echo < 3
 #    bash: echo: write error: Broken pipe //meter un if en ecchooo??
-# guardar $PWD (cuado haces cd) 
-

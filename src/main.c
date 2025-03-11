@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/12 00:12:18 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/12 00:44:35 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ int	main(int argc, char **argv, char **env)
 	tokens->content = ft_strdup("0");
 	while (1)
 	{
-		line = readline("minishell ~ ");
+		line = readline(ft_strjoin(getcwd(NULL, 0), " ~ "));
 		if (!line)
 			break ;
 		if (line[0] == '\0' || ft_strtrim(line, " \t\n\r\f\v")[0] == '\0')
