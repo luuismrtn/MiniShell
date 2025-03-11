@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/11 00:46:20 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/11 01:21:02 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,7 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 		free(args);
 		return ;
 	}
-	signals('c', tokens);
+	signals('c');
 	if (ft_strncmp(args[0] , "./minishell", 12) == 0) //
 		ign_signal();
 	pid = fork();
@@ -243,8 +243,8 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 		exit(EXIT_FAILURE);
 	}
 	waitpid(pid, &status, 0); 
-	change_question_mark(*tokens, WEXITSTATUS(status));
-	signals('f', tokens);
+	exit_num = WEXITSTATUS(status);
+	signals('f');
 	close(fd_in);
 	free_array(args);
 }
@@ -309,7 +309,7 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 	}
 	if (num_commands == 1)
 	{
-		signals('c', tokens);
+		signals('c');
 		if (ft_strncmp(args[0] , "./minishell", 12) == 0)
 		{
 			ign_signal();
@@ -344,9 +344,9 @@ int	first_command(char **env, t_token **tokens, int num_commands, int *count)
 			close(fds[0]);
 		if (fds[1] != STDOUT_FILENO)
 			close(fds[1]);
-		waitpid(pid, &status, 0); 
-		change_question_mark(*tokens, WEXITSTATUS(status));
-		signals('f', tokens);
+		waitpid(pid, &status, 0);
+		exit_num = WEXITSTATUS(status);
+		signals('f');
 		return (STDOUT_FILENO);
 	}
 	else

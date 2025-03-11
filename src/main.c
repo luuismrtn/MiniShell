@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/11 00:56:17 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/11 01:20:29 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	handle_signal_child(int sig)
 		return ;
 }
 
-void	signals(char c, t_token **tokens)
+void	signals(char c)
 {
 	struct sigaction	sa;
 
@@ -140,7 +140,7 @@ int	main(int argc, char **argv, char **env)
 	tokens->env_mshell = env_buildin(env);
 	if (ft_read_history(HISTORY_FILE) == ERROR)
 		return (ERROR);
-	signals('f', &tokens);
+	signals('f');
 	tokens->content = ft_strdup("0");
 	while (1)
 	{

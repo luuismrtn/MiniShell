@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:21:08 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/10 23:15:34 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/11 01:19:50 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,7 @@ void	ft_exit(t_token *tokens, char **arg)
 		if (exit_num < 0 || exit_num > 255)
 		{
 			printf("exit: %s\n", tokens->content);
-			exit(get_question_mark(tokens));
+			exit(exit_num);
 		}
 		else
 			exit(exit_num);

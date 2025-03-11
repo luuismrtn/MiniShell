@@ -330,9 +330,7 @@ static void	handle_env(t_token **tokens, char *input, int *i)
 	if (input[*i] == '?')
 	{
 		(*i)++;
-		printf("CONTENT: %s\n", (*tokens)->content);
-		var_name = (*tokens)->content;
-		printf("var_name: %s\n", var_name);
+		var_name = ft_itoa(exit_num);
 		add_token(tokens, T_ENV, var_name);
 		return ;
 	}

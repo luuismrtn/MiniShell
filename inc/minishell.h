@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/11 00:35:33 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/11 01:21:21 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,13 +96,8 @@ void					ft_exit(t_token *tokens, char **arg);
 void					ft_env(t_env *env);
 
 //	SIGNALS
-void					signals(char c, t_token **tokens);
+void					signals(char c);
 void					ign_signal(void);
-
-
-//  QUESTION_MARK
-void					change_question_mark(t_token *tokens, int status);
-int						get_question_mark(t_token *tokens);
 
 int						main2(char *string, t_token *tokens);
 

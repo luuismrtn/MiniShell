@@ -11,7 +11,6 @@ SRC = src/main.c \
 	src/automata.c \
 	src/exe.c \
 	src/builtins.c \
-	src/question_mark.c \
 
 INCLUDE = -I libft -I.
 
