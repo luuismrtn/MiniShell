@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/12 16:36:21 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/12 17:12:16 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,13 @@ char	**join_env(t_env *env_mshell)
 	i = 0;
 	while (env_mshell != NULL)
 	{
-		env[i] = ft_strjoin(env_mshell->name, "=");
-		env[i] = ft_strjoin(env[i], env_mshell->content);
+		if (env_mshell->content == NULL)
+			env[i] = ft_strjoin(env_mshell->name, "");
+		else
+		{
+			env[i] = ft_strjoin(env_mshell->name, "=");
+			env[i] = ft_strjoin(env[i], env_mshell->content);
+		}
 		env_mshell = env_mshell->next;
 		i++;
 	}

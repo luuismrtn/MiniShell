@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:21:08 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/12 16:51:39 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/12 16:54:47 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void modify_pwd(t_token **tokens, char *var, char *dir)
 		return;
 	new_var->name = ft_strdup(var);
 	path = ft_strjoin("/", dir);
-	new_var->content = ft_strjoin(getenv("HOME"), path);
+	new_var->content = ft_strjoin(search_path(join_env((*tokens)->env_mshell), "HOME")[1], path);
 	free (path);
 	if (!new_var->content)
 		return (free(new_var));
