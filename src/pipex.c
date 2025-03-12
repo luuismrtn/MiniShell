@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/12 14:40:03 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/12 16:31:43 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -449,8 +449,10 @@ int	pipex(char *argv_str, t_token *tokens)
 		{
 			printf("count bucle middle: %d\n", count);
 			fd_in = middle_command(&count, &tokens, fd_in);
+			count++;
 			i++;
 		}
+		printf("count final: %d\n", count);
 		if (i < num_commands)
 			final_command(&count, &tokens, fd_in);
 		i = 0;

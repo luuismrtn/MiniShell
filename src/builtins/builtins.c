@@ -6,13 +6,29 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:21:08 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/12 00:21:45 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/12 16:51:39 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-void modify_pwd(t_token **tokens, char *var, char *dir) //if dir = .. (borrar enterior)
+int count_last_char(char *str, char c)
+{
+	int i;
+	int sol;
+
+	sol = 0;
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == c)
+			sol = i;
+		i++;
+	}
+	return sol;
+}
+
+void modify_pwd(t_token **tokens, char *var, char *dir)
 {
 	t_env *aux;
 	t_env *new_var;
@@ -21,21 +37,27 @@ void modify_pwd(t_token **tokens, char *var, char *dir) //if dir = .. (borrar en
 
 	if (ft_strncmp(dir, ".", 2) == 0)
 		return;
-	// if (ft_strncmp(dir, "..", 2) == 0)
-	// {
-		
-	// }
 	aux = (*tokens)->env_mshell;
 	while (aux)
 	{
-		if (strncmp(aux->name, var, strlen(var)) == 0)
+		if (ft_strncmp(aux->name, var, ft_strlen(var)) == 0)
 		{
-			path = ft_strjoin("/", dir);
-			new_pwd = ft_strjoin(aux->content, path);
-			free (path);
-			free (aux->content);
-			aux->content = new_pwd;
-			printf("modify pwd %s\n", aux->content);
+			if (ft_strncmp(dir, "..", 3) == 0)
+			{
+				new_pwd = ft_substr(aux->content, 0, count_last_char(aux->content, '/'));
+				free(aux->content);
+				aux->content = new_pwd;
+				printf("modify pwd %s\n", aux->content);
+			}
+			else
+			{
+				path = ft_strjoin("/", dir);
+				new_pwd = ft_strjoin(aux->content, path);
+				free (path);
+				free (aux->content);
+				aux->content = new_pwd;
+				printf("modify pwd %s\n", aux->content);
+			}
 			return;
 		}
 		aux = aux->next;

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:54 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/12 15:09:03 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/12 16:39:12 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	ft_cd(char **args, t_token **tokens)
 	path = args[1];
 	if (path == NULL)
 	{
-		path = getenv("HOME");
+		path = search_path(join_env((*tokens)->env_mshell), "HOME")[1];
 		if (path == NULL || chdir(path) != 0)
 		{
 			exit_num = 1;

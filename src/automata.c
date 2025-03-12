@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/10 23:29:30 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/12 16:31:19 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,10 +139,7 @@ char	**build_command_string(t_token *tokens, int *count)
 	while (aux_move > 0)
 	{
 		if (temp_tokens->type == T_PIPE)
-		{
-			(*count)++;
 			aux_move--;
-		}
 		temp_tokens = temp_tokens->next;
 	}
 	printf("count comds; %d\n", (*count));

@@ -6,13 +6,13 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/12 00:38:29 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/12 16:36:21 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-static char	**search_path(char **env, char *comnd)
+char	**search_path(char **env, char *comnd)
 {
 	char	**paths;
 	char	*aux;
