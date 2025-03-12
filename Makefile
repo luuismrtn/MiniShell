@@ -56,3 +56,4 @@ re: fclean all
 # TODOLIST
 # revisar si dejamos fd's abiertos
 # el heredoc (+ meterlo tb en el pipex)
+# Ver lo de eliminar carpeta

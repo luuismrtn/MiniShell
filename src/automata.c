@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/12 16:31:19 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/12 20:23:08 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,22 @@ int	automata(t_token *tokens)
 		return (0);
 	}
 	return (1);
+}
+
+void	handle_heredoc(char **content)
+{
+	char	*line;
+	char	*r_lines;
+
+	line = readline("> ");
+	r_lines = ft_strjoin(line, "\n");
+	while ((ft_strlen(line) != ft_strlen(*content)) || ft_strcmp(line, *content) != 0)
+	{
+		line = readline("> ");
+		r_lines = ft_strjoin(r_lines, line);
+		r_lines = ft_strjoin(r_lines, "\n");
+	}
+	printf("r_lines: %s\n", r_lines);
 }
 
 void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
@@ -102,6 +118,10 @@ void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 			if ((*fds)[0] != STDIN_FILENO)
 				close((*fds)[0]);
 			(*fds)[0] = new_fd;
+		}
+		else if (temp_tokens->type == T_HERE_DOC && temp_tokens->next)
+		{
+			handle_heredoc(&temp_tokens->next->content);
 		}
 		else if (temp_tokens && temp_tokens->type == T_PIPE)
 			break ;
