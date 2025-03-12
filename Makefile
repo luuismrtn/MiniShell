@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror  -g3 #-fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -56,7 +56,3 @@ re: fclean all
 # TODOLIST
 # revisar si dejamos fd's abiertos
 # el heredoc (+ meterlo tb en el pipex)
-# si solo 'export' imprimir las variables exportadas
-#bash-3.2$ echo < 1 | echo < 2 | echo < 3
-#    bash: echo: write error: Broken pipe //meter un if en ecchooo??
-
