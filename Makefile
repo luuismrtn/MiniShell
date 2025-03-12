@@ -61,14 +61,6 @@ re: fclean all
 #bash-3.2$ echo < 1 | echo < 2 | echo < 3
 #    bash: echo: write error: Broken pipe //meter un if en ecchooo??
 
-# BUILTINS:
-# echo "$" --> $
-# echo $?HELLO --> 0HELLO
-# cd $PWD hi --> too many arguments
-# exit -100 --> exit code = 156
-# echo '' --> exit code = 0
-# Interpretar *
-
 # PIPES:
 
 # env | sort | grep -v SHLVL | grep -v ^_ 

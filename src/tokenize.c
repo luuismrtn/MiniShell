@@ -153,7 +153,9 @@ void	clean_tokens(t_token **tokens)
 	{
 		if (aux->type != T_SPACE && aux->next->type != T_SPACE)
 		{
-			if (aux->type == aux->next->type)
+			if (aux->type == aux->next->type || (aux->type == T_WORD
+					&& aux->next->type == T_ENV) || (aux->type == T_ENV
+					&& aux->next->type == T_WORD))
 			{
 				aux->content = ft_strjoin(aux->content, aux->next->content);
 				aux->next = aux->next->next;
@@ -275,7 +277,7 @@ static void	handle_quotes(t_token **tokens, char *input, int *i,
 				(*i)++;
 				continue ;
 			}
-			if (input[*i] == '$')
+			if (input[*i] == '$' && input[*i + 1] != '\"')
 			{
 				(*i)++;
 				len_var = ft_len_var_name(input, *i);

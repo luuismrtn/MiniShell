@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:54 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/12 00:19:29 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/12 15:09:03 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,12 @@ void	ft_cd(char **args, t_token **tokens)
 {
 	char	*path;
 
+	if (args[1] && args[2])
+	{
+		exit_num = 1;
+		ft_putstr_fd("cd: too many arguments\n", 2);
+		return ;
+	}
 	path = args[1];
 	if (path == NULL)
 	{

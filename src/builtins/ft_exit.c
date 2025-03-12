@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:17:44 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/12 00:21:53 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/12 14:31:20 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ static int	arg_isdigit(char *str)
 	i = 0;
 	while (str[i])
 	{
+		if (i == 0 && (str[i] == '-' || str[i] == '+') && str[i + 1])
+			i++;
 		if (!ft_isdigit(str[i]))
 			return (0);
 		i++;
