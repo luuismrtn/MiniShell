@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/12 16:36:34 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/13 17:04:50 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ t_token					*tokenize(char *input, t_token *tokens);
 void					delete_tokens(t_token **tokens);
 void					clean_tokens(t_token **tokens);
 int						automata(t_token *tokens);
+int						ft_len_var_name(char *str, int i);
 
 // ENV
 t_env					*env_buildin(char **env);
