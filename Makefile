@@ -60,4 +60,3 @@ re: fclean all
 # 	aldferna@c1r13s6:~/Desktop/1/2/3$ rm -rf ../../../1
 # 	aldferna@c1r13s6:~/Desktop/1/2/3$ pwd
 # 	/home/aldferna/Desktop/1/2/3
-# modify pwd: tenemos solo '..' pero puede ser ../../../ etc
