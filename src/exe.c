@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/12 17:12:16 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/13 21:34:43 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	exe(t_token *tokens, char **comnd, int stdout)
 	}
 	dup2(stdout, STDOUT_FILENO);
 	close(stdout);
-	printf("%s: command not found\n", comnd[0]); // perroor
+	printf("%s: command not found\n", comnd[0]);
 	exit(127);
 }
 

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:21:08 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/13 21:28:45 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/13 21:34:03 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,6 @@ void	modify_pwd(t_token **tokens, char *var, char *dir)
 				new_pwd = get_env_content((*tokens)->env_mshell, "HOME");
 				free(aux->content);
 				aux->content = new_pwd;
-				printf("modify pwd %s\n", aux->content);
 			}
 			else
 			{
@@ -92,7 +91,6 @@ void	modify_pwd(t_token **tokens, char *var, char *dir)
 				free(path);
 				free(aux->content);
 				aux->content = new_pwd;
-				printf("modify pwd %s\n", aux->content);
 			}
 			return ;
 		}

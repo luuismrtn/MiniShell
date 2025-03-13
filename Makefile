@@ -57,3 +57,6 @@ re: fclean all
 # revisar si dejamos fd's abiertos
 # el heredoc: expansion: boleano comillas o no comillas en el delimitador
 
+# echo "$? $HOME"
+# /home/luis-la /home/luis-la
+# deberia dar --> 0 /home/luis-la

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:16 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/12 14:35:55 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/13 22:29:47 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ void	ft_echo(char **args)
 {
 	int	i;
 	int	n;
+
+	print_2(args);
 
 	if (!args[1])
 	{

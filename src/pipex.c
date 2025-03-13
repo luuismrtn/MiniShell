@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/13 21:18:11 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/13 21:34:52 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,7 +214,6 @@ int	first_command(t_token **tokens, int num_commands, int *count)
 	args = build_command_string(*tokens, count); //tokens
 	if (!args || !args[0])
 		return (ERROR);
-	printf("\n\n\n");
 	if (is_builtin(args) == 1 && num_commands == 1)
 	{
 		original_stdin = -1;
