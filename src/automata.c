@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   automata.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/12 20:23:08 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/13 15:23:06 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,20 +49,41 @@ int	automata(t_token *tokens)
 	return (1);
 }
 
-void	handle_heredoc(char **content)
+void	handle_heredoc(char **content, int *fd)
 {
 	char	*line;
 	char	*r_lines;
+	char 	*temp;
+	int 	connect[2];
 
 	line = readline("> ");
+	if (!line)
+		return;
 	r_lines = ft_strjoin(line, "\n");
 	while ((ft_strlen(line) != ft_strlen(*content)) || ft_strcmp(line, *content) != 0)
 	{
+		free(line);
 		line = readline("> ");
-		r_lines = ft_strjoin(r_lines, line);
-		r_lines = ft_strjoin(r_lines, "\n");
+		if (!line || ft_strcmp(line, *content) == 0)
+			break;
+		temp = ft_strjoin(r_lines, line);
+		free(r_lines);
+		r_lines = ft_strjoin(temp, "\n");
+		free(temp);
 	}
 	printf("r_lines: %s\n", r_lines);
+	if (pipe(connect) == -1)
+	{
+		perror("pipe");
+		return;
+	}
+	write(connect[1], r_lines, ft_strlen(r_lines));
+	if ((*fd) != STDIN_FILENO)
+		close((*fd));
+	(*fd) = connect[0];
+	close(connect[1]);
+	free(line);
+	free(r_lines);
 }
 
 void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
@@ -121,7 +142,7 @@ void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 		}
 		else if (temp_tokens->type == T_HERE_DOC && temp_tokens->next)
 		{
-			handle_heredoc(&temp_tokens->next->content);
+			handle_heredoc(&temp_tokens->next->content, fds[0]);
 		}
 		else if (temp_tokens && temp_tokens->type == T_PIPE)
 			break ;
@@ -182,7 +203,7 @@ char	**build_command_string(t_token *tokens, int *count)
 		if (temp_tokens && temp_tokens->type == T_PIPE)
 			break ;
 		if (temp_tokens->type == T_REDIR_RIGHT || temp_tokens->type == T_APPEND
-			|| temp_tokens->type == T_REDIR_LEFT)
+			|| temp_tokens->type == T_REDIR_LEFT || temp_tokens->type == T_HERE_DOC)
 		{
 			temp_tokens = temp_tokens->next->next;
 			continue ;
