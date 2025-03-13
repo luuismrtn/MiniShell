@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   automata.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/13 18:18:52 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/13 21:18:41 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ int	automata(t_token *tokens)
 	}
 	else
 	{
-		printf("correct\n\n");
 		return (0);
 	}
 	return (1);
@@ -146,7 +145,6 @@ void	handle_heredoc(char **eof, int *fd, t_token *tokens)
 		return;
 	if (ft_strncmp(line, *eof, ft_strlen(*eof) + 1) == 0)
 	{
-		printf("aqui\n");
 		write_in_pipe("", fd);
 		return;
 	}
@@ -268,9 +266,7 @@ char	**build_command_string(t_token *tokens, int *count)
 			aux_move--;
 		temp_tokens = temp_tokens->next;
 	}
-	printf("count comds; %d\n", (*count));
 	num_args = count_args(temp_tokens);
-	printf("num_Args %d\n", num_args);
 	args = malloc((num_args + 1) * sizeof(char *));
 	if (!args)
 		return (NULL);

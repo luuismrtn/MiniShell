@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:21:08 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/13 20:16:02 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/13 21:28:45 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ char	*handle_pwd_back(char *dir, char *pwd)
 	int		levels_up;
 	int		i;
 
+	if (getcwd(NULL, 0) == NULL)
+		return ft_strjoin(pwd, ft_strjoin("/", dir));
 	levels_up = 0;
 	components = ft_split(dir, '/');
 	i = 0;
@@ -45,7 +47,6 @@ char	*handle_pwd_back(char *dir, char *pwd)
 		i++;
 	}
 	i = ft_strlen(pwd);
-	printf("PWD: %s\n", pwd);
 	while (i > 0 && levels_up >= 0)
 	{
 		if (pwd[i] == '/')
@@ -76,6 +77,13 @@ void	modify_pwd(t_token **tokens, char *var, char *dir)
 				new_pwd = handle_pwd_back(dir, aux->content);
 				free(aux->content);
 				aux->content = new_pwd;
+			}
+			else if (ft_strnstr(dir, "HOME", 4))
+			{
+				new_pwd = get_env_content((*tokens)->env_mshell, "HOME");
+				free(aux->content);
+				aux->content = new_pwd;
+				printf("modify pwd %s\n", aux->content);
 			}
 			else
 			{
@@ -111,7 +119,7 @@ void	handle_builtin(char **args, t_token *tokens)
 	else if (ft_strncmp(args[0], "cd", 3) == 0)
 		ft_cd(args, &tokens);
 	else if (ft_strncmp(args[0], "pwd", 4) == 0)
-		ft_pwd();
+		ft_pwd(tokens);
 	else if (ft_strncmp(args[0], "export", 7) == 0)
 		ft_export(tokens, args);
 	else if (ft_strncmp(args[0], "unset", 6) == 0)

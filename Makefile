@@ -56,7 +56,4 @@ re: fclean all
 # TODOLIST
 # revisar si dejamos fd's abiertos
 # el heredoc: expansion: boleano comillas o no comillas en el delimitador
-# Ver lo de eliminar carpeta --> se queda en bucle infinito
-# 	aldferna@c1r13s6:~/Desktop/1/2/3$ rm -rf ../../../1
-# 	aldferna@c1r13s6:~/Desktop/1/2/3$ pwd
-# 	/home/aldferna/Desktop/1/2/3
+

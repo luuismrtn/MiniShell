@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/12 18:37:31 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/13 21:18:11 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ void modify_shlvl(t_token **tokens, char *var)
 			shlvl = ft_atoi(aux->content) + 1;
 			free(aux->content);
 			aux->content = ft_itoa(shlvl);
-			printf("AQUII %s\n", aux->content);
 			return;
 		}
 		aux = aux->next;
@@ -63,7 +62,6 @@ int	middle_command(int *count, t_token **tokens, int fd_in)
 	int		connect[2];
 	char 	**args;
 	pid_t	pid;
-	int i;
 	int original_stdout;
 
 	fds[0] = STDIN_FILENO;
@@ -72,12 +70,7 @@ int	middle_command(int *count, t_token **tokens, int fd_in)
 	args = build_command_string((*tokens), count);
 	if (!args || !args[0])
 		return (ERROR);
-	i = 0;
-	while (args[i])
-	{
-		printf("full mid command [%d] %s\n", i, args[i]);
-		i++;
-	}
+
 	if (pipe(connect) == -1)
 	{
 		perror("pipe");
@@ -145,7 +138,6 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 	pid_t	pid;
 	int 	fds[2];
 	char 	**args;
-	int 	i;
 	int		original_stdout;
 	int		status;
 
@@ -155,12 +147,6 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 	args = build_command_string((*tokens), count);
 	if (!args || !args[0])
 		return ;
-	i = 0;
-	while (args[i])
-	{
-		printf("full final command [%d] %s\n", i, args[i]);
-		i++;
-	}
 	signals('c');
 	if (ft_strncmp(args[0] , "./minishell", 12) == 0)
 		ign_signal();
@@ -196,7 +182,6 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 		{
 			handle_builtin(args, *tokens);
 			close(fds[1]);
-			printf("salgo\n");
 			exit(0);
 		}
 		else
@@ -217,8 +202,8 @@ int	first_command(t_token **tokens, int num_commands, int *count)
 	int		fds[2];
 	int		connect[2];
 	char	**args;
-	int		i;
 	pid_t	pid;
+	int 	i;
 	int		original_stdin;
 	int		original_stdout;
 	int status;
@@ -229,12 +214,6 @@ int	first_command(t_token **tokens, int num_commands, int *count)
 	args = build_command_string(*tokens, count); //tokens
 	if (!args || !args[0])
 		return (ERROR);
-	i = 0;
-	while (args[i])
-	{
-		printf("full command [%d] %s\n", i, args[i]);
-		i++;
-	}
 	printf("\n\n\n");
 	if (is_builtin(args) == 1 && num_commands == 1)
 	{
@@ -353,7 +332,6 @@ int	first_command(t_token **tokens, int num_commands, int *count)
 			{
 				handle_builtin(args, *tokens);
 				close(fds[1]);
-				printf("salgo\n");
 				exit(0);
 			}
 			else
@@ -385,7 +363,6 @@ int	pipex(char *argv_str, t_token *tokens)
 	if (!env)
 		return (ERROR);
 	num_commands = num_pipes(argv_str) + 1;
-	printf("num_commands: %d\n", num_commands);
 	count = 0;
 	fd_in = first_command(&tokens, num_commands, &count);
 	if (fd_in < 0)
@@ -404,16 +381,13 @@ int	pipex(char *argv_str, t_token *tokens)
 	if (num_commands > 1)
 	{
 		count = 1;
-		printf("count: %d\n", count);
 		i = 1;
 		while (i < num_commands - 1)
 		{
-			printf("count bucle middle: %d\n", count);
 			fd_in = middle_command(&count, &tokens, fd_in);
 			count++;
 			i++;
 		}
-		printf("count final: %d\n", count);
 		if (i < num_commands)
 			final_command(&count, &tokens, fd_in);
 		i = 0;

@@ -263,7 +263,6 @@ static void	handle_quotes(t_token **tokens, char *input, int *i,
 		x = 0;
 		j = 0;
 		data = len_in_quotes(type, input, *i, tokens);
-		printf("data.len = %d\n", data.len);
 		in_quotes = malloc((data.len + 1) * sizeof(char));
 		if (!in_quotes)
 			return ;
@@ -461,7 +460,6 @@ int	has_pipe(t_token *tokens)
 
 int	main2(char *string, t_token *tokens)
 {
-	t_token	*aux;
 	t_token	*aux1;
 	char	*input;
 
@@ -473,21 +471,15 @@ int	main2(char *string, t_token *tokens)
 		return (ERROR);
 	}
 	tokens = tokenize(input, tokens);
-	aux = tokens->next;
-	while (aux != NULL)
-	{
-		printf("Token type: %d, content: %s\n", aux->type, aux->content);
-		aux = aux->next;
-	}
-	aux1 = tokens->next;
 	clean_tokens(&tokens);
 	printf("\n\n");
+	aux1 = tokens;
 	while (aux1 != NULL)
 	{
 		printf("C_Token type: %d, Content: %s\n", aux1->type, aux1->content);
 		aux1 = aux1->next;
 	}
 	if (automata(tokens) == 0)
-		pipex(input, tokens);
+		pipex(input, tokens);	
 	return (0);
 }
