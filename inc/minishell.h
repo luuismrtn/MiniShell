@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/13 21:07:30 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/14 17:18:55 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ char					**build_command_string(t_token *tokens, int *count);
 
 //  BUILTINS
 void					handle_builtin(char **args, t_token *tokens);
-void					modify_pwd(t_token **tokens, char *var, char *dir);
+void					modify_pwd(t_token **tokens, char *dir);
 void					ft_cd(char **args, t_token **tokens);
 void					ft_echo(char **args);
 void					ft_env(t_env *env);
@@ -117,5 +117,7 @@ void					free_array(char **array);
 // UTILS
 char					*get_pwd(t_token *tokens);
 char					*get_env_content(t_env *env, char *name);
+void					get_env_content_and_replace(t_token **tokens, char *name,
+							char *content);
 
 #endif

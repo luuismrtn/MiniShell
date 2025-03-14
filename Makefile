@@ -55,8 +55,33 @@ re: fclean all
 
 # TODOLIST
 # revisar si dejamos fd's abiertos
-# el heredoc: expansion: boleano comillas o no comillas en el delimitador
+# el heredoc: expansion: boleano comillas/no comillas en el delimitador
+
+
+
 
 # echo "$? $HOME"
 # /home/luis-la /home/luis-la
 # deberia dar --> 0 /home/luis-la
+
+#---------------------------------------------------------------------
+#escribe siempre que se hace cd (OKK)
+#/home/aldferna/Desktop/MiniShell ~ cd
+#/home/aldferna/Desktop/MiniShell//home/aldferna ~ cd
+#/home/aldferna/Desktop/MiniShell//home/aldferna//home/aldferna ~ cd
+
+
+#borra una de mas cd ../../../  (OKK, guay estoooo, solo el >=)
+#/home/aldferna/Desktop/MiniShell/1/2/3 ~ cd ../../../
+#/home/aldferna/Desktop ~ ls
+#1  inc  libft  Makefile  minishell  src
+
+
+# cd .. hasta que si existe, entonces actualiza el pwd (no sigue añadiendo ../, ni da error)
+#/home/aldferna/Desktop/MiniShell/1/2/3/.../../../../../../../../../../../.. ~ cd
+#/home/aldferna/Desktop/MiniShell/1/2/3/.../../../../../../../../../../../..//home/aldferna ~ cd
+#/home/aldferna/Desktop/MiniShell/1/2/3/.../../../../../../../../../../../..//home/aldferna//home/aldferna ~ pwd
+#/home/aldferna
+
+#error si mas de dos puntoooos:
+#/home/aldferna/Desktop/MiniShell/1/2/3/.../../
