@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:54 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/14 17:59:37 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/14 18:04:38 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	modify_pwd(t_token **tokens, char *dir)
 	{
 		if (ft_strncmp(aux->name, "PWD", ft_strlen("PWD")) == 0)
 		{
-			if (ft_strnstr(dir, "..", 2)) //aqui paraa los de ... ?
+			if (ft_strnstr(dir, "..", 2))
 			{
 				new_pwd = handle_pwd_back(dir, aux->content);
 				free(aux->content);
@@ -206,7 +206,6 @@ static void	execute_cd(char *input_path, t_token **tokens)
 		if (chdir(desired_path) == 0)
 		{
 			get_env_content_and_replace(tokens, "PWD", desired_path);
-			//return; //quitad ahora
 		}
 		else
 		{

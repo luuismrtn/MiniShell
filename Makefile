@@ -57,31 +57,34 @@ re: fclean all
 # revisar si dejamos fd's abiertos
 # el heredoc: expansion: boleano comillas/no comillas en el delimitador
 
-
-
-
+#PROBLEMAS EXPANSION
 # echo "$? $HOME"
 # /home/luis-la /home/luis-la
 # deberia dar --> 0 /home/luis-la
+#      PERO esto sii ok: Input: echo "$USER $?"
 
-#---------------------------------------------------------------------
-#escribe siempre que se hace cd (OKK)
-#/home/aldferna/Desktop/MiniShell ~ cd
-#/home/aldferna/Desktop/MiniShell//home/aldferna ~ cd
-#/home/aldferna/Desktop/MiniShell//home/aldferna//home/aldferna ~ cd
+#mas de 2 normales , el $? no lo pilla  (si es echo "$? $USER $?" si hace 'aldferna 0')
+# /home/aldferna/Desktop/MiniShell ~ echo "$? $HOME $PWD"
+# Input: echo "$? $HOME $PWD"
+# Token type: 0, content: echo
+# Token type: 8, content:  
+# Token type: 0, content: /home/aldferna/Desktop/MiniShell  
 
+#las normales solo pilla la ultima
+# /home/aldferna/Desktop/MiniShell ~ echo "$USER $PWD"
+# Token type: 0, content: echo
+# Token type: 8, content:  
+# Token type: 0, content: /home/aldferna/Desktop/MiniShell 
+# /home/aldferna/Desktop/MiniShell ~ echo "$USER $USER"
+# Token type: 0, content: echo
+# Token type: 8, content:  
+# Token type: 0, content: aldferna 
 
-#borra una de mas cd ../../../  (OKK, guay estoooo, solo el >=)
-#/home/aldferna/Desktop/MiniShell/1/2/3 ~ cd ../../../
-#/home/aldferna/Desktop ~ ls
-#1  inc  libft  Makefile  minishell  src
+#EN HEREDOC: solo expande la ultima
+# C_Token type: 0, Content: cat
+# C_Token type: 5, Content: <<
+# C_Token type: 0, Content: h
+# > $? $USER $PWD
+# > h
+# $? $USER /home/aldferna/Desktop/MiniShell
 
-
-# cd .. hasta que si existe, entonces actualiza el pwd (no sigue añadiendo ../, ni da error)
-#/home/aldferna/Desktop/MiniShell/1/2/3/.../../../../../../../../../../../.. ~ cd
-#/home/aldferna/Desktop/MiniShell/1/2/3/.../../../../../../../../../../../..//home/aldferna ~ cd
-#/home/aldferna/Desktop/MiniShell/1/2/3/.../../../../../../../../../../../..//home/aldferna//home/aldferna ~ pwd
-#/home/aldferna
-
-#error si mas de dos puntoooos:
-#/home/aldferna/Desktop/MiniShell/1/2/3/.../../

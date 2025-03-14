@@ -458,19 +458,52 @@ int	has_pipe(t_token *tokens)
 	return (0);
 }
 
-int	main2(char *string, t_token *tokens)
-{
-	char	*input;
+// int	main2(char *string, t_token *tokens)
+// {
+// 	char	*input;
 
-	input = string;
-	if (check_quotes_closed(input) == ERROR)
-	{
-		printf("Error: quotes not closed\n");
-		return (ERROR);
-	}
-	tokens = tokenize(input, tokens);
-	clean_tokens(&tokens);
-	if (automata(tokens) == 0)
-		pipex(input, tokens);	
-	return (0);
+// 	input = string;
+// 	if (check_quotes_closed(input) == ERROR)
+// 	{
+// 		printf("Error: quotes not closed\n");
+// 		return (ERROR);
+// 	}
+// 	tokens = tokenize(input, tokens);
+// 	clean_tokens(&tokens);
+// 	if (automata(tokens) == 0)
+// 		pipex(input, tokens);	
+// 	return (0);
+// }
+
+int     main2(char *string, t_token *tokens)
+{
+        t_token *aux;
+        t_token *aux1;
+        char    *input;
+
+        input = string;
+        printf("Input: %s\n", input);
+        if (check_quotes_closed(input) == ERROR)
+        {
+                printf("Error: quotes not closed\n");
+                return (ERROR);
+        }
+        tokens = tokenize(input, tokens);
+        aux = tokens->next;
+        while (aux != NULL)
+        {
+                printf("Token type: %d, content: %s\n", aux->type, aux->content);
+                aux = aux->next;
+        }
+        aux1 = tokens->next;
+        clean_tokens(&tokens);
+        printf("\n\n");
+        while (aux1 != NULL)
+        {
+                printf("C_Token type: %d, Content: %s\n", aux1->type, aux1->content);
+                aux1 = aux1->next;
+        }
+        if (automata(tokens) == 0)
+                pipex(input, tokens);
+        return (0);
 }
