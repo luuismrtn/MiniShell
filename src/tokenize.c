@@ -198,6 +198,7 @@ t_result	len_in_quotes(t_token_value type, char *input, int i,
 	int			len_var_name;
 	char		*var_name;
 	t_env		*current_env_list;
+	char *temp;
 
 	count = 0;
 	ft_memset(&data, 0, sizeof(t_result));
@@ -221,8 +222,19 @@ t_result	len_in_quotes(t_token_value type, char *input, int i,
 					if (ft_strncmp(current_env_list->name, var_name,
 							len_var_name) == SUCCESS)
 					{
-						data.content = ft_strdup(current_env_list->content);
-						count += ft_strlen(data.content);
+						if (data.content == NULL)
+						{
+							data.content = ft_strdup(current_env_list->content);
+							count += ft_strlen(data.content);
+						}
+						else
+						{
+							count =+ ft_strlen(ft_strdup(current_env_list->content));
+							temp = ft_strjoin(data.content, ft_strdup(current_env_list->content));
+							free(data.content);
+							data.content = temp;
+						}
+						//count += ft_strlen(data.content);
 						break ;
 					}
 					current_env_list = current_env_list->next;

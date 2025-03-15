@@ -88,3 +88,4 @@ re: fclean all
 # > h
 # $? $USER /home/aldferna/Desktop/MiniShell
 
+#Input: echo "$ " ->> da cosas q no tiene q dar (quizas solo en MAC)
