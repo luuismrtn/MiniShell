@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:54 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/14 18:04:38 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/15 20:26:01 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,23 +142,23 @@ char *find_desired_path(char *pwd, char *dir)
 	components_dir = ft_split(dir, '/');
 	components_pwd = ft_split(pwd, '/');
 	i = 0;
-	while (components_dir && components_dir[i])
-	{
-		if (ft_strncmp(components_dir[i], "..", 3) == 0)
-			levels_up++;
-		i++;
-	}
-	i = 0;
 	while (components_pwd && components_pwd[i])
 	{
 		if (ft_strncmp(components_pwd[i], "..", 3) == 0)
 			levels_up++;
 		i++;
 	}
+	i = 0;
+	levels_up *= 2;
+	while (components_dir && components_dir[i])
+	{
+		if (ft_strncmp(components_dir[i], "..", 3) == 0)
+			levels_up++;
+		i++;
+	}
 	free_array(components_dir);
 	free_array(components_pwd);
 	i = ft_strlen(pwd);
-	levels_up = (levels_up * 2) - 1;
 	while (i > 0 && levels_up > 0)
 	{
 		if (pwd[i] == '/')
