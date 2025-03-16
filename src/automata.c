@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   automata.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/13 21:34:31 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/16 20:54:47 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,15 @@ void expand_in_heredoc(char **line, t_token *tokens)
 	t_env *current_env_list;
 
 	i = 0;
+	content = NULL;
 	while (line[0][i])
 	{
 		if (line[0][i] == '$')
 		{
-			content = ft_substr(line[0], 0, i);
+			if (content == NULL)
+				content = ft_substr(line[0], 0, i);
+			else
+				content = ft_strjoin(temp, ft_substr(line[0], start_after_$, i - start_after_$));
 			i++;
 			if (line[0][i] == '?')
 			{

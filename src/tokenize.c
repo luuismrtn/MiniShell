@@ -190,7 +190,7 @@ int	ft_len_var_name(char *str, int i)
 	return (count);
 }
 
-t_result	len_in_quotes(t_token_value type, char *input, int i,
+/*t_result	len_in_quotes(t_token_value type, char *input, int i,
 		t_token **tokens)
 {
 	t_result	data;
@@ -229,7 +229,7 @@ t_result	len_in_quotes(t_token_value type, char *input, int i,
 						}
 						else
 						{
-							count =+ ft_strlen(ft_strdup(current_env_list->content));
+							count += ft_strlen(ft_strdup(current_env_list->content));
 							temp = ft_strjoin(data.content, ft_strdup(current_env_list->content));
 							free(data.content);
 							data.content = temp;
@@ -269,6 +269,7 @@ static void	handle_quotes(t_token **tokens, char *input, int *i,
 	t_result	data;
 	int			len_var;
 
+	printf("HANDLE_QUOTES\n");
 	(*i)++;
 	if (type == T_D_QUOTE)
 	{
@@ -315,6 +316,137 @@ static void	handle_quotes(t_token **tokens, char *input, int *i,
 	{
 		j = 0;
 		data = len_in_quotes(type, input, *i, tokens);
+		in_quotes = malloc((data.len + 1) * sizeof(char));
+		if (!in_quotes)
+			return ;
+		while (j < data.len && input[*i])
+		{
+			in_quotes[j++] = input[*i];
+			(*i)++;
+		}
+		in_quotes[j] = '\0';
+		if (input[*i] == '\'')
+			(*i)++;
+		if (j > 0)
+			add_token(tokens, T_WORD, in_quotes);
+		else
+			free(in_quotes);
+	}
+}*/
+
+t_result	content_in_quotes(t_token_value type, char *input, int i,
+		t_token **tokens)
+{
+	t_result	data;
+	int			len_var_name;
+	char		*var_name;
+	t_env		*current_env_list;
+	char *temp;
+	char *content;
+	int start;
+	char *var_content;
+	int count;
+	int there_is_expansion;
+
+	count = 0;
+	there_is_expansion = 0;
+	content = NULL;
+	ft_memset(&data, 0, sizeof(t_result));
+	if (type == T_D_QUOTE)
+	{
+		printf("aqui entra: %c\n", input[i]); //h
+		start = i; //h
+		while (input[i] && !(input[i] == '\"' && input[i - 1] != '\\'))
+		{
+			if (input[i] == '\\' && input[i + 1] == '\"')//PROBAR ESTOOO
+			{
+				i++; //=+ 2?
+				count++;
+			}
+			else if (input[i] == '$')
+			{
+				there_is_expansion = 1;
+				i++;
+				count++;
+				len_var_name = ft_len_var_name(input, i);
+				count += len_var_name;
+				var_name = ft_substr(input, i, len_var_name);
+				current_env_list = (*tokens)->env_mshell;
+				while (current_env_list != NULL)
+				{
+					if (ft_strncmp(current_env_list->name, var_name,
+							len_var_name) == SUCCESS)
+					{
+						var_content = ft_strdup(current_env_list->content);
+						if (content == NULL)
+						{
+							content = ft_substr(input, start, i - start - 1); //hola 
+							printf("content NULL; %s\n", content);
+							temp = ft_strjoin(content, var_content); //hola alda
+							free(content);
+							free(var_content);
+						}
+						else
+						{
+							content = ft_strjoin(temp, ft_substr(input, start, i - start - 1)); //hola alda q
+							printf("content NO-NULL; %s\n", content);
+							temp = ft_strjoin(content, var_content); //hola alda q alda
+							free(content);
+							free(var_content);
+						}
+						free(var_name);
+						break ;
+					}
+					current_env_list = current_env_list->next;
+				}
+				i += len_var_name - 1; //espacio despues de hola $USER
+				printf("i apunta despues bucle: %c\n", input[i]);
+				start = i + 1;
+			}
+			i++;
+			count++;
+		}
+		if (there_is_expansion == 1)
+			data.content = ft_strjoin(temp, ft_substr(input, start, i - start));
+		else
+			data.content = ft_substr(input, start, i - start);
+		printf("CONTENIDO FINAL: %s\n", data.content);
+		data.len = count;
+		printf("LEN FINAL: %d\n", data.len);
+	}
+	else if (type == T_S_QUOTE)
+	{
+		while (input[i] && !(input[i] == '\'' && input[i - 1] != '\\'))
+		{
+			count++;
+			i++;
+		}
+		data.len = count;
+	}
+	return (data);
+}
+
+static void	handle_quotes(t_token **tokens, char *input, int *i,
+		t_token_value type)
+{
+	char		*in_quotes;
+	int			j;
+	//int			x;
+	t_result	data;
+	//int			len_var;
+
+	printf("HANDLE_QUOTES\n");
+	(*i)++;
+	if (type == T_D_QUOTE)
+	{
+		data = content_in_quotes(type, input, *i, tokens);
+		add_token(tokens, T_WORD, data.content);
+		(*i) += data.len;
+	}
+	else if (type == T_S_QUOTE)
+	{
+		j = 0;
+		data = content_in_quotes(type, input, *i, tokens);
 		in_quotes = malloc((data.len + 1) * sizeof(char));
 		if (!in_quotes)
 			return ;
@@ -399,7 +531,10 @@ t_token	*tokenize(char *input, t_token *tokens)
 		else if (input[i] == '\'')
 			handle_quotes(&tokens, input, &i, T_S_QUOTE);
 		else if (input[i] == '\"')
+		{
 			handle_quotes(&tokens, input, &i, T_D_QUOTE);
+			printf("AQUI TOKENIZE\n");
+		}
 		else if (input[i] == '<' || input[i] == '>')
 			handle_redirections(&tokens, input, &i);
 		else if (input[i] == '|')

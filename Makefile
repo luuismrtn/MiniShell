@@ -58,17 +58,16 @@ re: fclean all
 # el heredoc: expansion: boleano comillas/no comillas en el delimitador
 
 #PROBLEMAS EXPANSION
-# echo "$? $HOME"
+# echo "$? $HOME"  --------->>>> el $?
 # /home/luis-la /home/luis-la
 # deberia dar --> 0 /home/luis-la
 #      PERO esto sii ok: Input: echo "$USER $?"
 
-#mas de 2 normales , el $? no lo pilla  (si es echo "$? $USER $?" si hace 'aldferna 0')
-# /home/aldferna/Desktop/MiniShell ~ echo "$? $HOME $PWD"
-# Input: echo "$? $HOME $PWD"
-# Token type: 0, content: echo
-# Token type: 8, content:  
-# Token type: 0, content: /home/aldferna/Desktop/MiniShell  
+#Input: echo "$ " ->> da cosas q no tiene q dar (quizas solo en MAC)
+
+
+#------------------------------------------------------------------------OK 
+#(lo dejo para mirar q siga funcionando cd este OK lo q queda)
 
 #las normales solo pilla la ultima
 # /home/aldferna/Desktop/MiniShell ~ echo "$USER $PWD"
@@ -80,6 +79,9 @@ re: fclean all
 # Token type: 8, content:  
 # Token type: 0, content: aldferna 
 
+#mirar: echo "hola $USER que tal $USER"
+#mirar: echo "hola $USER que tal $USER jeje"
+
 #EN HEREDOC: solo expande la ultima
 # C_Token type: 0, Content: cat
 # C_Token type: 5, Content: <<
@@ -87,5 +89,3 @@ re: fclean all
 # > $? $USER $PWD
 # > h
 # $? $USER /home/aldferna/Desktop/MiniShell
-
-#Input: echo "$ " ->> da cosas q no tiene q dar (quizas solo en MAC)
