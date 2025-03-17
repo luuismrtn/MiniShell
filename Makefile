@@ -53,6 +53,8 @@ re: fclean all
 # leaks con: echo hola
 # echo $?
 
+# echo "$?"
+
 # TODOLIST
 # revisar si dejamos fd's abiertos
 # el heredoc: expansion: boleano comillas/no comillas en el delimitador---al parsea quitamos comillas

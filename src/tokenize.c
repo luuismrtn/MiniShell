@@ -372,16 +372,20 @@ t_result	content_in_quotes(t_token_value type, char *input, int i,
 				count += len_var_name;
 				var_name = ft_substr(input, i, len_var_name);
 				current_env_list = (*tokens)->env_mshell;
-				if (ft_strncmp(var_name, "?", 1) == SUCCESS)
+				if (input[i] == '?')
 				{
-					var_content = ft_itoa(exit_num);
-					content = ft_substr(input, start, i - start - 1);
-					temp = ft_strjoin(content, var_content);
-					len_var_name = ft_strlen(var_name);
+					if (content == NULL)
+					{
+						content = ft_substr(input, start, i - start - 1);
+						temp = ft_strjoin(content, ft_itoa(exit_num));
+					}
+					else
+					{
+						content = ft_strjoin(temp, ft_substr(input, start, i - start - 1));
+						temp = ft_strjoin(content, ft_itoa(exit_num));
+					}
 					free(content);
-					free(var_content);
 					free(var_name);
-					i += len_var_name - 1;
 					start = i + 1;
 					continue ;
 				}
@@ -393,26 +397,24 @@ t_result	content_in_quotes(t_token_value type, char *input, int i,
 						var_content = ft_strdup(current_env_list->content);
 						if (content == NULL)
 						{
-							content = ft_substr(input, start, i - start - 1); //hola 
+							content = ft_substr(input, start, i - start - 1);
 							printf("content NULL; %s\n", content);
-							temp = ft_strjoin(content, var_content); //hola alda
-							free(content);
-							free(var_content);
+							temp = ft_strjoin(content, var_content);
 						}
 						else
 						{
-							content = ft_strjoin(temp, ft_substr(input, start, i - start - 1)); //hola alda q
+							content = ft_strjoin(temp, ft_substr(input, start, i - start - 1));
 							printf("content NO-NULL; %s\n", content);
-							temp = ft_strjoin(content, var_content); //hola alda q alda
-							free(content);
-							free(var_content);
+							temp = ft_strjoin(content, var_content);
 						}
+						free(content);
+						free(var_content);
 						free(var_name);
 						break ;
 					}
 					current_env_list = current_env_list->next;
 				}
-				i += len_var_name - 1; //espacio despues de hola $USER
+				i += len_var_name - 1;
 				printf("i apunta despues bucle: %c\n", input[i]);
 				start = i + 1;
 			}
@@ -448,7 +450,6 @@ static void	handle_quotes(t_token **tokens, char *input, int *i,
 	t_result	data;
 	//int			len_var;
 
-	printf("HANDLE_QUOTES\n");
 	(*i)++;
 	if (type == T_D_QUOTE)
 	{
@@ -544,10 +545,7 @@ t_token	*tokenize(char *input, t_token *tokens)
 		else if (input[i] == '\'')
 			handle_quotes(&tokens, input, &i, T_S_QUOTE);
 		else if (input[i] == '\"')
-		{
 			handle_quotes(&tokens, input, &i, T_D_QUOTE);
-			printf("AQUI TOKENIZE\n");
-		}
 		else if (input[i] == '<' || input[i] == '>')
 			handle_redirections(&tokens, input, &i);
 		else if (input[i] == '|')
