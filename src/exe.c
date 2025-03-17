@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/13 21:34:43 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/17 16:37:54 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ void	exe(t_token *tokens, char **comnd, int stdout)
 {
 	char	**paths;
 	int		i;
-
+	struct stat statbuf;
+	
 	if ((ft_strchr(comnd[0], '/') != NULL) && (access(comnd[0], X_OK) == 0))
 		execve(comnd[0], comnd, join_env(tokens->env_mshell));
 	else
@@ -65,7 +66,16 @@ void	exe(t_token *tokens, char **comnd, int stdout)
 	}
 	dup2(stdout, STDOUT_FILENO);
 	close(stdout);
-	printf("%s: command not found\n", comnd[0]);
+	if (ft_strncmp(comnd[0], "./", 2) == 0)
+	{
+		if (stat(comnd[0], &statbuf) == 0 && S_ISDIR(statbuf.st_mode)) //0 si existe y pudo acceder
+			printf("%s: Is a directory\n", comnd[0]); //la flag: deveulve true si es un dir
+		else if (access(comnd[0], F_OK) != 0)
+			printf("%s: No such file or directory\n", comnd[0]);
+		exit(126);
+	}	
+	else
+		printf("%s: command not found\n", comnd[0]);
 	exit(127);
 }
 

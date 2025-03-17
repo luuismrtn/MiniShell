@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   automata.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/16 20:54:47 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/17 15:41:55 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	automata(t_token *tokens)
 		{2, 2, 5, 5, 5, 5, 5, 2}, // redireccion
 		{1, 5, 5, 3, 3, 3, 3, 2}, // pipe
 		{5, 5, 5, 5, 5, 5, 5, 5}  // err
-	};                            // w  f  |  <  > <<  >> $
+	};// w  f  |  <  > <<  >> $
 	current_state = 0;
 	while (current_state != 5 && tokens != NULL)
 	{

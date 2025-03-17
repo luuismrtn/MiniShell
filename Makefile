@@ -55,37 +55,6 @@ re: fclean all
 
 # TODOLIST
 # revisar si dejamos fd's abiertos
-# el heredoc: expansion: boleano comillas/no comillas en el delimitador
+# el heredoc: expansion: boleano comillas/no comillas en el delimitador---al parsea quitamos comillas
 
-
-#TESTS
-
-# ./missing.out 
-# mini output = (./missing.out: command not found)
-# bash output = ()
-# mini error = ()
-# bash error = ( No such file or directory)
-
-#------------------------------------------------------------------------OK 
-#(lo dejo para mirar q siga funcionando cd este OK lo q queda)
-
-#las normales solo pilla la ultima
-# /home/aldferna/Desktop/MiniShell ~ echo "$USER $PWD"
-# Token type: 0, content: echo
-# Token type: 8, content:  
-# Token type: 0, content: /home/aldferna/Desktop/MiniShell 
-# /home/aldferna/Desktop/MiniShell ~ echo "$USER $USER"
-# Token type: 0, content: echo
-# Token type: 8, content:  
-# Token type: 0, content: aldferna 
-
-#mirar: echo "hola $USER que tal $USER"
-#mirar: echo "hola $USER que tal $USER jeje"
-
-#EN HEREDOC: solo expande la ultima
-# C_Token type: 0, Content: cat
-# C_Token type: 5, Content: <<
-# C_Token type: 0, Content: h
-# > $? $USER $PWD
-# > h
-# $? $USER /home/aldferna/Desktop/MiniShell
+#algun printf en redir quitar

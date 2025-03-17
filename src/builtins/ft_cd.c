@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:54 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/17 13:26:52 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/17 15:28:54 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,9 @@ static void	handle_broken_pwd(t_token **tokens, char *input_path)
 	desired_path = find_desired_path(get_env_content((*tokens)->env_mshell,
 				"PWD"), input_path);
 	if (chdir(desired_path) == 0)
+	{
 		get_env_content_and_replace(tokens, "PWD", desired_path);
+	}
 	else
 	{
 		ft_putstr_fd("cd: error retrieving current directory: getcwd: ", 2);
@@ -202,7 +204,7 @@ static void	handle_broken_pwd(t_token **tokens, char *input_path)
 			2);
 		modify_pwd(tokens, input_path);
 	}
-	free(desired_path);
+	//free(desired_path);
 }
 
 static void	execute_cd(char *input_path, t_token **tokens)
@@ -226,7 +228,9 @@ void	ft_cd(char **args, t_token **tokens)
 	char	*path;
 
 	if (!args[1])
+	{
 		cd_to_home(tokens);
+	}
 	else if (args[1] && args[2])
 	{
 		exit_num = 1;
