@@ -57,14 +57,6 @@ re: fclean all
 # revisar si dejamos fd's abiertos
 # el heredoc: expansion: boleano comillas/no comillas en el delimitador
 
-#PROBLEMAS EXPANSION
-# echo "$? $HOME"  --------->>>> el $?
-# /home/luis-la /home/luis-la
-# deberia dar --> 0 /home/luis-la
-#      PERO esto sii ok: Input: echo "$USER $?"
-
-#Input: echo "$ " ->> da cosas q no tiene q dar (quizas solo en MAC)
-
 
 #------------------------------------------------------------------------OK 
 #(lo dejo para mirar q siga funcionando cd este OK lo q queda)

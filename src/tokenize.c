@@ -363,7 +363,7 @@ t_result	content_in_quotes(t_token_value type, char *input, int i,
 				i++; //=+ 2?
 				count++;
 			}
-			else if (input[i] == '$')
+			else if (input[i] == '$' && input[i + 1] != '\"' && input[i + 1] != ' ')
 			{
 				there_is_expansion = 1;
 				i++;
@@ -372,6 +372,19 @@ t_result	content_in_quotes(t_token_value type, char *input, int i,
 				count += len_var_name;
 				var_name = ft_substr(input, i, len_var_name);
 				current_env_list = (*tokens)->env_mshell;
+				if (ft_strncmp(var_name, "?", 1) == SUCCESS)
+				{
+					var_content = ft_itoa(exit_num);
+					content = ft_substr(input, start, i - start - 1);
+					temp = ft_strjoin(content, var_content);
+					len_var_name = ft_strlen(var_name);
+					free(content);
+					free(var_content);
+					free(var_name);
+					i += len_var_name - 1;
+					start = i + 1;
+					continue ;
+				}
 				while (current_env_list != NULL)
 				{
 					if (ft_strncmp(current_env_list->name, var_name,
