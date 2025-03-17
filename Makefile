@@ -58,6 +58,14 @@ re: fclean all
 # el heredoc: expansion: boleano comillas/no comillas en el delimitador
 
 
+#TESTS
+
+# ./missing.out 
+# mini output = (./missing.out: command not found)
+# bash output = ()
+# mini error = ()
+# bash error = ( No such file or directory)
+
 #------------------------------------------------------------------------OK 
 #(lo dejo para mirar q siga funcionando cd este OK lo q queda)
 
