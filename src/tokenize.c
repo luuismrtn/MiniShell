@@ -25,7 +25,7 @@ void	free_tokens(t_token *tokens)
 	}
 }
 
-t_token	*create_node(t_token_value type, char *content)
+t_token	*create_node(t_token_value type, char *content, int quotes)
 {
 	t_token	*new_token;
 
@@ -34,18 +34,21 @@ t_token	*create_node(t_token_value type, char *content)
 		return (NULL);
 	new_token->type = type;
 	new_token->content = content;
-	new_token->args = NULL;
+	if (type == T_D_QUOTE)
+		new_token->quotes = quotes;
+	else
+		new_token->quotes = quotes;
 	new_token->env_mshell = NULL;
 	new_token->next = NULL;
 	return (new_token);
 }
 
-void	add_token(t_token **head, t_token_value type, char *content)
+void	add_token(t_token **head, t_token_value type, char *content, int quotes)
 {
 	t_token	*aux;
 	t_token	*new_token;
 
-	new_token = create_node(type, content);
+	new_token = create_node(type, content, quotes);
 	if (!new_token || !head)
 	{
 		free(content);
@@ -98,22 +101,22 @@ static void	handle_redirections(t_token **tokens, char *input, int *i)
 	{
 		if (input[*i + 1] == '<')
 		{
-			add_token(tokens, T_HERE_DOC, ft_strdup("<<"));
+			add_token(tokens, T_HERE_DOC, ft_strdup("<<"), 0);
 			(*i)++;
 		}
 		else
-			add_token(tokens, T_REDIR_LEFT, ft_strdup("<"));
+			add_token(tokens, T_REDIR_LEFT, ft_strdup("<"), 0);
 		(*i)++;
 	}
 	else if (input[*i] == '>')
 	{
 		if (input[*i + 1] == '>')
 		{
-			add_token(tokens, T_APPEND, ft_strdup(">>"));
+			add_token(tokens, T_APPEND, ft_strdup(">>"), 0);
 			(*i)++;
 		}
 		else
-			add_token(tokens, T_REDIR_RIGHT, ft_strdup(">"));
+			add_token(tokens, T_REDIR_RIGHT, ft_strdup(">"), 0);
 		(*i)++;
 	}
 }
@@ -127,7 +130,7 @@ static void	handle_spaces(t_token **tokens, char *input, int *i)
 	while (ft_isspace(input[*i]))
 		(*i)++;
 	content = ft_substr(input, start, *i - start);
-	add_token(tokens, T_SPACE, content);
+	add_token(tokens, T_SPACE, content, 0);
 }
 
 static void	handle_pipe(t_token **tokens, char input, t_token_value type,
@@ -138,7 +141,7 @@ static void	handle_pipe(t_token **tokens, char input, t_token_value type,
 	quotes[0] = input;
 	quotes[1] = '\0';
 	(*i)++;
-	add_token(tokens, type, ft_strdup(quotes));
+	add_token(tokens, type, ft_strdup(quotes), 0);
 }
 
 void	clean_tokens(t_token **tokens)
@@ -158,6 +161,7 @@ void	clean_tokens(t_token **tokens)
 					&& aux->next->type == T_WORD))
 			{
 				aux->content = ft_strjoin(aux->content, aux->next->content);
+				aux->quotes = aux->next->quotes;
 				aux->next = aux->next->next;
 			}
 			else
@@ -190,150 +194,6 @@ int	ft_len_var_name(char *str, int i)
 	return (count);
 }
 
-/*t_result	len_in_quotes(t_token_value type, char *input, int i,
-		t_token **tokens)
-{
-	t_result	data;
-	int			count;
-	int			len_var_name;
-	char		*var_name;
-	t_env		*current_env_list;
-	char *temp;
-
-	count = 0;
-	ft_memset(&data, 0, sizeof(t_result));
-	if (type == T_D_QUOTE)
-	{
-		while (input[i] && !(input[i] == '\"' && input[i - 1] != '\\'))
-		{
-			if (input[i] == '\\' && input[i + 1] == '\"')
-			{
-				i++;
-				count++;
-			}
-			else if (input[i] == '$')
-			{
-				i++;
-				len_var_name = ft_len_var_name(input, i);
-				var_name = ft_substr(input, i, len_var_name);
-				current_env_list = (*tokens)->env_mshell;
-				while (current_env_list != NULL)
-				{
-					if (ft_strncmp(current_env_list->name, var_name,
-							len_var_name) == SUCCESS)
-					{
-						if (data.content == NULL)
-						{
-							data.content = ft_strdup(current_env_list->content);
-							count += ft_strlen(data.content);
-						}
-						else
-						{
-							count += ft_strlen(ft_strdup(current_env_list->content));
-							temp = ft_strjoin(data.content, ft_strdup(current_env_list->content));
-							free(data.content);
-							data.content = temp;
-						}
-						//count += ft_strlen(data.content);
-						break ;
-					}
-					current_env_list = current_env_list->next;
-				}
-				free(var_name);
-				i += len_var_name - 1;
-			}
-			else
-				count++;
-			i++;
-		}
-		data.len = count;
-	}
-	else if (type == T_S_QUOTE)
-	{
-		while (input[i] && !(input[i] == '\'' && input[i - 1] != '\\'))
-		{
-			count++;
-			i++;
-		}
-		data.len = count;
-	}
-	return (data);
-}
-
-static void	handle_quotes(t_token **tokens, char *input, int *i,
-		t_token_value type)
-{
-	char		*in_quotes;
-	int			j;
-	int			x;
-	t_result	data;
-	int			len_var;
-
-	printf("HANDLE_QUOTES\n");
-	(*i)++;
-	if (type == T_D_QUOTE)
-	{
-		x = 0;
-		j = 0;
-		data = len_in_quotes(type, input, *i, tokens);
-		in_quotes = malloc((data.len + 1) * sizeof(char));
-		if (!in_quotes)
-			return ;
-		while (j < data.len && input[*i] && !(input[*i] == '\"' && input[*i
-				- 1] != '\\'))
-		{
-			if (input[*i] == '\\' && input[*i + 1] == '\"')
-			{
-				(*i)++;
-				in_quotes[j++] = input[*i];
-				(*i)++;
-				continue ;
-			}
-			if (input[*i] == '$' && input[*i + 1] != '\"')
-			{
-				(*i)++;
-				len_var = ft_len_var_name(input, *i);
-				if (data.content && data.content[0])
-				{
-					while (data.content[x] != '\0')
-						in_quotes[j++] = data.content[x++];
-				}
-				(*i) += len_var;
-				continue ;
-			}
-			in_quotes[j++] = input[*i];
-			(*i)++;
-		}
-		in_quotes[j] = '\0';
-		if (input[*i] == '\"')
-			(*i)++;
-		if (j > 0)
-			add_token(tokens, T_WORD, in_quotes);
-		else
-			free(in_quotes);
-	}
-	else if (type == T_S_QUOTE)
-	{
-		j = 0;
-		data = len_in_quotes(type, input, *i, tokens);
-		in_quotes = malloc((data.len + 1) * sizeof(char));
-		if (!in_quotes)
-			return ;
-		while (j < data.len && input[*i])
-		{
-			in_quotes[j++] = input[*i];
-			(*i)++;
-		}
-		in_quotes[j] = '\0';
-		if (input[*i] == '\'')
-			(*i)++;
-		if (j > 0)
-			add_token(tokens, T_WORD, in_quotes);
-		else
-			free(in_quotes);
-	}
-}*/
-
 t_result	content_in_quotes(t_token_value type, char *input, int i,
 		t_token **tokens)
 {
@@ -354,8 +214,8 @@ t_result	content_in_quotes(t_token_value type, char *input, int i,
 	ft_memset(&data, 0, sizeof(t_result));
 	if (type == T_D_QUOTE)
 	{
-		printf("aqui entra: %c\n", input[i]); //h
-		start = i; //h
+		printf("aqui entra: %c\n", input[i]);
+		start = i;
 		while (input[i] && !(input[i] == '\"' && input[i - 1] != '\\'))
 		{
 			if (input[i] == '\\' && input[i + 1] == '\"')//PROBAR ESTOOO
@@ -454,7 +314,7 @@ static void	handle_quotes(t_token **tokens, char *input, int *i,
 	if (type == T_D_QUOTE)
 	{
 		data = content_in_quotes(type, input, *i, tokens);
-		add_token(tokens, T_WORD, data.content);
+		add_token(tokens, T_WORD, data.content, 1);
 		(*i) += data.len;
 	}
 	else if (type == T_S_QUOTE)
@@ -473,7 +333,7 @@ static void	handle_quotes(t_token **tokens, char *input, int *i,
 		if (input[*i] == '\'')
 			(*i)++;
 		if (j > 0)
-			add_token(tokens, T_WORD, in_quotes);
+			add_token(tokens, T_WORD, in_quotes, 1);
 		else
 			free(in_quotes);
 	}
@@ -490,7 +350,7 @@ static void	handle_env(t_token **tokens, char *input, int *i)
 	{
 		(*i)++;
 		var_name = ft_itoa(exit_num);
-		add_token(tokens, T_ENV, var_name);
+		add_token(tokens, T_ENV, var_name, 0);
 		return ;
 	}
 	len_var_name = ft_len_var_name(input, *i);
@@ -502,7 +362,7 @@ static void	handle_env(t_token **tokens, char *input, int *i)
 				len_var_name) == SUCCESS)
 		{
 			free(var_name);
-			add_token(tokens, T_ENV, current_env_list->content);
+			add_token(tokens, T_ENV, current_env_list->content, 0);
 			break ;
 		}
 		current_env_list = current_env_list->next;
@@ -526,9 +386,9 @@ static void	handle_word(t_token **tokens, char *input, int *i)
 		(*i)++;
 	content = ft_substr(input, start, *i - start);
 	if (content[0] == '-')
-		add_token(tokens, T_FLAG, content);
+		add_token(tokens, T_FLAG, content, 0);
 	else
-		add_token(tokens, T_WORD, content);
+		add_token(tokens, T_WORD, content, 0);
 }
 
 t_token	*tokenize(char *input, t_token *tokens)
@@ -650,7 +510,7 @@ int     main2(char *string, t_token *tokens)
         aux = tokens->next;
         while (aux != NULL)
         {
-                printf("Token type: %d, content: %s\n", aux->type, aux->content);
+                printf("Token type: %d, content: %s, quote: %d\n", aux->type, aux->content, aux->quotes);
                 aux = aux->next;
         }
         aux1 = tokens->next;
@@ -658,7 +518,7 @@ int     main2(char *string, t_token *tokens)
         printf("\n\n");
         while (aux1 != NULL)
         {
-                printf("C_Token type: %d, Content: %s\n", aux1->type, aux1->content);
+                printf("C_Token type: %d, Content: %s, quote: %d\n", aux1->type, aux1->content, aux1->quotes);
                 aux1 = aux1->next;
         }
         if (automata(tokens) == 0)

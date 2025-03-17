@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/17 16:09:32 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/17 17:38:28 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ typedef struct s_token
 	t_env				*env_mshell;
 	t_token_value		type;
 	char				*content;
-	char				*args;
+	int					quotes;
 	struct s_token		*next;
 }						t_token;
 

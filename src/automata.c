@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/17 15:41:55 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/17 18:54:59 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ int	automata(t_token *tokens)
 	if (current_state != 1 && current_state != 2)
 	{
 		printf("syntax error: %s\n\n", elements[prev_token]);
+		exit_num = 1;
 		return (1);
 	}
 	else
@@ -143,12 +144,14 @@ void	handle_heredoc(char **eof, int *fd, t_token *tokens)
 	line = readline("> ");
 	if (!line)
 		return;
-	if (ft_strncmp(line, *eof, ft_strlen(*eof) + 1) == 0)
+	if (ft_strncmp(line, *eof, ft_strlen(*eof) + 1) == 0) //eof al inicio
 	{
 		write_in_pipe("", fd);
 		return;
 	}
-	if (find_the_dollar(line) == SUCCESS)
+	printf("token con el que entra: %s\n", tokens->next->next->next->content); //Y SI: echo hey | cat << "h"
+	printf("valor de quotes: %d\n", tokens->next->next->next->quotes);
+	if (find_the_dollar(line) == SUCCESS && tokens->next->next->next->quotes == 0)
 		expand_in_heredoc(&line, tokens);
 	r_lines = ft_strjoin(line, "\n");
 	while ((ft_strlen(line) != ft_strlen(*eof)) || ft_strcmp(line, *eof) != 0)
@@ -157,7 +160,7 @@ void	handle_heredoc(char **eof, int *fd, t_token *tokens)
 		line = readline("> ");
 		if (!line || ft_strcmp(line, *eof) == 0)
 			break;
-		if (find_the_dollar(line) == SUCCESS)
+		if (find_the_dollar(line) == SUCCESS && tokens->next->next->next->quotes == 0)
 			expand_in_heredoc(&line, tokens);
 		temp = ft_strjoin(r_lines, line);
 		free(r_lines);

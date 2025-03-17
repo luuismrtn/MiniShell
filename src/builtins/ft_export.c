@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:16:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/13 22:11:06 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/17 18:58:11 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,21 @@ static t_env	*find_env_var(t_env *env, char *var_name)
 static void	add_env_var(t_token *tokens, char *name, char *content)
 {
 	t_env	*new_env;
+	char *to_search;
+	t_env *current;
 
 	new_env = malloc(sizeof(t_env));
 	if (!new_env)
 		return ;
 	new_env->name = ft_strdup(name);
-	if (content)
+	if (content[0] == '$')
+	{
+		to_search = ft_substr(content, 1, ft_strlen(content) - 1);
+		current = find_env_var(tokens->env_mshell, to_search);
+		free(to_search);
+		new_env->content = ft_strdup(current->content);
+	}
+	else if(content)
 		new_env->content = ft_strdup(content);
 	else
 		new_env->content = NULL;

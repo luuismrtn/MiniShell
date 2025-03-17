@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/17 16:37:54 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/17 17:12:32 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	exe(t_token *tokens, char **comnd, int stdout)
 	{
 		if (stat(comnd[0], &statbuf) == 0 && S_ISDIR(statbuf.st_mode)) //0 si existe y pudo acceder
 			printf("%s: Is a directory\n", comnd[0]); //la flag: deveulve true si es un dir
-		else if (access(comnd[0], F_OK) != 0)
+		else if (access(comnd[0], F_OK) != 0) //no existe
 			printf("%s: No such file or directory\n", comnd[0]);
 		exit(126);
 	}	
