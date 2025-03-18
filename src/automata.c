@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   automata.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/17 18:54:59 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/18 11:00:55 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ int	automata(t_token *tokens)
 	char	*elements[9] = {"command", "flag", "|", "newline", "newline",
 			"newline", "newline", "err"};
 
+	if (tokens->next == NULL)
+		return (0);
 	tokens = tokens->next;
 	int automata[6][8] = {
 		{1, 5, 5, 3, 3, 3, 3, 2}, // inicial

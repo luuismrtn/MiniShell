@@ -59,14 +59,5 @@ re: fclean all
 # HOME= cat << h  --- :0 (?)
 
 # MASS PRUEBAS CON ERROR
-# echo "" hola que "" "" "" "" "" "" "" tal > '$'
-# echo "" hola que "" "" "" "" "" "" "" tal > "hola"
-# echo "" hola que "" "" "" "" "" "" "" tal > hola
-# echo "" hola que "" "" "" "" "" "" "" tal > $USER
-# $USER$USER
-# echo $USER$USER
-# export $E=ech
-# export E=ech
-# export O=o
-# $E$O hola
-# $USE
+
+
