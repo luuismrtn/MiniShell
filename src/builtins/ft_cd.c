@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:54 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/18 12:17:24 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/18 18:27:29 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ void	ft_cd(char **args, t_token **tokens)
 		path = find_path(args);
 		if (getcwd(NULL, 0) == NULL)
 			handle_broken_pwd(tokens, path);
-		if (chdir(path) == 0)
+		else if (chdir(path) == 0)
 			modify_pwd(tokens, path);
 		else
 			print_cd_error(path);

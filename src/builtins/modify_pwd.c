@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   modify_pwd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:44:38 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/18 16:33:24 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/18 18:28:25 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,6 @@ static void	update_pwd_dot(t_env *aux, char *dir)
 
 	if (getcwd(NULL, 0) == NULL)
 	{
-		ft_putstr_fd("cd: error retrieving current directory: getcwd: ", 2);
-		ft_putstr_fd("cannot access parent directories: ", 2);
-		ft_putstr_fd("No such file or directory\n", 2);
 		temp = ft_strjoin("/", dir);
 		new_pwd = ft_strjoin(aux->content, temp);
 		free(temp);
