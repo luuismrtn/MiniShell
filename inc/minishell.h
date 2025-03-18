@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/18 13:12:41 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/18 23:29:58 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,5 +133,6 @@ void					get_env_content_and_replace(t_token **tokens,
 							char *name, char *content);
 int						count_args(char **args);
 int						match_string(char *str1, char *str2);
+char					*handle_env_var(char *str, t_token *tokens);
 
 #endif

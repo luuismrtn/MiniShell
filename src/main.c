@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/18 16:45:10 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/18 23:29:42 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,83 @@ int	match_string(char *str1, char *str2)
 {
 	return (ft_strncmp(str1, str2, ft_strlen(str2)) == 0
 		&& ft_strlen(str1) == ft_strlen(str2));
+}
+
+/**
+ * @brief Procesa una parte de la cadena durante la expansión de variables.
+ *
+ * Esta función auxiliar es llamada por handle_var para procesar cada carácter
+ * de la cadena de entrada. Tiene dos modos de operación principales:
+ *
+ * 1. Para caracteres '$': Extrae el nombre de la variable que sigue, busca
+ *    su valor en el entorno, y lo añade al resultado.
+ * 2. Para otros caracteres: Los añade directamente al resultado.
+ *
+ * Manejo de variables:
+ * - Si una variable no existe en el entorno, añade una cadena vacía.
+ * - Actualiza el índice para saltar el nombre de la variable procesada.
+ * - Libera la memoria utilizada para extraer el nombre de la variable.
+ *
+ * @param tokens Puntero a la estructura con variables de entorno.
+ * @param str Cadena que se está procesando.
+ * @param i Puntero al índice actual en la cadena (se modifica dentro de la función).
+ * @param result Puntero a la cadena resultado (se modifica dentro de la función).
+ */
+static void	join_result(t_token *tokens, char *str, int *i, char **result)
+{
+    int		j;
+    char	*var_name;
+    char	*var_value;
+
+    if (str[(*i)] == '$')
+    {
+        j = (*i) + 1;
+        while (str[j] && str[j] != ':' && str[j] != '$' && str[j] != '=')
+            j++;
+        var_name = ft_substr(str, (*i) + 1, j - (*i) - 1);
+        if (!find_env_var(tokens->env_mshell, var_name))
+        {
+            (*result) = ft_strjoin((*result), ft_strdup(""));
+            (*i) = j - 1;
+            return (free(var_name));
+        }
+        var_value = get_env_content(tokens->env_mshell, var_name);
+        free(var_name);
+        if (var_value)
+            (*result) = ft_strjoin((*result), var_value);
+        (*i) = j - 1;
+    }
+    else
+        (*result) = ft_strjoin((*result), ft_substr(str, (*i), 1));
+}
+
+/**
+ * @brief Expande las variables de entorno en una cadena.
+ *
+ * Busca patrones como $VARIABLE en la cadena y los reemplaza por sus valores.
+ * Por ejemplo, si la variable "a" contiene "hola", entonces "$a:/home" se
+ * convertirá en "hola:/home". Soporta múltiples variables en una cadena.
+ *
+ * @param str La cadena original que puede contener referencias a variables.
+ * @param tokens Puntero a la estructura de tokens con variables de entorno.
+ * @return char* Nueva cadena con las variables expandidas o NULL en caso de error.
+ *               Esta cadena debe ser liberada por el llamador.
+ */
+char	*handle_env_var(char *str, t_token *tokens)
+{
+	int		i;
+	char	*result;
+
+	if (!str)
+		return (NULL);
+	result = ft_strdup("");
+	i = 0;
+	while (str[i])
+	{
+		join_result(tokens, str, &i, &result);
+		i++;
+	}
+	return (result);
 }
 
 void	free_array(char **array)

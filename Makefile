@@ -91,12 +91,6 @@ re: fclean all
 
 #heredoc control c tiene que salir
 
-# export a=hola
-# export a=$a:/home  (esto tendria que expandir a hola:/home)
-
-# export 234=h (ok da error)
-# export E234=h (da error pero si que debe exportarlo)
-
 # echo $a?$PATH
 # echo $a+++++$PATH
 # $a+++++$PATH -------estas tres anteriores, tiene que expandir ambas (si estan separadas por no:alfanum)
@@ -113,21 +107,6 @@ re: fclean all
 #cd este implementado probar si hay un dir '-'
 
 #cd ../aldferna/..  (esto ahora funciona, pero lo dejo para probar cd el resto tb funcione)
-
-#esto dejo de funcionarrrr
-# /home/aldferna/Desktop/MiniShell ~ mkdir -p 1/2/3
-# /home/aldferna/Desktop/MiniShell ~ cd 1/2/3
-# /home/aldferna/Desktop/MiniShell/1/2/3 ~ rm -rf ../../../1
-# /home/aldferna/Desktop/MiniShell/1/2/3 ~ cd ..
-# cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
-# cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
-# cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
-# /home/aldferna/Desktop/MiniShell/1/2/3/../.. ~ cd ..
-# free(): double free detected in tcache 2
-# [1]    1793332 IOT instruction (core dumped)  ./minishell
-
-
-
 
 
 #------------------------------???? no hacer caso de momento

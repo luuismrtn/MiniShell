@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:16:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/18 12:44:37 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/18 23:30:27 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static void	process_assignment(t_token *tokens, char *arg)
 	t_env	*current;
 
 	var_name = ft_substr(arg, 0, ft_strchr(arg, '=') - arg);
-	var_content = ft_strchr(arg, '=') + 1;
+	var_content = handle_env_var(ft_strchr(arg, '=') + 1, tokens);
 	current = find_env_var(tokens->env_mshell, var_name);
 	if (current)
 	{

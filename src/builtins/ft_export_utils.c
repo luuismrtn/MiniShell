@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:59:37 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/18 12:39:09 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/18 23:32:28 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
  * Comprueba que el nombre de la variable siga las reglas de bash:
  * - No puede estar vacío
  * - Debe comenzar con una letra o guión bajo
- * - Solo puede contener letras o guiones bajos
+ * - Solo puede contener letras, números o guiones bajos
  *
  * @param name El nombre de la variable a verificar.
  * @return int 1 si el nombre es válido, 0 en caso contrario.
@@ -30,9 +30,12 @@ int	is_valid_var_name(char *name)
 	if (!name || name[0] == '\0')
 		return (0);
 	i = 0;
+	if (!(ft_isalpha(name[i]) || name[i] == '_'))
+		return (0);
+	i++;
 	while (name[i])
 	{
-		if (!(ft_isalpha(name[i]) || name[i] == '_'))
+		if (!(ft_isalnum(name[i]) || name[i] == '_'))
 			return (0);
 		i++;
 	}
