@@ -3,57 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:16:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/17 18:58:11 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/18 12:44:37 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-static void	print_env_as_export(t_env *env)
-{
-	while (env)
-	{
-		if (env->content)
-			printf("declare -x %s=\"%s\"\n", env->name, env->content);
-		else
-			printf("declare -x %s\n", env->name);
-		env = env->next;
-	}
-}
-
-static t_env	*find_env_var(t_env *env, char *var_name)
-{
-	while (env)
-	{
-		if (ft_strncmp(env->name, var_name, ft_strlen(var_name)) == 0
-			&& ft_strlen(env->name) == ft_strlen(var_name))
-			return (env);
-		env = env->next;
-	}
-	return (NULL);
-}
-
+/**
+ * @brief Añade una nueva variable de entorno a la lista.
+ *
+ * Crea una nueva estructura t_env con el nombre y contenido proporcionados,
+ * y la agrega al inicio de la lista de variables de entorno. Si el contenido
+ * comienza con '$', se trata como una referencia a otra variable y se obtiene
+ * su valor.
+ *
+ * @param tokens Puntero a la estructura de tokens con la lista de variables.
+ * @param name Nombre de la nueva variable a añadir.
+ * @param content Contenido de la variable (o NULL si no tiene valor).
+ */
 static void	add_env_var(t_token *tokens, char *name, char *content)
 {
 	t_env	*new_env;
-	char *to_search;
-	t_env *current;
+	char	*to_search;
+	t_env	*current;
 
 	new_env = malloc(sizeof(t_env));
 	if (!new_env)
 		return ;
 	new_env->name = ft_strdup(name);
-	if (content[0] == '$')
+	if (content && content[0] == '$')
 	{
 		to_search = ft_substr(content, 1, ft_strlen(content) - 1);
 		current = find_env_var(tokens->env_mshell, to_search);
 		free(to_search);
 		new_env->content = ft_strdup(current->content);
 	}
-	else if(content)
+	else if (content)
 		new_env->content = ft_strdup(content);
 	else
 		new_env->content = NULL;
@@ -61,6 +49,15 @@ static void	add_env_var(t_token *tokens, char *name, char *content)
 	tokens->env_mshell = new_env;
 }
 
+/**
+ * @brief Procesa una asignación de variable en el comando export.
+ *
+ * Maneja argumentos que contienen un signo igual (=), como "VAR=value".
+ * Si la variable ya existe, actualiza su valor. Si no existe, crea una nueva.
+ *
+ * @param tokens Puntero a la estructura de tokens con variables de entorno.
+ * @param arg La cadena de asignación completa (ej: "VAR=value").
+ */
 static void	process_assignment(t_token *tokens, char *arg)
 {
 	char	*var_name;
@@ -80,6 +77,16 @@ static void	process_assignment(t_token *tokens, char *arg)
 	free(var_name);
 }
 
+/**
+ * @brief Procesa una declaración de variable sin valor.
+ *
+ * Maneja argumentos que no contienen signo igual, como "VAR".
+ * Si la variable no existe, la crea con valor NULL.
+ * Si ya existe, no hace nada (mantiene su valor actual).
+ *
+ * @param tokens Puntero a la estructura de tokens con variables de entorno.
+ * @param arg El nombre de la variable a declarar.
+ */
 static void	process_declaration(t_token *tokens, char *arg)
 {
 	t_env	*current;
@@ -89,35 +96,17 @@ static void	process_declaration(t_token *tokens, char *arg)
 		add_env_var(tokens, arg, NULL);
 }
 
-static int	is_valid_var_name(char *name)
-{
-	int	i;
-
-	if (!name || name[0] == '\0')
-		return (0);
-	i = 0;
-	while (name[i])
-	{
-		if (!(ft_isalpha(name[i]) || name[i] == '_'))
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-static char	*extract_var_name(char *arg)
-{
-	char	*equal_pos;
-	char	*var_name;
-
-	equal_pos = ft_strchr(arg, '=');
-	if (equal_pos)
-		var_name = ft_substr(arg, 0, equal_pos - arg);
-	else
-		var_name = ft_strdup(arg);
-	return (var_name);
-}
-
+/**
+ * @brief Valida los argumentos del comando export.
+ *
+ * Verifica que todos los argumentos contengan nombres de variables válidos.
+ * Muestra mensajes de error para los identificadores no válidos y establece
+ * el código de salida adecuado.
+ *
+ * @param args Array de argumentos del comando.
+ * @return int SUCCESS si todos los argumentos son válidos,
+ * ERROR en caso contrario.
+ */
 static int	check_args(char **args)
 {
 	int		i;
@@ -143,6 +132,24 @@ static int	check_args(char **args)
 	return (result);
 }
 
+/**
+ * @brief Implementa el comando export.
+ *
+ * Sin argumentos, muestra todas las variables de entorno en formato
+ * "declare -x".
+ * Con argumentos, añade o actualiza variables en el entorno según los
+ * siguientes casos:
+ * - "VAR=value": Asigna 'value' a la variable 'VAR'
+ * - "VAR": Declara 'VAR' sin valor si no existe
+ *
+ * El comando export sigue estas reglas:
+ * 1. Los nombres de variables deben ser válidos (letras, números, guión bajo)
+ * 2. Las variables existentes se actualizan con nuevos valores
+ * 3. Se pueden declarar variables sin valor
+ *
+ * @param tokens Puntero a la estructura de tokens con variables de entorno.
+ * @param args Array de argumentos del comando (args[0] es "export").
+ */
 void	ft_export(t_token *tokens, char **args)
 {
 	int		i;

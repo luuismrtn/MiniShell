@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/17 17:38:28 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/18 13:12:41 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
+# include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
-# include <sys/stat.h>
 
 extern unsigned char	exit_num;
 
@@ -105,6 +105,17 @@ void					ft_exit(char **arg);
 void					ft_export(t_token *tokens, char **args);
 void					ft_pwd(t_token *tokens);
 void					ft_unset(t_token *tokens, char **args);
+void					modify_pwd(t_token **tokens, char *dir);
+
+// CD_UTILS
+char					*find_desired_path(char *pwd, char *dir);
+void					print_cd_error(char *path);
+
+// EXPORT_UTILS
+int						is_valid_var_name(char *name);
+char					*extract_var_name(char *arg);
+void					print_env_as_export(t_env *env);
+t_env					*find_env_var(t_env *env, char *var_name);
 
 //	SIGNALS
 void					signals(char c);
@@ -118,7 +129,9 @@ void					free_array(char **array);
 // UTILS
 char					*get_pwd(t_token *tokens);
 char					*get_env_content(t_env *env, char *name);
-void					get_env_content_and_replace(t_token **tokens, char *name,
-							char *content);
+void					get_env_content_and_replace(t_token **tokens,
+							char *name, char *content);
+int						count_args(char **args);
+int						match_string(char *str1, char *str2);
 
 #endif

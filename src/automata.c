@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/18 11:00:55 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/18 12:36:48 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,8 +151,6 @@ void	handle_heredoc(char **eof, int *fd, t_token *tokens)
 		write_in_pipe("", fd);
 		return;
 	}
-	printf("token con el que entra: %s\n", tokens->next->next->next->content); //Y SI: echo hey | cat << "h"
-	printf("valor de quotes: %d\n", tokens->next->next->next->quotes);
 	if (find_the_dollar(line) == SUCCESS && tokens->next->next->next->quotes == 0)
 		expand_in_heredoc(&line, tokens);
 	r_lines = ft_strjoin(line, "\n");
@@ -238,7 +236,7 @@ void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 	}
 }
 
-int	count_args(t_token *tokens)
+static int	count_args_aut(t_token *tokens)
 {
 	int	count;
 
@@ -271,7 +269,7 @@ char	**build_command_string(t_token *tokens, int *count)
 			aux_move--;
 		temp_tokens = temp_tokens->next;
 	}
-	num_args = count_args(temp_tokens);
+	num_args = count_args_aut(temp_tokens);
 	args = malloc((num_args + 1) * sizeof(char *));
 	if (!args)
 		return (NULL);

@@ -6,12 +6,21 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:17:44 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/13 22:28:10 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/18 12:35:26 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
+/**
+ * @brief Verifica si una cadena representa un número válido.
+ *
+ * Comprueba si todos los caracteres de la cadena son dígitos,
+ * permitiendo un signo (+ o -) únicamente al principio.
+ *
+ * @param str La cadena a verificar.
+ * @return int 1 si la cadena es un número válido, 0 en caso contrario.
+ */
 static int	arg_isdigit(char *str)
 {
 	int	i;
@@ -28,6 +37,17 @@ static int	arg_isdigit(char *str)
 	return (1);
 }
 
+/**
+ * @brief Normaliza los argumentos para el comando exit.
+ *
+ * Procesa casos especiales como cuando un signo (+ o -) se proporciona
+ * como un argumento separado antes de un número. En este caso, une el
+ * signo con el número siguiente y reorganiza el resto de argumentos.
+ *
+ * Ejemplo: ["exit", "-", "123"] se convierte en ["exit", "-123"]
+ *
+ * @param arg Dirección de memoria de los argumentos del comando.
+ */
 static void	normalize_args(char ***arg)
 {
 	char	*new_arg;
@@ -53,16 +73,17 @@ static void	normalize_args(char ***arg)
 	}
 }
 
-static int	count_args(char **args)
-{
-	int	count;
-
-	count = 0;
-	while (args[count])
-		count++;
-	return (count);
-}
-
+/**
+ * @brief Implementa el comando exit.
+ *
+ * Termina la ejecución del shell con el código de salida especificado.
+ * Si no se proporciona un argumento, termina con código 0.
+ * Si se proporciona un argumento numérico, se usa como código de salida.
+ * Si se proporcionan demasiados argumentos, muestra un error y no termina.
+ * Si el argumento no es numérico, muestra un error y termina con código 2.
+ *
+ * @param arg Array de argumentos del comando (arg[0] es "exit").
+ */
 void	ft_exit(char **arg)
 {
 	int	args;

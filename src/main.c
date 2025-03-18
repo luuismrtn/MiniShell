@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/17 15:29:34 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/18 13:12:28 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,31 @@ void	print_2(char **str)
 		printf("str[%d] = %s\n", i, str[i]);
 		i++;
 	}
+}
+
+/**
+ * @brief Cuenta el número de argumentos en un array.
+ *
+ * Recorre el array de cadenas hasta encontrar un NULL,
+ * contando el número total de elementos.
+ *
+ * @param args Array de cadenas terminado en NULL.
+ * @return int El número de elementos en el array.
+ */
+int	count_args(char **args)
+{
+	int	count;
+
+	count = 0;
+	while (args[count])
+		count++;
+	return (count);
+}
+
+int	match_string(char *str1, char *str2)
+{
+	return (ft_strncmp(str1, str2, ft_strlen(str2)) == 0
+		&& ft_strlen(str1) == ft_strlen(str2));
 }
 
 void	free_array(char **array)

@@ -3,30 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:21:08 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/14 13:29:37 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/18 12:07:06 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
-
-/*int	count_last_char(char *str, char c)
-{
-	int	i;
-	int	sol;
-
-	sol = 0;
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == c)
-			sol = i;
-		i++;
-	}
-	return (sol);
-}*/
 
 void	handle_builtin(char **args, t_token *tokens)
 {
