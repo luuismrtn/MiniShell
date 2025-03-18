@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  -g3 #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror  -g3 -fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -59,6 +59,77 @@ re: fclean all
 # TODOLIST
 # revisar si dejamos fd's abiertos
 
-# HOME= cat << h  --- :0 (?)
-
 # MASS PRUEBAS CON ERROR
+
+# aldferna@c2r9s3:~/Desktop/MiniShell$ cat << l'e't
+# > $HOME
+# > let
+# $HOME
+
+# /home/aldferna/Desktop/MiniShell ~ cat << $HOME
+# > hola
+# > $HOME
+# hola
+# /home/aldferna
+
+#export a
+#./minishell
+#se queda como sin env
+
+#exit ajkjga asjdgdakjfv
+#nos da too many arguments pero tiene que ser numeric argument required, con exit 2 (y si qu sale)
+#solo too many si el 1º es numerico y hay mas argumentos numericos o no
+
+# /home/aldferna/Desktop/MiniShell ~ << $A   (no para, probablemente expandde el eof)
+# > hola
+# > hola
+# > $A
+# > $A
+# > 
+# /home/aldferna/Desktop/MiniShell ~ cat << $A (heap use after free)
+# > $A
+
+#heredoc control c tiene que salir
+
+# export a=hola
+# export a=$a:/home  (esto tendria que expandir a hola:/home)
+
+# export 234=h (ok da error)
+# export E234=h (da error pero si que debe exportarlo)
+
+# echo $a?$PATH
+# echo $a+++++$PATH
+# $a+++++$PATH -------estas tres anteriores, tiene que expandir ambas (si estan separadas por no:alfanum)
+# echo $PATHa$HOME ----pero esta solo expande HOME, la anterior la toma como PATHa y no la encuentra (esto ahora ok, pero cuidado cd implementemos lo de arriba)
+# echo $$$PATH ----cuidado con esto tb cd se implemente lo de arriba
+# echo $1234$HOME (bash: 234/home/aldferna), (mshell: /home/aldferna)
+# echo $1234-$HOME (bash: 234-/home/aldferna), (mshell: -/home/aldferna)
+
+#implementar: (son args no flags)
+#cd -
+#cd ~
+#cd //
+#cd --
+#cd este implementado probar si hay un dir '-'
+
+#cd ../aldferna/..  (esto ahora funciona, pero lo dejo para probar cd el resto tb funcione)
+
+#esto dejo de funcionarrrr
+# /home/aldferna/Desktop/MiniShell ~ mkdir -p 1/2/3
+# /home/aldferna/Desktop/MiniShell ~ cd 1/2/3
+# /home/aldferna/Desktop/MiniShell/1/2/3 ~ rm -rf ../../../1
+# /home/aldferna/Desktop/MiniShell/1/2/3 ~ cd ..
+# cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+# cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+# cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+# /home/aldferna/Desktop/MiniShell/1/2/3/../.. ~ cd ..
+# free(): double free detected in tcache 2
+# [1]    1793332 IOT instruction (core dumped)  ./minishell
+
+
+
+
+
+#------------------------------???? no hacer caso de momento
+
+#la señal control+\ no se ignora si hay un cat(comando interactivo)

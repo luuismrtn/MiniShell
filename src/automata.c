@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   automata.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/18 12:36:48 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/18 18:01:06 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	automata(t_token *tokens)
 
 	if (tokens->next == NULL)
 		return (0);
-	tokens = tokens->next;
+	tokens = tokens->next; // cat | -l
 	int automata[6][8] = {
 		{1, 5, 5, 3, 3, 3, 3, 2}, // inicial
 		{2, 1, 4, 3, 3, 3, 3, 1}, // comando
@@ -151,17 +151,23 @@ void	handle_heredoc(char **eof, int *fd, t_token *tokens)
 		write_in_pipe("", fd);
 		return;
 	}
-	if (find_the_dollar(line) == SUCCESS && tokens->next->next->next->quotes == 0)
-		expand_in_heredoc(&line, tokens);
+	if (tokens->next->next->next)
+	{
+		if (find_the_dollar(line) == SUCCESS && tokens->next->next->next->quotes == 0)
+			expand_in_heredoc(&line, tokens);
+	}
 	r_lines = ft_strjoin(line, "\n");
 	while ((ft_strlen(line) != ft_strlen(*eof)) || ft_strcmp(line, *eof) != 0)
 	{
 		free(line);
 		line = readline("> ");
-		if (!line || ft_strcmp(line, *eof) == 0)
+		if (!line || ft_strncmp(line, *eof, ft_strlen(*eof) + 1) == 0)
 			break;
-		if (find_the_dollar(line) == SUCCESS && tokens->next->next->next->quotes == 0)
-			expand_in_heredoc(&line, tokens);
+		if (tokens->next->next->next)
+		{
+			if (find_the_dollar(line) == SUCCESS && tokens->next->next->next->quotes == 0)
+				expand_in_heredoc(&line, tokens);	
+		}
 		temp = ft_strjoin(r_lines, line);
 		free(r_lines);
 		r_lines = ft_strjoin(temp, "\n");
@@ -180,7 +186,7 @@ void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 	t_token *temp_tokens; // probar sin temporal
 	temp_tokens = tokens->next;
 	aux_move = count;
-	while (aux_move > 0)
+	while (aux_move > 0 && temp_tokens->type)
 	{
 		if (temp_tokens->type == T_PIPE)
 			aux_move--;
@@ -263,7 +269,7 @@ char	**build_command_string(t_token *tokens, int *count)
 	t_token *temp_tokens; // esto se podria quitar
 	temp_tokens = tokens->next;
 	aux_move = (*count);
-	while (aux_move > 0)
+	while (aux_move > 0 && temp_tokens->type)
 	{
 		if (temp_tokens->type == T_PIPE)
 			aux_move--;

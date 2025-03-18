@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/18 13:12:28 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/18 16:45:10 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void	handle_signal_child(int sig)
 	if (sig == SIGINT)
 	{
 		exit_num = 130;
+		exit(exit_num);
 		write(1, "\n", 1);
 		rl_replace_line("", 0);
 		rl_on_new_line();
