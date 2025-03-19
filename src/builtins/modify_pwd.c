@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:44:38 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/18 18:28:25 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/19 19:13:45 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,11 +111,42 @@ static void	update_pwd_other(t_env *aux, char *dir)
 	char	*path;
 	char	*new_pwd;
 
-	path = ft_strjoin("/", dir);
+	if (aux->content[ft_strlen(aux->content) - 1] == '/')
+		path = ft_strdup(dir);
+	else
+		path = ft_strjoin("/", dir);
 	new_pwd = ft_strjoin(aux->content, path);
 	free(path);
 	free(aux->content);
 	aux->content = new_pwd;
+}
+
+static void modify_oldpwd(t_token *tokens)
+{
+	t_env	*aux;
+	char *a_pwd;
+	
+	aux = tokens->env_mshell;
+	while (aux)
+	{
+		if (ft_strncmp(aux->name, "PWD", ft_strlen("PWD")) == 0)
+		{
+			a_pwd = ft_strdup(aux->content);
+			break;
+		}
+		aux = aux->next;
+	}
+	aux = tokens->env_mshell;
+	while (aux)
+	{
+		if (ft_strncmp(aux->name, "OLDPWD", ft_strlen("OLDPWD")) == 0)
+		{
+			free(aux->content);
+			aux->content = a_pwd;
+			break;
+		}
+		aux = aux->next;
+	}
 }
 
 /**
@@ -137,7 +168,8 @@ static void	update_pwd_other(t_env *aux, char *dir)
 void	modify_pwd(t_token **tokens, char *dir)
 {
 	t_env	*aux;
-
+	
+	modify_oldpwd((*tokens));
 	if (ft_strncmp(dir, ".", 2) == 0)
 		return ;
 	aux = (*tokens)->env_mshell;
@@ -149,6 +181,8 @@ void	modify_pwd(t_token **tokens, char *dir)
 				update_pwd_dot(aux, dir);
 			else if (!ft_strncmp(dir, get_env_content((*tokens)->env_mshell,
 						"HOME"), 5))
+				update_pwd_home(aux, dir, tokens);
+			else if (match_string(dir, "/") == 1 || ft_strncmp(dir, "//", 3) == 0)
 				update_pwd_home(aux, dir, tokens);
 			else
 				update_pwd_other(aux, dir);

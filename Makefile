@@ -67,16 +67,4 @@ re: fclean all
 
 #heredoc control c tiene que salir
 
-#implementar: (son args no flags)
-#cd - (OLDPWD)
-#cd ~ (HOME)
-#cd // (ROOT)
-#cd -- (no args)
-#cd este implementado probar si hay un dir '-'
-
 #cd ../aldferna/..  (esto ahora funciona, pero lo dejo para probar cd el resto tb funcione)
-
-
-#------------------------------???? no hacer caso de momento
-
-#la señal control+\ no se ignora si hay un cat(comando interactivo)

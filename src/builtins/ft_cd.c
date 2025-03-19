@@ -6,11 +6,63 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:54 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/18 18:27:29 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/19 19:18:03 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
+
+/**
+ * @brief Cambia al directorio OLDPWD del usuario.
+ *
+ * Intenta cambiar al directorio oldpwd definido en la variable de entorno OLDPWD.
+ * Si OLDPWD no está definido o no se puede acceder al directorio, muestra un
+ * mensaje de error y establece el código de salida adecuado.
+ *
+ * @param tokens Puntero a la estructura de tokens con variables de entorno.
+ */
+static void	cd_to_oldpwd(t_token **tokens)
+{
+	char	*oldpwd_path;
+
+	oldpwd_path = get_env_content((*tokens)->env_mshell, "OLDPWD");
+	if (!oldpwd_path)
+	{
+		ft_putstr_fd("cd: OLDPWD not set\n", 2);
+		exit_num = 1;
+		return ;
+	}
+	if (chdir(oldpwd_path) == 0)
+	{
+		modify_pwd(tokens, oldpwd_path);
+		exit_num = 0;
+	}
+	else
+		print_cd_error(oldpwd_path);
+}
+
+/**
+ * @brief Cambia al directorio ROOT del usuario.
+ *
+ * Cambia al directorio raíz "/" del sistema de archivos. Si no se puede
+ * acceder al directorio, muestra un mensaje de error y establece el código
+ * de salida adecuado.
+ *
+ * @param tokens Puntero a la estructura de tokens con variables de entorno.
+ * @param args Argumentos del comando (args[0] es "cd").
+ */
+static void	cd_to_root(t_token **tokens, char *args)
+{
+	if (ft_strncmp(args, "///", 3) == 0)
+		args = ft_strdup("/");
+	if (chdir(args) == 0)
+	{
+		modify_pwd(tokens, args);
+		exit_num = 0;
+	}
+	else
+		print_cd_error(args);
+}
 
 /**
  * @brief Cambia al directorio HOME del usuario.
@@ -145,8 +197,12 @@ void	ft_cd(char **args, t_token **tokens)
 {
 	char	*path;
 
-	if (!args[1])
+	if (!args[1] || ft_strncmp(args[1], "~", 2) == 0 || ft_strncmp(args[1], "--", 3) == 0 )
 		cd_to_home(tokens);
+	else if (match_string(args[1], "/") == 1 || ft_strncmp(args[1], "//", 2) == 0)
+		cd_to_root(tokens, args[1]);
+	else if (match_string(args[1], "-") == 1)
+		cd_to_oldpwd(tokens);
 	else if (args[1] && args[2])
 	{
 		exit_num = 1;
