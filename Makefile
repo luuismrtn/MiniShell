@@ -91,19 +91,11 @@ re: fclean all
 
 #heredoc control c tiene que salir
 
-# echo $a?$PATH
-# echo $a+++++$PATH
-# $a+++++$PATH -------estas tres anteriores, tiene que expandir ambas (si estan separadas por no:alfanum)
-# echo $PATHa$HOME ----pero esta solo expande HOME, la anterior la toma como PATHa y no la encuentra (esto ahora ok, pero cuidado cd implementemos lo de arriba)
-# echo $$$PATH ----cuidado con esto tb cd se implemente lo de arriba
-# echo $1234$HOME (bash: 234/home/aldferna), (mshell: /home/aldferna)
-# echo $1234-$HOME (bash: 234-/home/aldferna), (mshell: -/home/aldferna)
-
 #implementar: (son args no flags)
-#cd -
-#cd ~
-#cd //
-#cd --
+#cd - (OLDPWD)
+#cd ~ (HOME)
+#cd // (ROOT)
+#cd -- (no args)
 #cd este implementado probar si hay un dir '-'
 
 #cd ../aldferna/..  (esto ahora funciona, pero lo dejo para probar cd el resto tb funcione)
