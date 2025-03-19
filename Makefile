@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror  -g3 #-fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -61,33 +61,9 @@ re: fclean all
 
 # MASS PRUEBAS CON ERROR
 
-# aldferna@c2r9s3:~/Desktop/MiniShell$ cat << l'e't
-# > $HOME
-# > let
-# $HOME
-
-# /home/aldferna/Desktop/MiniShell ~ cat << $HOME
-# > hola
-# > $HOME
-# hola
-# /home/aldferna
-
 #export a
 #./minishell
 #se queda como sin env
-
-#exit ajkjga asjdgdakjfv
-#nos da too many arguments pero tiene que ser numeric argument required, con exit 2 (y si qu sale)
-#solo too many si el 1º es numerico y hay mas argumentos numericos o no
-
-# /home/aldferna/Desktop/MiniShell ~ << $A   (no para, probablemente expandde el eof)
-# > hola
-# > hola
-# > $A
-# > $A
-# > 
-# /home/aldferna/Desktop/MiniShell ~ cat << $A (heap use after free)
-# > $A
 
 #heredoc control c tiene que salir
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/18 16:44:04 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/19 18:31:01 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,8 +210,8 @@ int	first_command(t_token **tokens, int num_commands, int *count)
 
 	fds[0] = STDIN_FILENO;
 	fds[1] = STDOUT_FILENO;
-	setup_redirections(*tokens, &fds, *count); //tokens
-	args = build_command_string(*tokens, count); //tokens
+	setup_redirections(*tokens, &fds, *count);
+	args = build_command_string(*tokens, count);
 	if (!args || !args[0])
 		return (ERROR);
 	if (is_builtin(args) == 1 && num_commands == 1)
@@ -228,7 +228,7 @@ int	first_command(t_token **tokens, int num_commands, int *count)
 			original_stdout = dup(STDOUT_FILENO);
 			dup2(fds[1], STDOUT_FILENO);
 		}
-		handle_builtin(args, *tokens); //tokens
+		handle_builtin(args, *tokens);
 		if (original_stdin != -1)
 		{
 			dup2(original_stdin, STDIN_FILENO);
@@ -239,7 +239,7 @@ int	first_command(t_token **tokens, int num_commands, int *count)
 			dup2(original_stdout, STDOUT_FILENO);
 			close(original_stdout);
 		}
-		if (fds[0] != STDIN_FILENO) //arriba
+		if (fds[0] != STDIN_FILENO)
 			close(fds[0]);
 		if (fds[1] != STDOUT_FILENO)
 			close(fds[1]);

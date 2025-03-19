@@ -101,8 +101,15 @@ static void	handle_redirections(t_token **tokens, char *input, int *i)
 	{
 		if (input[*i + 1] == '<')
 		{
+			(*i) += 2;
 			add_token(tokens, T_HERE_DOC, ft_strdup("<<"), 0);
-			(*i)++;
+			while (input[*i] && (ft_isspace(input[*i]) || input[*i] == '\"' || input[*i] == '\''))
+				(*i)++;
+			while (input[*i] && (!ft_isspace(input[*i]) && input[*i] != '\"' && input[*i] != '\''))
+			{
+				add_token(tokens, T_WORD, ft_substr(input, (*i), 1), 0);
+				(*i)++;
+			}
 		}
 		else
 			add_token(tokens, T_REDIR_LEFT, ft_strdup("<"), 0);
@@ -161,7 +168,9 @@ void	clean_tokens(t_token **tokens)
 					&& aux->next->type == T_WORD))
 			{
 				aux->content = ft_strjoin(aux->content, aux->next->content);
-				aux->quotes = aux->next->quotes;
+				if (aux->quotes == 0 && aux->next->quotes == 1)
+					aux->quotes = 1;
+				aux->next->quotes = aux->quotes;
 				aux->next = aux->next->next;
 			}
 			else
@@ -418,7 +427,7 @@ t_token	*tokenize(char *input, t_token *tokens)
 	i = 0;
 	while (input[i])
 	{
-		printf("Input[%d]: %c\n", i, input[i]);
+		//printf("Input[%d]: %c\n", i, input[i]);
 		if (ft_isspace(input[i]))
 			handle_spaces(&tokens, input, &i);
 		else if (input[i] == '\'')
@@ -530,7 +539,7 @@ int	main2(char *string, t_token *tokens)
 	aux = tokens->next;
 	while (aux != NULL)
 	{
-		printf("Token type: %d, content: %s\n", aux->type, aux->content);
+		printf("Token type: %d, content: %s, quotes: %d\n", aux->type, aux->content, aux->quotes);
 		aux = aux->next;
 	}
 	aux1 = tokens->next;
@@ -538,7 +547,7 @@ int	main2(char *string, t_token *tokens)
 	printf("\n\n");
 	while (aux1 != NULL)
 	{
-		printf("C_Token type: %d, Content: %s\n", aux1->type, aux1->content);
+		printf("C_Token type: %d, content: %s, quotes: %d\n", aux1->type, aux1->content, aux1->quotes);
 		aux1 = aux1->next;
 	}
 	if (automata(tokens) == 0)

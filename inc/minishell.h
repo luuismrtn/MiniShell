@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/18 23:29:58 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/19 17:50:55 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ int						main2(char *string, t_token *tokens);
 
 void					print_2(char **str);
 void					free_array(char **array);
+void handle_signal_heredoc(int sig);
 
 // UTILS
 char					*get_pwd(t_token *tokens);

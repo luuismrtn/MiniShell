@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:17:44 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/18 12:35:26 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/19 17:04:10 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void	ft_exit(char **arg)
 
 	normalize_args(&arg);
 	args = count_args(arg);
-	if (args > 2)
+	if (args > 2 && ft_isdigit(arg[1][0]))
 	{
 		ft_putstr_fd("exit: too many arguments\n", 2);
 		exit_num = 1;

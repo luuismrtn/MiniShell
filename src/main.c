@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/18 23:29:42 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/19 18:23:07 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,16 @@ void	handle_signal_child(int sig)
 		return ;
 }
 
+void handle_signal_heredoc(int sig)
+{
+	if (sig == SIGINT)
+	{
+		exit_num = 130;
+	}
+	else if (sig == SIGQUIT)
+		return ;
+}
+
 void	signals(char c)
 {
 	struct sigaction	sa;
@@ -50,6 +60,8 @@ void	signals(char c)
 		sa.sa_handler = handle_signal;
 	else if (c == 'c')
 		sa.sa_handler = handle_signal_child;
+	else if (c == 'h')
+		sa.sa_handler = handle_signal_heredoc;
 	sa.sa_flags = 0;
 	if (sigaction(SIGINT, &sa, NULL) == -1)
 	{
