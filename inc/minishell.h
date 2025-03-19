@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/19 17:50:55 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/19 20:30:13 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ typedef struct s_env
 typedef struct s_token
 {
 	t_env				*env_mshell;
+	t_env				*exp_var;
 	t_token_value		type;
 	char				*content;
 	int					quotes;
@@ -125,7 +126,7 @@ int						main2(char *string, t_token *tokens);
 
 void					print_2(char **str);
 void					free_array(char **array);
-void handle_signal_heredoc(int sig);
+void					handle_signal_heredoc(int sig);
 
 // UTILS
 char					*get_pwd(t_token *tokens);
