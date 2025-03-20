@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:17:16 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/20 12:40:49 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/20 21:18:05 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,7 @@ t_env	*find_env_var(t_env *env, char *var_name)
 {
 	while (env)
 	{
-		if (ft_strncmp(env->name, var_name, ft_strlen(var_name)) == 0
-			&& ft_strlen(env->name) == ft_strlen(var_name))
+		if (match_string(env->name, var_name))
 			return (env);
 		env = env->next;
 	}

@@ -6,11 +6,45 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:59:37 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/20 12:50:29 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/20 21:21:30 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
+
+/**
+ * @brief Elimina una variable de entorno de la lista.
+ *
+ * Busca una variable por su nombre y la elimina de la lista de variables de
+ * entorno. Libera la memoria de la estructura y sus campos.
+ *
+ * @param env Puntero al puntero de la lista enlazada de variables de entorno.
+ * @param name Nombre de la variable a eliminar.
+ */
+static void	remove_var(t_env **env, char *name)
+{
+	t_env	*current;
+	t_env	*prev;
+
+	current = *env;
+	prev = NULL;
+	while (current)
+	{
+		if (ft_strcmp(current->name, name) == 0)
+		{
+			if (prev)
+				prev->next = current->next;
+			else
+				*env = current->next;
+			free(current->name);
+			free(current->content);
+			free(current);
+			return ;
+		}
+		prev = current;
+		current = current->next;
+	}
+}
 
 /**
  * @brief Añade una variable con contenido el env_mshell.
@@ -38,6 +72,8 @@ void	handle_add_var(t_token *tokens, t_env *new_env, char *content)
 		new_env->content = ft_strdup(content);
 	new_env->next = tokens->env_mshell;
 	tokens->env_mshell = new_env;
+	if (find_env_var(tokens->exp_var, new_env->name))
+		remove_var(&tokens->exp_var, new_env->name);
 }
 
 /**

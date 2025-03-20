@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  -g3 #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror  -g3 -fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -69,8 +69,6 @@ re: fclean all
 #aldferna@c2r7s6:~$ cd ../aldferna/..
 #aldferna@c2r7s6:/home$ 
 
-#si hacemos export a y luego export a=hola (tenemos dos variables a, y el unset solo quita la del =)
-
 #pwd | cat | cat -e >3 | wc -l (bash: 0 y crea 3 con print dwl pwd) (mshell: hace el pwd y no crea 3)
 
 #actualizar el echo $?
@@ -81,10 +79,6 @@ re: fclean all
 #<<eof cat | cat (igual)
 
 #en lo de crear dir, meterse y luego salir, al encontrar un path que existe pone cosas raras en el readline
-
-#/home/aldferna/Desktop/MiniShell ~ cd
-#free(): double free detected in tcache 2
-#[3]    2212968 IOT instruction (core dumped)  ./minishell
 
 #exit 3 | ls  (no hace el ls)
 
