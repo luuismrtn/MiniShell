@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/17 17:12:32 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/20 18:13:17 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,10 @@ void	exe(t_token *tokens, char **comnd, int stdout)
 	struct stat statbuf;
 	
 	if ((ft_strchr(comnd[0], '/') != NULL) && (access(comnd[0], X_OK) == 0))
+	{
+		close(stdout);
 		execve(comnd[0], comnd, join_env(tokens->env_mshell));
+	}
 	else
 	{
 		paths = search_path(join_env(tokens->env_mshell), comnd[0]);
@@ -56,7 +59,10 @@ void	exe(t_token *tokens, char **comnd, int stdout)
 		while (paths[i] != NULL)
 		{
 			if (access(paths[i], R_OK | X_OK) == 0)
+			{
+				close(stdout);
 				execve(paths[i], comnd, join_env(tokens->env_mshell));
+			}
 			i++;
 		}
 		i = 0;
@@ -72,11 +78,13 @@ void	exe(t_token *tokens, char **comnd, int stdout)
 			printf("%s: Is a directory\n", comnd[0]); //la flag: deveulve true si es un dir
 		else if (access(comnd[0], F_OK) != 0) //no existe
 			printf("%s: No such file or directory\n", comnd[0]);
-		exit(126);
+		exit_num = 126;
+		exit(exit_num);
 	}	
 	else
 		printf("%s: command not found\n", comnd[0]);
-	exit(127);
+	exit_num = 127;
+	exit(exit_num);
 }
 
 char	**join_env(t_env *env_mshell)

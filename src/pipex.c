@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/20 12:28:21 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/20 18:39:25 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,12 +115,12 @@ int	middle_command(int *count, t_token **tokens, int fd_in)
 		if (is_builtin(args) == 1)
 		{
 			handle_builtin(args, (*tokens));
-			exit (0);
+			//exit (0);
 		}
 		else
 		{
 			exe((*tokens), args, original_stdout);
-			exit(EXIT_FAILURE);
+			//exit(EXIT_FAILURE);
 		}
 	}
 	free_array(args);
@@ -165,7 +165,7 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 		if (fd_in < 0)
 		{
 			perror("error output file");
-			exit(7);
+			//exit(7);
 		}
 		original_stdout = dup(STDOUT_FILENO);
 		if (fds[1] != STDOUT_FILENO)
@@ -182,12 +182,12 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 		{
 			handle_builtin(args, *tokens);
 			close(fds[1]);
-			exit(0);
+			exit(exit_num);
 		}
 		else
 		{
 			exe((*tokens), args, original_stdout);
-			exit(EXIT_FAILURE);
+			//exit(EXIT_FAILURE);
 		}
 	}
 	waitpid(pid, &status, 0); 
@@ -276,7 +276,7 @@ int	first_command(t_token **tokens, int num_commands, int *count)
 				close(fds[1]);
 			}
 			exe((*tokens), args, original_stdout);
-			exit(EXIT_FAILURE);
+			//exit(exit_num);
 		}
 		i = 0;
 		while (args[i])
@@ -331,12 +331,12 @@ int	first_command(t_token **tokens, int num_commands, int *count)
 			{
 				handle_builtin(args, *tokens);
 				close(fds[1]);
-				exit(0);
+				exit(exit_num);
 			}
 			else
 			{
 				exe((*tokens), args, original_stdout);
-				exit(EXIT_FAILURE);
+				//exit(exit_num);
 			}
 		}
 		free_array(args);
