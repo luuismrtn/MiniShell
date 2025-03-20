@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:54 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/20 13:01:40 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/20 13:06:54 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ static void	cd_to_oldpwd(t_token **tokens)
 	}
 	else
 		print_cd_error(oldpwd_path);
+	free(oldpwd_path);
 }
 
 /**
@@ -97,6 +98,8 @@ static void	cd_to_home(t_token **tokens)
 		else
 			print_cd_error(home_path);
 	}
+	free(home_path);
+	free(actual_path);
 }
 
 /**
