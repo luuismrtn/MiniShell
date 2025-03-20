@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/20 13:23:48 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/20 21:59:30 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,54 +130,51 @@ int	match_string(char *str1, char *str2)
 		&& ft_strlen(str1) == ft_strlen(str2));
 }
 
-/**
- * @brief Procesa una parte de la cadena durante la expansión de variables.
- *
- * Esta función auxiliar es llamada por handle_var para procesar cada carácter
- * de la cadena de entrada. Tiene dos modos de operación principales:
- *
- * 1. Para caracteres '$': Extrae el nombre de la variable que sigue, busca
- *    su valor en el entorno, y lo añade al resultado.
- * 2. Para otros caracteres: Los añade directamente al resultado.
- *
- * Manejo de variables:
- * - Si una variable no existe en el entorno, añade una cadena vacía.
- * - Actualiza el índice para saltar el nombre de la variable procesada.
- * - Libera la memoria utilizada para extraer el nombre de la variable.
- *
- * @param tokens Puntero a la estructura con variables de entorno.
- * @param str Cadena que se está procesando.
-
-	* @param i Puntero al índice actual en la cadena (se modifica dentro de la función).
-
-	* @param result Puntero a la cadena resultado (se modifica dentro de la función).
- */
 static void	join_result(t_token *tokens, char *str, int *i, char **result)
 {
 	int		j;
 	char	*var_name;
 	char	*var_value;
+	char	*temp;
+	t_env	*env_var;
+	char	*substr;
 
 	if (str[(*i)] == '$')
 	{
 		j = (*i) + 1;
-		while (str[j] && str[j] != ':' && str[j] != '$' && str[j] != '=')
+		while (str[j] && str[j] != ':' && str[j] != '$' && str[j] != '='
+			&& str[j] != ' ' && str[j] != '\t')
 			j++;
 		var_name = ft_substr(str, (*i) + 1, j - (*i) - 1);
-		if (!find_env_var(tokens->env_mshell, var_name))
+		if (!var_name)
+			return ;
+		env_var = find_env_var(tokens->env_mshell, var_name);
+		if (!env_var)
 		{
-			(*result) = ft_strjoin((*result), ft_strdup(""));
-			(*i) = j - 1;
-			return (free(var_name));
+			free(var_name);
+			return ;
 		}
-		var_value = find_env_var(tokens->env_mshell, var_name)->content;
-		free(var_name);
+		var_value = env_var->content;
 		if (var_value)
-			(*result) = ft_strjoin((*result), var_value);
+		{
+			temp = *result;
+			*result = ft_strjoin(*result, var_value);
+			free(temp);
+		}
+		free(var_name);
 		(*i) = j - 1;
 	}
 	else
-		(*result) = ft_strjoin((*result), ft_substr(str, (*i), 1));
+	{
+		temp = *result;
+		substr = ft_substr(str, (*i), 1);
+		if (substr)
+		{
+			*result = ft_strjoin(*result, substr);
+			free(substr);
+			free(temp);
+		}
+	}
 }
 
 /**
@@ -189,7 +186,7 @@ static void	join_result(t_token *tokens, char *str, int *i, char **result)
  *
  * @param str La cadena original que puede contener referencias a variables.
  * @param tokens Puntero a la estructura de tokens con variables de entorno.
- * @return char* Nueva cadena con las variables expandidas o NULLen caso de 
+ * @return char* Nueva cadena con las variables expandidas o NULLen caso de
  * error. Esta cadena debe ser liberada por el llamador.
  */
 char	*handle_env_var(char *str, t_token *tokens)
@@ -242,6 +239,35 @@ char	*get_history_path(void)
 	return (path);
 }
 
+/**
+ * @brief Libera los recursos asociados a una estructura t_token
+ *
+ * Libera la lista enlazada de variables de entorno, el contenido del token
+ * y finalmente el token mismo.
+ *
+ * @param tokens Puntero al token que se va a liberar.
+ */
+void	free_tokens(t_token *tokens)
+{
+	t_env	*aux;
+	t_env	*next;
+
+	if (!tokens)
+		return ;
+	aux = tokens->env_mshell;
+	while (aux)
+	{
+		next = aux->next;
+		free(aux->name);
+		free(aux->content);
+		free(aux);
+		aux = next;
+	}
+	if (tokens->content)
+		free(tokens->content);
+	free(tokens);
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	char	*line;
@@ -249,6 +275,7 @@ int	main(int argc, char **argv, char **env)
 	char	*HISTORY_FILE;
 	char	*prompt;
 	char	*pwd_content;
+	char	*trimmed;
 
 	HISTORY_FILE = get_history_path();
 	(void)argc;
@@ -259,6 +286,7 @@ int	main(int argc, char **argv, char **env)
 	if (ft_read_history(HISTORY_FILE) == ERROR)
 	{
 		free(HISTORY_FILE);
+		free_tokens(tokens);
 		return (ERROR);
 	}
 	signals('f');
@@ -271,20 +299,21 @@ int	main(int argc, char **argv, char **env)
 		free(prompt);
 		if (!line)
 			break ;
-		if (line[0] == '\0' || ft_strtrim(line, " \t\n\r\f\v")[0] == '\0')
+		trimmed = ft_strtrim(line, " \t\n\r\f\v");
+		if (!trimmed || trimmed[0] == '\0')
 		{
 			free(line);
+			free(trimmed);
 			continue ;
 		}
-		else
-		{
-			add_history(line);
-			write_line_history(HISTORY_FILE, line);
-			main2(line, tokens);
-			free(line);
-		}
+		free(trimmed);
+		add_history(line);
+		write_line_history(HISTORY_FILE, line);
+		main2(line, tokens);
+		free(line);
 		delete_tokens(&tokens);
 	}
 	free(HISTORY_FILE);
+	free_tokens(tokens);
 	return (SUCCESS);
 }

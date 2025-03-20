@@ -12,19 +12,6 @@
 
 #include "../inc/minishell.h"
 
-void	free_tokens(t_token *tokens)
-{
-	t_token	*next;
-
-	while (tokens)
-	{
-		next = tokens->next;
-		free(tokens->content);
-		free(tokens);
-		tokens = next;
-	}
-}
-
 t_token	*create_node(t_token_value type, char *content, int quotes)
 {
 	t_token	*new_token;
@@ -33,11 +20,10 @@ t_token	*create_node(t_token_value type, char *content, int quotes)
 	if (!new_token)
 		return (NULL);
 	new_token->type = type;
-	new_token->content = content;
-	if (type == T_D_QUOTE)
-		new_token->quotes = quotes;
-	else
-		new_token->quotes = quotes;
+	new_token->content = ft_strdup(content);
+	if (!new_token->content)
+		return (free(new_token), NULL);
+	new_token->quotes = quotes;
 	new_token->env_mshell = NULL;
 	new_token->next = NULL;
 	return (new_token);
@@ -48,13 +34,12 @@ void	add_token(t_token **head, t_token_value type, char *content, int quotes)
 	t_token	*aux;
 	t_token	*new_token;
 
-	new_token = create_node(type, content, quotes);
-	if (!new_token || !head)
-	{
-		free(content);
-		free(new_token);
+	if (!content)
 		return ;
-	}
+	new_token = create_node(type, content, quotes);
+	free(content);
+	if (!new_token || !head)
+		return ;
 	if (*head == NULL)
 		*head = new_token;
 	else
@@ -159,6 +144,9 @@ static void	handle_pipe(t_token **tokens, char input, t_token_value type,
 void	clean_tokens(t_token **tokens)
 {
 	t_token	*aux;
+	t_token	*temp;
+	char	*old_content;
+	char	*new_content;
 
 	if (!tokens || !*tokens)
 		return ;
@@ -172,11 +160,21 @@ void	clean_tokens(t_token **tokens)
 					&& aux->next->type == T_ENV) || (aux->type == T_ENV
 					&& aux->next->type == T_WORD))
 			{
-				aux->content = ft_strjoin(aux->content, aux->next->content);
-				if (aux->quotes == 0 && aux->next->quotes == 1)
-					aux->quotes = 1;
-				aux->next->quotes = aux->quotes;
-				aux->next = aux->next->next;
+				old_content = aux->content;
+				new_content = ft_strjoin(old_content, aux->next->content);
+				if (new_content)
+				{
+					free(old_content);
+					aux->content = new_content;
+					if (aux->quotes == 0 && aux->next->quotes == 1)
+						aux->quotes = 1;
+					temp = aux->next;
+					aux->next = aux->next->next;
+					free(temp->content);
+					free(temp);
+				}
+				else
+					aux = aux->next;
 			}
 			else
 				aux = aux->next;
@@ -186,7 +184,10 @@ void	clean_tokens(t_token **tokens)
 			if (aux->next->next != NULL)
 			{
 				aux = aux->next;
-				aux->content = "\0";
+				free(aux->content);
+				aux->content = ft_strdup("");
+				if (!aux->content)
+					aux->content = ft_strdup(" ");
 				aux->type = aux->next->type;
 			}
 			else
@@ -415,9 +416,11 @@ static void	handle_word(t_token **tokens, char *input, int *i)
 	}
 	while (input[*i] && !ft_isspace(input[*i]) && input[*i] != '\"'
 		&& input[*i] != '\'' && input[*i] != '|' && input[*i] != '<'
-		&& input[*i] != '$')
+		&& input[*i] != '>' && input[*i] != '$')
 		(*i)++;
 	content = ft_substr(input, start, *i - start);
+	if (!content)
+		return ;
 	if (content[0] == '-')
 		add_token(tokens, T_FLAG, content, 0);
 	else
@@ -513,6 +516,7 @@ int	has_pipe(t_token *tokens)
 int	main2(char *string, t_token *tokens)
 {
 	char	*input;
+	int		result;
 
 	input = string;
 	if (check_quotes_closed(input) == ERROR)
@@ -521,8 +525,11 @@ int	main2(char *string, t_token *tokens)
 		return (ERROR);
 	}
 	tokens = tokenize(input, tokens);
+	if (!tokens)
+		return (ERROR);
 	clean_tokens(&tokens);
-	if (automata(tokens) == 0)
+	result = automata(tokens);
+	if (result == 0)
 		pipex(input, tokens);
 	return (0);
 }

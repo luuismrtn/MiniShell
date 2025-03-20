@@ -95,12 +95,14 @@ re: fclean all
 #esto es bash:: da el codigo del ultimo comando escrito
 # aldferna@c2r7s6:~/Desktop/MiniShell$ exit 5 | ls
 # inc  libft  Makefile  minishell  src
-# aldferna@c2r7s6:~/Desktop/MiniShell$ echo $?            ----nos da 5
+# aldferna@c2r7s6:~/Desktop/MiniShell$ echo $?            ----nos da 1
 # 0
+
 # aldferna@c2r7s6:~/Desktop/MiniShell$ sdffggb | sleep 1
 # sdffggb: command not found
-# aldferna@c2r7s6:~/Desktop/MiniShell$ echo $?              ----nos da 127
+# aldferna@c2r7s6:~/Desktop/MiniShell$ echo $?              ----nos da 1
 # 0
+
 # aldferna@c2r7s6:~/Desktop/MiniShell$ sleep 1  | sdfg
 # Command 'sdfg' not found, did you mean:
 #   command 'asdfg' from deb aoeui (1.7+20160302.git4e5dee9-3)
