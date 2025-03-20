@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:54 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/20 12:54:22 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/20 13:01:40 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,27 +100,6 @@ static void	cd_to_home(t_token **tokens)
 }
 
 /**
- * @brief Procesa la ruta proporcionada como argumento.
- *
- * Normaliza la ruta eliminando cualquier barra al final si existe.
- * Esto es útil para manejar rutas como "/home/" que deben tratarse
- * igual que "/home".
- *
- * @param args Array de argumentos del comando.
- * @return char* Ruta normalizada (debe ser liberada por el llamador).
- */
-static char	*find_path(char **args)
-{
-	char	*path;
-
-	if (args[1][ft_strlen(args[1]) - 1] == '/')
-		path = ft_substr(args[1], 0, ft_strlen(args[1]) - 1);
-	else
-		path = ft_strdup(args[1]);
-	return (path);
-}
-
-/**
  * @brief Valida si una ruta contiene solo referencias a directorios superiores.
  *
  * Comprueba si la ruta consiste únicamente en componentes ".." (directorios
@@ -129,7 +108,7 @@ static char	*find_path(char **args)
  * @param input La ruta a validar.
  * @return int 1 si la ruta solo contiene "..", 0 en caso contrario.
  */
-static int	validate_input(char *input)
+int	validate_input_cd(char *input)
 {
 	char	**chop_input;
 	int		i;
@@ -151,40 +130,6 @@ static int	validate_input(char *input)
 }
 
 /**
- * @brief Maneja el caso donde getcwd() falla pero necesitamos cambiar de
- * directorio.
- *
- * En algunos sistemas,	cuando el directorio de trabajo actual ya no es
- * accesible, getcwd() puede fallar. Esta función permite cambiar de
- * directorio incluso en esos casos calculando la ruta manualmente.
- *
- * @param tokens Puntero a la estructura de tokens con variables de entorno.
- * @param input_path La ruta a la que queremos cambiar.
- */
-static void	handle_broken_pwd(t_token **tokens, char *input_path)
-{
-	char	*desired_path;
-
-	if (!validate_input(input_path))
-	{
-		print_cd_error(input_path);
-		return ;
-	}
-	desired_path = find_desired_path(find_env_var((*tokens)->env_mshell,
-				"PWD")->content, input_path);
-	if (chdir(input_path) == 0)
-		get_env_content_and_replace(tokens, "PWD", desired_path);
-	else
-	{
-		ft_putstr_fd("cd: error retrieving current directory: getcwd: ", 2);
-		ft_putstr_fd("cannot access parent directories: ", 2);
-		ft_putstr_fd("No such file or directory\n", 2);
-		modify_pwd(tokens, input_path);
-	}
-	free(desired_path);
-}
-
-/**
  * @brief Implementa el comando cd (change directory).
  *
  * Cambia el directorio de trabajo actual al especificado, o al directorio
@@ -201,8 +146,7 @@ void	ft_cd(char **args, t_token **tokens)
 	if (!args[1] || ft_strncmp(args[1], "~", 2) == 0 || ft_strncmp(args[1],
 			"--", 3) == 0)
 		cd_to_home(tokens);
-	else if (match_string(args[1], "/") == 1 || ft_strncmp(args[1], "//",
-			2) == 0)
+	else if (match_string(args[1], "/") || ft_strncmp(args[1], "//", 2) == 0)
 		cd_to_root(tokens, args[1]);
 	else if (match_string(args[1], "-") == 1)
 		cd_to_oldpwd(tokens);
@@ -210,7 +154,6 @@ void	ft_cd(char **args, t_token **tokens)
 	{
 		exit_num = 1;
 		ft_putstr_fd("cd: too many arguments\n", 2);
-		return ;
 	}
 	else
 	{

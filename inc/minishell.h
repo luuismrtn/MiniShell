@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/20 12:50:49 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/20 13:01:03 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,8 +110,10 @@ void					ft_unset(t_token *tokens, char **args);
 void					modify_pwd(t_token **tokens, char *dir);
 
 // CD_UTILS
-char					*find_desired_path(char *pwd, char *dir);
 void					print_cd_error(char *path);
+void					handle_broken_pwd(t_token **tokens, char *input_path);
+int						validate_input_cd(char *input);
+char					*find_path(char **args);
 
 // EXPORT_UTILS
 int						is_valid_var_name(char *name);

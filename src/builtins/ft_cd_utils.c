@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:49:21 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/18 12:09:40 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/20 13:00:52 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 /**
  * @brief Cuenta los niveles de directorio y acumula los niveles a subir.
  *
- * Recorre un array de componentes de ruta y cuenta cuántos niveles de directorio
+ * Recorre un array de componentes de ruta y cuenta cuántos niveles de
+ * directorio
  * existen. Además, incrementa el contador de niveles a subir por cada ".."
  * encontrado.
  *
@@ -50,7 +51,7 @@ static int	count_directory_levels(char **components, int *levels_up)
  * @param dir La ruta relativa a aplicar.
  * @return char* La nueva ruta absoluta (debe ser liberada por el llamador).
  */
-char	*find_desired_path(char *pwd, char *dir)
+static char	*find_desired_path(char *pwd, char *dir)
 {
 	char	**components_dir;
 	char	**components_pwd;
@@ -92,4 +93,59 @@ void	print_cd_error(char *path)
 	ft_putstr_fd(path, 2);
 	ft_putstr_fd(": No such file or directory\n", 2);
 	exit_num = 1;
+}
+
+/**
+ * @brief Maneja el caso donde getcwd() falla pero necesitamos cambiar de
+ * directorio.
+ *
+ * En algunos sistemas,	cuando el directorio de trabajo actual ya no es
+ * accesible, getcwd() puede fallar. Esta función permite cambiar de
+ * directorio incluso en esos casos calculando la ruta manualmente.
+ *
+ * @param tokens Puntero a la estructura de tokens con variables de entorno.
+ * @param input_path La ruta a la que queremos cambiar.
+ */
+void	handle_broken_pwd(t_token **tokens, char *input_path)
+{
+	char	*desired_path;
+
+	if (!validate_input_cd(input_path))
+	{
+		print_cd_error(input_path);
+		return ;
+	}
+	desired_path = find_desired_path(find_env_var((*tokens)->env_mshell,
+				"PWD")->content, input_path);
+	if (chdir(desired_path) == 0)
+		get_env_content_and_replace(tokens, "PWD", desired_path);
+	else
+	{
+		ft_putstr_fd("cd: error retrieving current directory: getcwd: ", 2);
+		ft_putstr_fd("cannot access parent directories: ", 2);
+		ft_putstr_fd("No such file or directory\n", 2);
+		modify_pwd(tokens, input_path);
+	}
+	free(desired_path);
+}
+
+/**
+ * @brief Procesa la ruta proporcionada como argumento.
+ *
+ * Normaliza la ruta eliminando cualquier barra al final si existe.
+ * Esto es útil para manejar rutas como "/home/" que deben tratarse
+ * igual que "/home".
+ *
+ * @param args Array de argumentos del comando.
+ * @return char* Ruta normalizada (debe ser liberada por el llamador).
+ */
+char	*find_path(char **args)
+{
+	char	*path;
+
+	if (args[1][ft_strlen(args[1]) - 1] == '/')
+		path = ft_substr(args[1], 0, ft_strlen(args[1]) - 1);
+	else
+		path = ft_strdup(args[1]);
+	return (path);
 }
