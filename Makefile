@@ -20,7 +20,8 @@ SRC = src/main.c \
 	src/builtins/ft_export_utils.c \
 	src/builtins/ft_pwd.c \
 	src/builtins/ft_unset.c \
-	src/builtins/modify_pwd.c
+	src/builtins/modify_pwd.c \
+	src/builtins/modify_pwd_utils.c \
 
 INCLUDE = -I libft -I.
 
@@ -60,10 +61,6 @@ re: fclean all
 # revisar si dejamos fd's abiertos
 
 # MASS PRUEBAS CON ERROR
-
-#export a
-#./minishell
-#se queda como sin env
 
 #heredoc control c tiene que salir
 

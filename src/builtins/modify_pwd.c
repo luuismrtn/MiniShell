@@ -6,40 +6,11 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:44:38 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/19 19:13:45 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/20 12:40:07 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
-
-/**
- * @brief Crea una nueva variable PWD en el entorno.
- *
- * Esta función se llama cuando la variable PWD no existe en el entorno
- * y necesita ser creada. Crea una estructura t_env con el nombre "PWD"
- * y un contenido basado en el directorio HOME y el argumento dir.
- *
- * @param tokens Puntero a la estructura de tokens con variables de entorno.
- * @param dir El directorio a añadir a la ruta.
- */
-static void	create_new_pwd(t_token **tokens, char *dir)
-{
-	t_env	*new_var;
-	char	*path;
-
-	new_var = malloc(sizeof(t_env));
-	if (!new_var)
-		return ;
-	new_var->name = ft_strdup("PWD");
-	path = ft_strjoin("/", dir);
-	new_var->content = ft_strjoin(search_path(join_env((*tokens)->env_mshell),
-				"HOME")[1], path);
-	free(path);
-	if (!new_var->content)
-		return (free(new_var));
-	new_var->next = (*tokens)->env_mshell;
-	(*tokens)->env_mshell = new_var;
-}
 
 /**
  * @brief Actualiza la variable PWD cuando el directorio es ".".
@@ -87,7 +58,7 @@ static void	update_pwd_home(t_env *aux, char *dir, t_token **tokens)
 	char	*new_pwd;
 	char	*home_value;
 
-	home_value = get_env_content((*tokens)->env_mshell, "HOME");
+	home_value = find_env_var((*tokens)->env_mshell, "HOME")->content;
 	if (ft_strlen(dir) == ft_strlen(home_value))
 		new_pwd = ft_strdup(home_value);
 	else
@@ -121,18 +92,27 @@ static void	update_pwd_other(t_env *aux, char *dir)
 	aux->content = new_pwd;
 }
 
-static void modify_oldpwd(t_token *tokens)
+/**
+ * @brief Modifica la variable OLDPWD en el entorno.
+ *
+ * Esta función se llama antes de modificar la variable PWD para actualizar
+ * la variable OLDPWD. Busca la variable PWD en el entorno y actualiza
+ * OLDPWD con su valor.
+ *
+ * @param tokens Puntero a la estructura de tokens con variables de entorno.
+ */
+static void	modify_oldpwd(t_token *tokens)
 {
 	t_env	*aux;
-	char *a_pwd;
-	
+	char	*a_pwd;
+
 	aux = tokens->env_mshell;
 	while (aux)
 	{
 		if (ft_strncmp(aux->name, "PWD", ft_strlen("PWD")) == 0)
 		{
 			a_pwd = ft_strdup(aux->content);
-			break;
+			break ;
 		}
 		aux = aux->next;
 	}
@@ -143,7 +123,7 @@ static void modify_oldpwd(t_token *tokens)
 		{
 			free(aux->content);
 			aux->content = a_pwd;
-			break;
+			break ;
 		}
 		aux = aux->next;
 	}
@@ -168,7 +148,7 @@ static void modify_oldpwd(t_token *tokens)
 void	modify_pwd(t_token **tokens, char *dir)
 {
 	t_env	*aux;
-	
+
 	modify_oldpwd((*tokens));
 	if (ft_strncmp(dir, ".", 2) == 0)
 		return ;
@@ -179,10 +159,11 @@ void	modify_pwd(t_token **tokens, char *dir)
 		{
 			if (ft_strncmp(dir, ".", 1) == 0)
 				update_pwd_dot(aux, dir);
-			else if (!ft_strncmp(dir, get_env_content((*tokens)->env_mshell,
-						"HOME"), 5))
+			else if (!ft_strncmp(dir, find_env_var((*tokens)->env_mshell,
+						"HOME")->content, 5))
 				update_pwd_home(aux, dir, tokens);
-			else if (match_string(dir, "/") == 1 || ft_strncmp(dir, "//", 3) == 0)
+			else if (match_string(dir, "/") == 1 || ft_strncmp(dir, "//",
+					3) == 0)
 				update_pwd_home(aux, dir, tokens);
 			else
 				update_pwd_other(aux, dir);

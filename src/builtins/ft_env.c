@@ -6,33 +6,33 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:17:16 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/18 12:24:13 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/20 12:40:49 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
 /**
- * @brief Obtiene el contenido de una variable de entorno.
+ * @brief Busca una variable de entorno por su nombre.
  *
- * Busca una variable por su nombre en la lista enlazada de variables
- * de entorno y devuelve su contenido si la encuentra.
+ * Recorre la lista de variables de entorno comparando el nombre exacto
+ * con el proporcionado. A diferencia de otras funciones similares, esta
+ * devuelve un puntero a la estructura completa de la variable, no solo
+ * su contenido.
  *
  * @param env Puntero a la lista enlazada de variables de entorno.
- * @param name Nombre de la variable a buscar.
- * @return char* Contenido de la variable si existe, NULL en caso contrario.
- *               No liberar este puntero, es una referencia directa.
+ * @param var_name Nombre de la variable a buscar.
+ * @return t_env* Puntero a la estructura de la variable si se encuentra,
+ *               NULL en caso contrario. No se debe liberar este puntero.
  */
-char	*get_env_content(t_env *env, char *name)
+t_env	*find_env_var(t_env *env, char *var_name)
 {
-	t_env	*current;
-
-	current = env;
-	while (current)
+	while (env)
 	{
-		if (ft_strncmp(current->name, name, ft_strlen(name)) == 0)
-			return (current->content);
-		current = current->next;
+		if (ft_strncmp(env->name, var_name, ft_strlen(var_name)) == 0
+			&& ft_strlen(env->name) == ft_strlen(var_name))
+			return (env);
+		env = env->next;
 	}
 	return (NULL);
 }

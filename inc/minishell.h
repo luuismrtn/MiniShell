@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/20 12:12:41 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/20 12:50:49 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ int						ft_len_var_name(char *str, int i);
 
 // ENV
 t_env					*env_buildin(char **env);
+t_env					*find_env_var(t_env *env, char *var_name);
 
 // EXE
 char					**join_env(t_env *env_mshell);
@@ -116,7 +117,11 @@ void					print_cd_error(char *path);
 int						is_valid_var_name(char *name);
 char					*extract_var_name(char *arg);
 void					print_env_as_export(t_token *tokens);
-t_env					*find_env_var(t_env *env, char *var_name);
+void					handle_add_var(t_token *tokens, t_env *new_env,
+							char *content);
+
+// MODIFY_PWD_UTILS
+void					create_new_pwd(t_token **tokens, char *dir);
 
 //	SIGNALS
 void					signals(char c);
@@ -129,8 +134,6 @@ void					free_array(char **array);
 void					handle_signal_heredoc(int sig);
 
 // UTILS
-char					*get_pwd(t_token *tokens);
-char					*get_env_content(t_env *env, char *name);
 void					get_env_content_and_replace(t_token **tokens,
 							char *name, char *content);
 int						count_args(char **args);

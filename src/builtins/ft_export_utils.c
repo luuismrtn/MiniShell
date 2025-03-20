@@ -6,11 +6,39 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:59:37 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/20 12:16:28 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/20 12:50:29 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
+
+/**
+ * @brief Añade una variable con contenido el env_mshell.
+ *
+ * Crea una nueva estructura t_env con el nombre y contenido proporcionados,
+ * y la agrega al inicio de la lista de variables de entorno.
+ *
+ * @param tokens Puntero a la estructura de tokens con la lista de variables.
+ * @param new_env Estructura con el nombre y contenido de la variable.
+ * @param content Contenido de la variable (nunca es NULL).
+ */
+void	handle_add_var(t_token *tokens, t_env *new_env, char *content)
+{
+	char	*to_search;
+	t_env	*current;
+
+	if (content[0] == '$')
+	{
+		to_search = ft_substr(content, 1, ft_strlen(content) - 1);
+		current = find_env_var(tokens->env_mshell, to_search);
+		free(to_search);
+		new_env->content = ft_strdup(current->content);
+	}
+	else
+		new_env->content = ft_strdup(content);
+	new_env->next = tokens->env_mshell;
+	tokens->env_mshell = new_env;
+}
 
 /**
  * @brief Verifica si un nombre de variable es válido.
@@ -97,29 +125,4 @@ void	print_env_as_export(t_token *tokens)
 		printf("declare -x %s\n", vars->name);
 		vars = vars->next;
 	}
-}
-
-/**
- * @brief Busca una variable de entorno por su nombre.
- *
- * Recorre la lista de variables de entorno comparando el nombre exacto
- * con el proporcionado. A diferencia de otras funciones similares, esta
- * devuelve un puntero a la estructura completa de la variable, no solo
- * su contenido.
- *
- * @param env Puntero a la lista enlazada de variables de entorno.
- * @param var_name Nombre de la variable a buscar.
- * @return t_env* Puntero a la estructura de la variable si se encuentra,
- *               NULL en caso contrario. No se debe liberar este puntero.
- */
-t_env	*find_env_var(t_env *env, char *var_name)
-{
-	while (env)
-	{
-		if (ft_strncmp(env->name, var_name, ft_strlen(var_name)) == 0
-			&& ft_strlen(env->name) == ft_strlen(var_name))
-			return (env);
-		env = env->next;
-	}
-	return (NULL);
 }

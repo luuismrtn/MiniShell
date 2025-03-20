@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:54 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/19 19:18:03 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/20 12:54:22 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 /**
  * @brief Cambia al directorio OLDPWD del usuario.
  *
- * Intenta cambiar al directorio oldpwd definido en la variable de entorno OLDPWD.
+ * Intenta cambiar al directorio oldpwd definido en la variable de entorno
+ * OLDPWD.
  * Si OLDPWD no está definido o no se puede acceder al directorio, muestra un
  * mensaje de error y establece el código de salida adecuado.
  *
@@ -25,7 +26,7 @@ static void	cd_to_oldpwd(t_token **tokens)
 {
 	char	*oldpwd_path;
 
-	oldpwd_path = get_env_content((*tokens)->env_mshell, "OLDPWD");
+	oldpwd_path = find_env_var((*tokens)->env_mshell, "OLDPWD")->content;
 	if (!oldpwd_path)
 	{
 		ft_putstr_fd("cd: OLDPWD not set\n", 2);
@@ -78,14 +79,14 @@ static void	cd_to_home(t_token **tokens)
 	char	*home_path;
 	char	*actual_path;
 
-	home_path = get_env_content((*tokens)->env_mshell, "HOME");
+	home_path = find_env_var((*tokens)->env_mshell, "HOME")->content;
 	if (!home_path)
 	{
 		ft_putstr_fd("cd: HOME not set\n", 2);
 		exit_num = 1;
 		return ;
 	}
-	actual_path = get_env_content((*tokens)->env_mshell, "PWD");
+	actual_path = find_env_var((*tokens)->env_mshell, "PWD")->content;
 	if (ft_strncmp(home_path, actual_path, ft_strlen(actual_path)))
 	{
 		if (chdir(home_path) == 0)
@@ -152,7 +153,7 @@ static int	validate_input(char *input)
 /**
  * @brief Maneja el caso donde getcwd() falla pero necesitamos cambiar de
  * directorio.
- * 
+ *
  * En algunos sistemas,	cuando el directorio de trabajo actual ya no es
  * accesible, getcwd() puede fallar. Esta función permite cambiar de
  * directorio incluso en esos casos calculando la ruta manualmente.
@@ -169,9 +170,9 @@ static void	handle_broken_pwd(t_token **tokens, char *input_path)
 		print_cd_error(input_path);
 		return ;
 	}
-	desired_path = find_desired_path(get_env_content((*tokens)->env_mshell,
-				"PWD"), input_path);
-	if (chdir(desired_path) == 0)
+	desired_path = find_desired_path(find_env_var((*tokens)->env_mshell,
+				"PWD")->content, input_path);
+	if (chdir(input_path) == 0)
 		get_env_content_and_replace(tokens, "PWD", desired_path);
 	else
 	{
@@ -197,9 +198,11 @@ void	ft_cd(char **args, t_token **tokens)
 {
 	char	*path;
 
-	if (!args[1] || ft_strncmp(args[1], "~", 2) == 0 || ft_strncmp(args[1], "--", 3) == 0 )
+	if (!args[1] || ft_strncmp(args[1], "~", 2) == 0 || ft_strncmp(args[1],
+			"--", 3) == 0)
 		cd_to_home(tokens);
-	else if (match_string(args[1], "/") == 1 || ft_strncmp(args[1], "//", 2) == 0)
+	else if (match_string(args[1], "/") == 1 || ft_strncmp(args[1], "//",
+			2) == 0)
 		cd_to_root(tokens, args[1]);
 	else if (match_string(args[1], "-") == 1)
 		cd_to_oldpwd(tokens);

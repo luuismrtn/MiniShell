@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/20 12:28:50 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/20 12:40:25 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@ static void	join_result(t_token *tokens, char *str, int *i, char **result)
             (*i) = j - 1;
             return (free(var_name));
         }
-        var_value = get_env_content(tokens->env_mshell, var_name);
+        var_value = find_env_var(tokens->env_mshell, var_name)->content;
         free(var_name);
         if (var_value)
             (*result) = ft_strjoin((*result), var_value);
@@ -255,7 +255,7 @@ int	main(int argc, char **argv, char **env)
 	tokens->content = ft_strdup("0");
 	while (1)
 	{
-		line = readline(ft_strjoin(get_env_content(tokens->env_mshell, "PWD"), " ~ "));
+		line = readline(ft_strjoin(find_env_var(tokens->env_mshell, "PWD")->content, " ~ "));
 		if (!line)
 			break ;
 		if (line[0] == '\0' || ft_strtrim(line, " \t\n\r\f\v")[0] == '\0')
