@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/20 12:40:25 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/20 13:23:48 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	handle_signal_child(int sig)
 		return ;
 }
 
-void handle_signal_heredoc(int sig)
+void	handle_signal_heredoc(int sig)
 {
 	if (sig == SIGINT)
 	{
@@ -147,35 +147,37 @@ int	match_string(char *str1, char *str2)
  *
  * @param tokens Puntero a la estructura con variables de entorno.
  * @param str Cadena que se está procesando.
- * @param i Puntero al índice actual en la cadena (se modifica dentro de la función).
- * @param result Puntero a la cadena resultado (se modifica dentro de la función).
+
+	* @param i Puntero al índice actual en la cadena (se modifica dentro de la función).
+
+	* @param result Puntero a la cadena resultado (se modifica dentro de la función).
  */
 static void	join_result(t_token *tokens, char *str, int *i, char **result)
 {
-    int		j;
-    char	*var_name;
-    char	*var_value;
+	int		j;
+	char	*var_name;
+	char	*var_value;
 
-    if (str[(*i)] == '$')
-    {
-        j = (*i) + 1;
-        while (str[j] && str[j] != ':' && str[j] != '$' && str[j] != '=')
-            j++;
-        var_name = ft_substr(str, (*i) + 1, j - (*i) - 1);
-        if (!find_env_var(tokens->env_mshell, var_name))
-        {
-            (*result) = ft_strjoin((*result), ft_strdup(""));
-            (*i) = j - 1;
-            return (free(var_name));
-        }
-        var_value = find_env_var(tokens->env_mshell, var_name)->content;
-        free(var_name);
-        if (var_value)
-            (*result) = ft_strjoin((*result), var_value);
-        (*i) = j - 1;
-    }
-    else
-        (*result) = ft_strjoin((*result), ft_substr(str, (*i), 1));
+	if (str[(*i)] == '$')
+	{
+		j = (*i) + 1;
+		while (str[j] && str[j] != ':' && str[j] != '$' && str[j] != '=')
+			j++;
+		var_name = ft_substr(str, (*i) + 1, j - (*i) - 1);
+		if (!find_env_var(tokens->env_mshell, var_name))
+		{
+			(*result) = ft_strjoin((*result), ft_strdup(""));
+			(*i) = j - 1;
+			return (free(var_name));
+		}
+		var_value = find_env_var(tokens->env_mshell, var_name)->content;
+		free(var_name);
+		if (var_value)
+			(*result) = ft_strjoin((*result), var_value);
+		(*i) = j - 1;
+	}
+	else
+		(*result) = ft_strjoin((*result), ft_substr(str, (*i), 1));
 }
 
 /**
@@ -187,8 +189,8 @@ static void	join_result(t_token *tokens, char *str, int *i, char **result)
  *
  * @param str La cadena original que puede contener referencias a variables.
  * @param tokens Puntero a la estructura de tokens con variables de entorno.
- * @return char* Nueva cadena con las variables expandidas o NULL en caso de error.
- *               Esta cadena debe ser liberada por el llamador.
+ * @return char* Nueva cadena con las variables expandidas o NULLen caso de 
+ * error. Esta cadena debe ser liberada por el llamador.
  */
 char	*handle_env_var(char *str, t_token *tokens)
 {
@@ -226,6 +228,7 @@ char	*get_history_path(void)
 {
 	char	*path;
 	char	*cwd;
+	char	*temp;
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
@@ -233,7 +236,9 @@ char	*get_history_path(void)
 		perror("getcwd");
 		exit(EXIT_FAILURE);
 	}
-	path = ft_strjoin(cwd, "/.minishell_history");
+	temp = ft_strjoin(cwd, "/.minishell_history");
+	free(cwd);
+	path = temp;
 	return (path);
 }
 
@@ -242,6 +247,8 @@ int	main(int argc, char **argv, char **env)
 	char	*line;
 	t_token	*tokens;
 	char	*HISTORY_FILE;
+	char	*prompt;
+	char	*pwd_content;
 
 	HISTORY_FILE = get_history_path();
 	(void)argc;
@@ -250,12 +257,18 @@ int	main(int argc, char **argv, char **env)
 	ft_memset(tokens, 0, sizeof(t_token));
 	tokens->env_mshell = env_buildin(env);
 	if (ft_read_history(HISTORY_FILE) == ERROR)
+	{
+		free(HISTORY_FILE);
 		return (ERROR);
+	}
 	signals('f');
 	tokens->content = ft_strdup("0");
 	while (1)
 	{
-		line = readline(ft_strjoin(find_env_var(tokens->env_mshell, "PWD")->content, " ~ "));
+		pwd_content = find_env_var(tokens->env_mshell, "PWD")->content;
+		prompt = ft_strjoin(pwd_content, " ~ ");
+		line = readline(prompt);
+		free(prompt);
 		if (!line)
 			break ;
 		if (line[0] == '\0' || ft_strtrim(line, " \t\n\r\f\v")[0] == '\0')
@@ -272,5 +285,6 @@ int	main(int argc, char **argv, char **env)
 		}
 		delete_tokens(&tokens);
 	}
+	free(HISTORY_FILE);
 	return (SUCCESS);
 }
