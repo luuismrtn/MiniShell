@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:59:37 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/18 23:32:28 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/20 12:16:28 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,15 +80,22 @@ char	*extract_var_name(char *arg)
  *
  * @param env Puntero a la lista enlazada de variables de entorno.
  */
-void	print_env_as_export(t_env *env)
+void	print_env_as_export(t_token *tokens)
 {
+	t_env	*env;
+	t_env	*vars;
+
+	vars = tokens->exp_var;
+	env = tokens->env_mshell;
 	while (env)
 	{
-		if (env->content)
-			printf("declare -x %s=\"%s\"\n", env->name, env->content);
-		else
-			printf("declare -x %s\n", env->name);
+		printf("declare -x %s=\"%s\"\n", env->name, env->content);
 		env = env->next;
+	}
+	while (vars)
+	{
+		printf("declare -x %s\n", vars->name);
+		vars = vars->next;
 	}
 }
 

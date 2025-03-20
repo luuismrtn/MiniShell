@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:16:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/18 23:30:27 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/20 12:27:04 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,12 @@ static void	add_env_var(t_token *tokens, char *name, char *content)
 	else if (content)
 		new_env->content = ft_strdup(content);
 	else
+	{
 		new_env->content = NULL;
+		new_env->next = tokens->exp_var;
+		tokens->exp_var = new_env;
+		return ;
+	}
 	new_env->next = tokens->env_mshell;
 	tokens->env_mshell = new_env;
 }
@@ -157,7 +162,7 @@ void	ft_export(t_token *tokens, char **args)
 
 	if (!args[1])
 	{
-		print_env_as_export(tokens->env_mshell);
+		print_env_as_export(tokens);
 		return ;
 	}
 	if (check_args(args) == ERROR)

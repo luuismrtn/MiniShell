@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/19 20:30:13 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/20 12:12:41 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ void					print_cd_error(char *path);
 // EXPORT_UTILS
 int						is_valid_var_name(char *name);
 char					*extract_var_name(char *arg);
-void					print_env_as_export(t_env *env);
+void					print_env_as_export(t_token *tokens);
 t_env					*find_env_var(t_env *env, char *var_name);
 
 //	SIGNALS

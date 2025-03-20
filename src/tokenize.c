@@ -69,6 +69,7 @@ void	add_token(t_token **head, t_token_value type, char *content, int quotes)
 void	delete_tokens(t_token **tokens)
 {
 	t_env	*env;
+	t_env	*var;
 	char	*content;
 	t_token	*aux;
 	t_token	*next;
@@ -76,6 +77,7 @@ void	delete_tokens(t_token **tokens)
 	env = NULL;
 	if (!tokens || !*tokens)
 		return ;
+	var = (*tokens)->exp_var;
 	env = (*tokens)->env_mshell;
 	content = (*tokens)->content;
 	aux = *tokens;
@@ -92,6 +94,7 @@ void	delete_tokens(t_token **tokens)
 		return ;
 	ft_memset(*tokens, 0, sizeof(t_token));
 	(*tokens)->env_mshell = env;
+	(*tokens)->exp_var = var;
 	(*tokens)->content = content;
 }
 
@@ -103,9 +106,11 @@ static void	handle_redirections(t_token **tokens, char *input, int *i)
 		{
 			(*i) += 2;
 			add_token(tokens, T_HERE_DOC, ft_strdup("<<"), 0);
-			while (input[*i] && (ft_isspace(input[*i]) || input[*i] == '\"' || input[*i] == '\''))
+			while (input[*i] && (ft_isspace(input[*i]) || input[*i] == '\"'
+					|| input[*i] == '\''))
 				(*i)++;
-			while (input[*i] && (!ft_isspace(input[*i]) && input[*i] != '\"' && input[*i] != '\''))
+			while (input[*i] && (!ft_isspace(input[*i]) && input[*i] != '\"'
+					&& input[*i] != '\''))
 			{
 				add_token(tokens, T_WORD, ft_substr(input, (*i), 1), 0);
 				(*i)++;
@@ -409,7 +414,8 @@ static void	handle_word(t_token **tokens, char *input, int *i)
 		start++;
 	}
 	while (input[*i] && !ft_isspace(input[*i]) && input[*i] != '\"'
-		&& input[*i] != '\'' && input[*i] != '|' && input[*i] != '<' && input[*i] != '$')
+		&& input[*i] != '\'' && input[*i] != '|' && input[*i] != '<'
+		&& input[*i] != '$')
 		(*i)++;
 	content = ft_substr(input, start, *i - start);
 	if (content[0] == '-')
@@ -427,7 +433,7 @@ t_token	*tokenize(char *input, t_token *tokens)
 	i = 0;
 	while (input[i])
 	{
-		//printf("Input[%d]: %c\n", i, input[i]);
+		// printf("Input[%d]: %c\n", i, input[i]);
 		if (ft_isspace(input[i]))
 			handle_spaces(&tokens, input, &i);
 		else if (input[i] == '\'')
@@ -539,7 +545,8 @@ int	main2(char *string, t_token *tokens)
 	aux = tokens->next;
 	while (aux != NULL)
 	{
-		printf("Token type: %d, content: %s, quotes: %d\n", aux->type, aux->content, aux->quotes);
+		printf("Token type: %d, content: %s, quotes: %d\n", aux->type,
+			aux->content, aux->quotes);
 		aux = aux->next;
 	}
 	aux1 = tokens->next;
@@ -547,7 +554,8 @@ int	main2(char *string, t_token *tokens)
 	printf("\n\n");
 	while (aux1 != NULL)
 	{
-		printf("C_Token type: %d, content: %s, quotes: %d\n", aux1->type, aux1->content, aux1->quotes);
+		printf("C_Token type: %d, content: %s, quotes: %d\n", aux1->type,
+			aux1->content, aux1->quotes);
 		aux1 = aux1->next;
 	}
 	if (automata(tokens) == 0)
