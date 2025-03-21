@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   automata.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/19 18:29:15 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/21 13:42:28 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 	t_token *temp_tokens; // probar sin temporal
 	temp_tokens = tokens->next;
 	aux_move = count;
-	while (aux_move > 0 && temp_tokens->type)
+	while (aux_move > 0) //&& temp_tokens->type
 	{
 		if (temp_tokens->type == T_PIPE)
 			aux_move--;
@@ -269,7 +269,7 @@ char	**build_command_string(t_token *tokens, int *count)
 	t_token *temp_tokens; // esto se podria quitar
 	temp_tokens = tokens->next;
 	aux_move = (*count);
-	while (aux_move > 0 && temp_tokens->type)
+	while (aux_move > 0) // && temp_tokens->type
 	{
 		if (temp_tokens->type == T_PIPE)
 			aux_move--;

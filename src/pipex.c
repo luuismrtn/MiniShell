@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/20 21:37:18 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/21 13:49:53 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,7 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 	int		fds[2];
 	char	**args;
 	int		original_stdout;
+	int status;
 
 	fds[0] = STDIN_FILENO;
 	fds[1] = STDOUT_FILENO;
@@ -187,6 +188,8 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 			exe((*tokens), args, original_stdout);
 		}
 	}
+	waitpid(pid, &status, 0); 
+	exit_num = WEXITSTATUS(status);
 	signals('f');
 	close(fd_in);
 	free_array(args);
@@ -352,7 +355,7 @@ int	pipex(char *argv_str, t_token *tokens)
 	char	**env;
 	int		count;
 	int		status;
-	int		last_command_status;
+	//int		last_command_status;
 
 	env = join_env(tokens->env_mshell);
 	if (!env)
@@ -385,16 +388,21 @@ int	pipex(char *argv_str, t_token *tokens)
 		}
 		if (i < num_commands)
 			final_command(&count, &tokens, fd_in);
-		last_command_status = 0;
+		//last_command_status = 0;
 		i = 0;
+		// while (i < num_commands)
+		// {
+		// 	waitpid(-1, &status, 0);
+		// 	if (i == num_commands - 1)
+		// 		last_command_status = WEXITSTATUS(status);
+		// 	i++;
+		// }
+		// exit_num = last_command_status;
 		while (i < num_commands)
 		{
 			waitpid(-1, &status, 0);
-			if (i == num_commands - 1)
-				last_command_status = WEXITSTATUS(status);
 			i++;
 		}
-		exit_num = last_command_status;
 	}
 	free_array(env);
 	return (0);

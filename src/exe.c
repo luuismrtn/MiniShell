@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/20 22:17:06 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/21 13:55:16 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ void	exe(t_token *tokens, char **comnd, int stdout)
 			printf("%s: Is a directory\n", comnd[0]);                 
 				// la flag: deveulve true si es un dir
 		else if (access(comnd[0], F_OK) != 0)                         
-			// no existe
 			printf("%s: No such file or directory\n", comnd[0]);
 		exit_num = 126;
 		exit(exit_num);
