@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   modify_pwd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:44:38 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/20 12:40:07 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/21 14:48:01 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static void	update_pwd_dot(t_env *aux, char *dir)
 		return ;
 	}
 	new_pwd = ft_strdup(getcwd(NULL, 0));
-	free(aux->content);
+	free(aux->content);  
 	aux->content = new_pwd;
 }
 

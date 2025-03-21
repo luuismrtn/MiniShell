@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:49:21 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/20 13:00:52 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/21 15:12:04 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ void	print_cd_error(char *path)
 void	handle_broken_pwd(t_token **tokens, char *input_path)
 {
 	char	*desired_path;
+				t_env	*current;
 
 	if (!validate_input_cd(input_path))
 	{
@@ -118,7 +119,20 @@ void	handle_broken_pwd(t_token **tokens, char *input_path)
 	desired_path = find_desired_path(find_env_var((*tokens)->env_mshell,
 				"PWD")->content, input_path);
 	if (chdir(desired_path) == 0)
+	{
 		get_env_content_and_replace(tokens, "PWD", desired_path);
+
+		current = (*tokens)->env_mshell;
+		while (current)
+		{
+			if (ft_strncmp(current->name, "PWD", ft_strlen("PWD")) == 0)
+			{
+				printf("content PWD: %s\n", current->content);
+				break ;
+			}
+			current = current->next;
+		}
+	}
 	else
 	{
 		ft_putstr_fd("cd: error retrieving current directory: getcwd: ", 2);
@@ -126,7 +140,7 @@ void	handle_broken_pwd(t_token **tokens, char *input_path)
 		ft_putstr_fd("No such file or directory\n", 2);
 		modify_pwd(tokens, input_path);
 	}
-	free(desired_path);
+	//free(desired_path); esto daba problema cd encuentra el dir q existe
 }
 
 /**
