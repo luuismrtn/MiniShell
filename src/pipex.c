@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/21 16:59:37 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/21 17:18:45 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,7 +249,6 @@ int	first_command(t_token **tokens, int num_commands, int *count)
 	}
 	if (num_commands == 1)
 	{
-		printf("entra comando = 1\n");
 		signals('c');
 		if (ft_strncmp(args[0], "./minishell", 12) == 0)
 			ign_signal();
@@ -292,7 +291,6 @@ int	first_command(t_token **tokens, int num_commands, int *count)
 	}
 	else
 	{
-		printf("entra pipe\n");
 		if (pipe(connect) == -1)
 		{
 			perror("pipe");

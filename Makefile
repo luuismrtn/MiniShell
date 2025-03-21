@@ -59,13 +59,9 @@ re: fclean all
 
 # MASS PRUEBAS CON ERROR:
 
-#heredoc control c tiene que salir
+#tenemos un problema con hacer el hereddoc en un hijo... se hace un doble/triple/etc.. hijo;(((( -->prueba varios << y luego control d
 
 #actualizar el echo $?
-
-#/home/aldferna/Desktop/MiniShell ~ cat <2
-#minishell: open: No such file or directory  (ok error, pero se queda pillado)
-
 
 #--------------------cosas de las q podriamos pasar:
 

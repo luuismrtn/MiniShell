@@ -101,7 +101,10 @@ static void	handle_redirections(t_token **tokens, char *input, int *i)
 			}
 		}
 		else
+		{
+			(*i)++;
 			add_token(tokens, T_REDIR_LEFT, ft_strdup("<"), 0);
+		}
 	}
 	else if (input[*i] == '>')
 	{
