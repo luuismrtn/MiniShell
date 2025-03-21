@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:16 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/18 12:19:15 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/21 17:37:00 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,5 @@ void	ft_echo(char **args)
 		i = 1;
 	}
 	print_echo(args, n, i);
+	exit_num = 0;
 }

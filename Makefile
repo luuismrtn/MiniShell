@@ -61,8 +61,6 @@ re: fclean all
 
 #tenemos un problema con hacer el hereddoc en un hijo... se hace un doble/triple/etc.. hijo;(((( -->prueba varios << y luego control d
 
-#actualizar el echo $?
-
 #--------------------cosas de las q podriamos pasar:
 
 #echo $"$'$PWD'"  (bash: $'/home/aldferna/Desktop/MiniShell') (mshell: $$'/home/aldferna/Desktop/MiniShell')
