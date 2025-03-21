@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/21 13:49:53 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/21 16:59:37 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,6 +249,7 @@ int	first_command(t_token **tokens, int num_commands, int *count)
 	}
 	if (num_commands == 1)
 	{
+		printf("entra comando = 1\n");
 		signals('c');
 		if (ft_strncmp(args[0], "./minishell", 12) == 0)
 			ign_signal();
@@ -274,7 +275,7 @@ int	first_command(t_token **tokens, int num_commands, int *count)
 				close(fds[1]);
 			}
 			exe((*tokens), args, original_stdout);
-			// exit(exit_num);
+			exit(exit_num);
 		}
 		i = 0;
 		while (args[i])
@@ -291,6 +292,7 @@ int	first_command(t_token **tokens, int num_commands, int *count)
 	}
 	else
 	{
+		printf("entra pipe\n");
 		if (pipe(connect) == -1)
 		{
 			perror("pipe");
@@ -388,16 +390,7 @@ int	pipex(char *argv_str, t_token *tokens)
 		}
 		if (i < num_commands)
 			final_command(&count, &tokens, fd_in);
-		//last_command_status = 0;
 		i = 0;
-		// while (i < num_commands)
-		// {
-		// 	waitpid(-1, &status, 0);
-		// 	if (i == num_commands - 1)
-		// 		last_command_status = WEXITSTATUS(status);
-		// 	i++;
-		// }
-		// exit_num = last_command_status;
 		while (i < num_commands)
 		{
 			waitpid(-1, &status, 0);

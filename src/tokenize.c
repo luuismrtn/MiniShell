@@ -92,15 +92,11 @@ static void	handle_redirections(t_token **tokens, char *input, int *i)
 			(*i) += 2;
 			add_token(tokens, T_HERE_DOC, ft_strdup("<<"), 0);
 			while (input[*i] && ft_isspace(input[*i]))
-			{
-				printf("primer loop: %c\n", input[*i]);
 				(*i)++;
-			}
 			while (input[*i] && (!ft_isspace(input[*i]) && input[*i] != '\"'
 					&& input[*i] != '\''))
 			{
 				add_token(tokens, T_WORD, ft_substr(input, (*i), 1), 0);
-				printf("segundo loop: %c\n", input[*i]);
 				(*i)++;
 			}
 		}

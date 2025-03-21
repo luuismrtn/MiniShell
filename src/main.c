@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/21 15:11:42 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/21 17:11:15 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,10 @@ void	handle_signal_heredoc(int sig)
 	if (sig == SIGINT)
 	{
 		exit_num = 130;
+		write(1, "\n", 1);
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		exit(130);
 	}
 	else if (sig == SIGQUIT)
 		return ;

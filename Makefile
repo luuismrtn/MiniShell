@@ -57,17 +57,9 @@ re: fclean all
 # leaks con: echo hola
 # echo $?
 
-# TODOLIST
-# revisar si dejamos fd's abiertos
-
 # MASS PRUEBAS CON ERROR:
 
 #heredoc control c tiene que salir
-
-#cd ../aldferna/.. --> no such file or directory:
-#bash:
-#aldferna@c2r7s6:~$ cd ../aldferna/..
-#aldferna@c2r7s6:/home$ 
 
 #actualizar el echo $?
 

@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/21 13:42:28 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/21 17:14:28 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,8 @@ void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 {
 	int	new_fd;
 	int	aux_move;
+	pid_t	pid;
+    int status;
 
 	t_token *temp_tokens; // probar sin temporal
 	temp_tokens = tokens->next;
@@ -234,7 +236,20 @@ void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 		}
 		else if (temp_tokens->type == T_HERE_DOC && temp_tokens->next)
 		{
-			handle_heredoc(&temp_tokens->next->content, fds[0], tokens);
+			ign_signal();
+			pid = fork();
+			if (pid == -1)
+			{
+				perror("fork");
+				return ;
+			}
+			else if (pid == 0)
+			{
+				signals('h');
+				handle_heredoc(&temp_tokens->next->content, fds[0], tokens);
+			}
+			waitpid(pid, &status, 0);
+			signals('f');
 		}
 		else if (temp_tokens && temp_tokens->type == T_PIPE)
 			break ;
