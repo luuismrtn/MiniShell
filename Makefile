@@ -59,7 +59,7 @@ re: fclean all
 
 # MASS PRUEBAS CON ERROR:
 
-#tenemos un problema con hacer el hereddoc en un hijo... se hace un doble/triple/etc.. hijo;(((( -->prueba varios << y luego control d
+#tenemos un problema con hacer el heredoc en un hijo... se hace un doble/triple/etc.. hijo;(((( -->prueba varios << y luego control d
 
 #--------------------cosas de las q podriamos pasar:
 

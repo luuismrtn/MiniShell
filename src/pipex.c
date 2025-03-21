@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/21 17:18:45 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/21 19:33:25 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -355,7 +355,6 @@ int	pipex(char *argv_str, t_token *tokens)
 	char	**env;
 	int		count;
 	int		status;
-	//int		last_command_status;
 
 	env = join_env(tokens->env_mshell);
 	if (!env)

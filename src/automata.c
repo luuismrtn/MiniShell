@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/21 17:35:24 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/21 20:24:46 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,7 +246,8 @@ void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 			else if (pid == 0)
 			{
 				signals('h');
-				handle_heredoc(&temp_tokens->next->content, fds[0], tokens);
+				handle_heredoc(&temp_tokens->next->content, fds[0], tokens); //no se esta mod el fd
+				exit(0); //el hijo continuaba
 			}
 			waitpid(pid, &status, 0);
 			signals('f');
