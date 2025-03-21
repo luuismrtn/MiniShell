@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror  -g3 #-fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -71,15 +71,8 @@ re: fclean all
 
 #actualizar el echo $?
 
-#<<eof cat | ls (bash pilla eof como delimitador y al acabar heredoc hace ls) 
-#(mshell pilla: eofcat como delimit y al cerrar se queda en el aire)
-#<<eof cat | cat -e | cat -e (igual)
-#<<eof cat | cat (igual)
-
 #/home/aldferna/Desktop/MiniShell ~ cat <2
 #minishell: open: No such file or directory  (ok error, pero se queda pillado)
-
-#otra vez lo de la no expansion con comillas no va
 
 
 #--------------------cosas de las q podriamos pasar:
