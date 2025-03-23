@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/21 13:55:16 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/23 02:01:17 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,56 @@ char	**search_path(char **env, char *comnd)
 	return (paths);
 }
 
+static void	parse_cmd(char ***comnd)
+{
+	int		i;
+	int		j;
+	char	*first;
+	char	**split_cmd;
+	char	**new_cmd;
+
+	if (!comnd || !*comnd || !(*comnd)[0])
+		return ;
+	first = ft_strdup((*comnd)[0]);
+	if (!first)
+		return ;
+	i = 0;
+	while (first[i] && !ft_isspace(first[i]))
+		i++;
+	if (!first[i])
+		return (free(first));
+	split_cmd = ft_split(first, ' ');
+	if (!split_cmd)
+		return (free(first));
+	i = 0;
+	while (split_cmd[i])
+		i++;
+	j = 0;
+	while ((*comnd)[j])
+		j++;
+	new_cmd = malloc(sizeof(char *) * (i + j));
+	i = -1;
+	while (split_cmd[++i])
+		new_cmd[i] = split_cmd[i];
+	j = 1;
+	while ((*comnd)[j])
+		new_cmd[i++] = (*comnd)[j++];
+	new_cmd[i] = NULL;
+	free(first);
+	free(split_cmd);
+	free((*comnd)[0]);
+	free(*comnd);
+	*comnd = new_cmd;
+}
+
 void	exe(t_token *tokens, char **comnd, int stdout)
 {
 	char		**paths;
 	int			i;
 	struct stat	statbuf;
 
+	parse_cmd(&comnd);
+	print_2(comnd);
 	if ((ft_strchr(comnd[0], '/') != NULL) && (access(comnd[0], X_OK) == 0))
 	{
 		close(stdout);
@@ -76,9 +120,9 @@ void	exe(t_token *tokens, char **comnd, int stdout)
 	{
 		if (stat(comnd[0], &statbuf) == 0 && S_ISDIR(statbuf.st_mode))
 			// 0 si existe y pudo acceder
-			printf("%s: Is a directory\n", comnd[0]);                 
-				// la flag: deveulve true si es un dir
-		else if (access(comnd[0], F_OK) != 0)                         
+			printf("%s: Is a directory\n", comnd[0]);
+		// la flag: deveulve true si es un dir
+		else if (access(comnd[0], F_OK) != 0)
 			printf("%s: No such file or directory\n", comnd[0]);
 		exit_num = 126;
 		exit(exit_num);

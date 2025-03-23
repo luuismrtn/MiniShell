@@ -64,6 +64,3 @@ re: fclean all
 #--------------------cosas de las q podriamos pasar:
 
 #echo $"$'$PWD'"  (bash: $'/home/aldferna/Desktop/MiniShell') (mshell: $$'/home/aldferna/Desktop/MiniShell')
-
-# export q="ls -la"
-# $q  (esto bash lo hace, pero me ha dicho que el 50% de las mini no lo hacen)
