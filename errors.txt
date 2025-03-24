@@ -10,15 +10,15 @@ PIPEX
 cat | cat | ls (hace el ls, tras dos enter cierra)
 exit 3 | ls (hace ls)
 exit 5 | ls (echo $? = 0)
-    sdffggb | sleep 1 (echo $? = 0)
-    sleep 1  | sdfg (echo $? = 127)
-    #exit 5 |exit 4 | exit 3 (echo $? = 3)
-#pwd | cat | cat -e >3 | wc -l (bash: 0 y crea 3 con print dwl pwd) (mshell: hace el pwd y no crea 3)
+sdffggb | sleep 1 (echo $? = 0)
+sleep 1  | sdfg (echo $? = 127)
+exit 5 |exit 4 | exit 3 (echo $? = 3)
+pwd | cat | cat -e >3 | wc -l (bash: 0 y crea 3 con print dwl pwd) (mshell: hace el pwd y no crea 3)
 
 
 
 EXPORT
-Export p="ls -l" --> ejecutar $p (funciona)
+export p="ls -l" --> ejecutar $p (funciona)
 #si hacemos export a y luego export a=hola (tenemos dos variables a, y el unset solo quita la del =)
 #export a
     #./minishell

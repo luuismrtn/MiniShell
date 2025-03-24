@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/24 21:43:21 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/24 23:17:01 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,6 +270,22 @@ void	free_tokens(t_token *tokens)
 	if (tokens->content)
 		free(tokens->content);
 	free(tokens);
+}
+
+/**
+ * @brief Cuenta el número de elementos en un array de strings.
+ *
+ * @param array Array de strings terminado en NULL.
+ * @return int Número de elementos en el array.
+ */
+int	len_array(char **array)
+{
+	int	count;
+
+	count = 0;
+	while (array[count])
+		count++;
+	return (count);
 }
 
 int	main(int argc, char **argv, char **env)

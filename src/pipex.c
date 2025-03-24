@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/24 21:47:26 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/24 23:05:35 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ int	middle_command(int *count, t_token **tokens, int fd_in)
 	fds[0] = STDIN_FILENO;
 	fds[1] = STDOUT_FILENO;
 	setup_redirections((*tokens), &fds, *count);
-	args = build_command_string((*tokens), count);
+	args = build_command_string((*tokens), *count);
 	if (!args || !args[0])
 		return (ERROR);
 	if (pipe(connect) == -1)
@@ -179,7 +179,7 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 	fds[0] = STDIN_FILENO;
 	fds[1] = STDOUT_FILENO;
 	setup_redirections((*tokens), &fds, *count);
-	args = build_command_string((*tokens), count);
+	args = build_command_string((*tokens), *count);
 	if (!args || !args[0])
 		return ;
 	signals('c');
@@ -218,7 +218,7 @@ int	first_command(t_token **tokens, int *count)
 	fds[0] = STDIN_FILENO;
 	fds[1] = STDOUT_FILENO;
 	setup_redirections(*tokens, &fds, *count);
-	args = build_command_string(*tokens, count);
+	args = build_command_string(*tokens, *count);
 	if (!args || !args[0])
 		return (ERROR);
 	if (pipe(connect) == -1)

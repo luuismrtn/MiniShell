@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/24 21:52:58 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/24 23:55:12 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,21 +90,27 @@ char					**join_env(t_env *env_mshell);
 void					exe(t_token *tokens, char **comnd, int stdout);
 char					**search_path(char **env, char *comnd);
 int						is_builtin(char **cmnd);
+char					*get_path_from_env(char **env);
+void					try_exec_with_path(char *cmd, char **args, char **env);
+int						count_env_vars(t_env *env_list);
 
 //  PIPEX
 int						pipex(t_token *tokens, int num_commands);
 void					setup_redirections(t_token *tokens, int (*fds)[2],
 							int count);
 char					**build_command_string(t_token *tokens, int count);
-void change_fds_redir(int (*fds)[2], int *o_stdin, int *o_stdout, int builtin_father);
-void executor(t_token *tokens, int (*fds)[2], char **args, int original_stdout);
-void clean_father_material(int (*fds)[2], char ***args);
-void error_pipe_fork(int *pipe_in, int *pipe_out, char ***args, char c);
+void					change_fds_redir(int (*fds)[2], int *o_stdin,
+							int *o_stdout, int builtin_father);
+void					executor(t_token *tokens, int (*fds)[2], char **args,
+							int original_stdout);
+void					clean_father_material(int (*fds)[2], char ***args);
+void					error_pipe_fork(int *pipe_in, int *pipe_out,
+							char ***args, char c);
 
 //  BUILTINS
 void					handle_builtin(char **args, t_token *tokens);
 void					modify_pwd(t_token **tokens, char *dir);
-void	modify_shlvl(t_token **tokens, char *var);
+void					modify_shlvl(t_token **tokens, char *var);
 void					ft_cd(char **args, t_token **tokens);
 void					ft_echo(char **args);
 void					ft_env(t_env *env);
@@ -112,7 +118,6 @@ void					ft_exit(char **arg);
 void					ft_export(t_token *tokens, char **args);
 void					ft_pwd(t_token *tokens);
 void					ft_unset(t_token *tokens, char **args);
-
 
 // CD_UTILS
 void					print_cd_error(char *path);
@@ -143,9 +148,9 @@ void					handle_signal_heredoc(int sig);
 // UTILS
 void					get_env_content_and_replace(t_token **tokens,
 							char *name, char *content);
-int						count_args(char **args);
 int						match_string(char *str1, char *str2);
 char					*handle_env_var(char *str, t_token *tokens);
-int	num_pipes(char *str);
+int						num_pipes(char *str);
+int						len_array(char **array);
 
 #endif
