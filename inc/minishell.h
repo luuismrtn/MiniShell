@@ -6,7 +6,7 @@
 /*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/24 21:03:14 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/24 21:52:58 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,12 +92,12 @@ char					**search_path(char **env, char *comnd);
 int						is_builtin(char **cmnd);
 
 //  PIPEX
-int						pipex(char *argv, t_token *tokens);
+int						pipex(t_token *tokens, int num_commands);
 void					setup_redirections(t_token *tokens, int (*fds)[2],
 							int count);
-char					**build_command_string(t_token *tokens, int *count);
+char					**build_command_string(t_token *tokens, int count);
 void change_fds_redir(int (*fds)[2], int *o_stdin, int *o_stdout, int builtin_father);
-void executor(t_tokens *tokens, int (*fds)[2], char **args, int original_stdout);
+void executor(t_token *tokens, int (*fds)[2], char **args, int original_stdout);
 void clean_father_material(int (*fds)[2], char ***args);
 void error_pipe_fork(int *pipe_in, int *pipe_out, char ***args, char c);
 

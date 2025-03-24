@@ -514,7 +514,7 @@ int	has_pipe(t_token *tokens)
 	return (0);
 }
 
-void only_one_comnd(t_token **tokens)
+void one_comnd(t_token **tokens)
 {
 	int		fds[2];
 	char	**args;
@@ -526,8 +526,8 @@ void only_one_comnd(t_token **tokens)
 	setup_redirections(*tokens, &fds, 0);
 	args = build_command_string(*tokens, 0);
 	if (!args || !args[0])
-		return (ERROR);
-	if (is_builtin(args) == 1 && num_commands == 1)
+		return ;
+	if (is_builtin(args) == 1)
 	{
 		executor((*tokens), &fds, args, -1);
 		free_array(args);
@@ -540,7 +540,7 @@ void only_one_comnd(t_token **tokens)
 	if (pid == -1)
 	{
 		perror("fork");
-		return (ERROR);
+		return ;
 	}
 	else if (pid == 0)
 	{
@@ -576,9 +576,9 @@ int	main2(char *string, t_token *tokens)
 	{
 		num_commands = num_pipes(input) + 1;
 		if (num_commands == 1)
-			only_one_cmnd(&tokens);
+			one_comnd(&tokens);
 		else
-			pipex(input, tokens, num_commands);
+			pipex(tokens, num_commands);
 	}
 	return (0);
 }

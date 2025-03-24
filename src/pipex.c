@@ -6,7 +6,7 @@
 /*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/24 21:06:38 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/24 21:47:26 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void change_fds_redir(int (*fds)[2], int *o_stdin, int *o_stdout, int builtin_fa
 	}
 }
 
-void executor(t_tokens *tokens, int (*fds)[2], char **args, int original_stdout)
+void executor(t_token *tokens, int (*fds)[2], char **args, int original_stdout)
 {
 	int		original_stdin;
 	
@@ -82,7 +82,7 @@ void executor(t_tokens *tokens, int (*fds)[2], char **args, int original_stdout)
 	{
 		original_stdin = -1;
 		change_fds_redir(fds, &original_stdin, &original_stdout, 1);
-		handle_builtin(args, *tokens);
+		handle_builtin(args, tokens);
 		if (original_stdin != -1)
 		{
 			dup2(original_stdin, STDIN_FILENO);
@@ -113,15 +113,15 @@ void clean_father_material(int (*fds)[2], char ***args)
 void error_pipe_fork(int *pipe_in, int *pipe_out, char ***args, char c)
 {
 	free_array((*args));
-	if (char == 'p')
+	if (c == 'p')
 		perror("pipe");
-	if (char == 'f')
+	if (c == 'f')
 	{
 		perror("fork");
 		close((*pipe_in));
 		close((*pipe_out));
 	}
-	if (char == 'e')
+	if (c == 'e')
 	{
 		perror("fork");
 		close((*pipe_in));
@@ -187,7 +187,7 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 		ign_signal();
 	pid = fork();
 	if (pid == -1)
-		return (error_pipe_fork(&fd_in, NULL, &args, 'e'), ERROR);
+		return (error_pipe_fork(&fd_in, NULL, &args, 'e'));
 	else if (pid == 0)
 	{
 		if (fd_in < 0)
@@ -207,14 +207,13 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 	free_array(args);
 }
 
-int	first_command(t_token **tokens, int num_commands, int *count)
+int	first_command(t_token **tokens, int *count)
 {
 	int		fds[2];
 	int		connect[2];
 	char	**args;
 	pid_t	pid;
 	int		original_stdout;
-	int		status;
 
 	fds[0] = STDIN_FILENO;
 	fds[1] = STDOUT_FILENO;
@@ -242,7 +241,7 @@ int	first_command(t_token **tokens, int num_commands, int *count)
 	return (close(connect[1]), connect[0]);
 }
 
-int	pipex(char *argv_str, t_token *tokens, int num_commands)
+int	pipex(t_token *tokens, int num_commands)
 {
 	int		fd_in;
 	int		i;
@@ -250,7 +249,7 @@ int	pipex(char *argv_str, t_token *tokens, int num_commands)
 	int		status;
 
 	count = 0;
-	fd_in = first_command(&tokens, num_commands, &count);
+	fd_in = first_command(&tokens, &count);
 	if (num_commands > 1)
 	{
 		count = 1;
