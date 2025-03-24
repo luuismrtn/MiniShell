@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   automata.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/21 20:24:46 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/24 11:23:15 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,23 +121,22 @@ int find_the_dollar(char *str)
 	return 1;
 } 
 
-void write_in_pipe(char *content, int *fd)
-{
-	int 	connect[2];
+//void write_in_pipe(char *content, int fd)
+//{
+	//int 	connect[2];
 	
-	if (pipe(connect) == -1)
-	{
-		perror("pipe");
-		return;
-	}
-	write(connect[1], content, ft_strlen(content));
-	if ((*fd) != STDIN_FILENO)
-		close((*fd));
-	(*fd) = connect[0];
-	close(connect[1]);
-}
+	//if (pipe(connect) == -1)
+	//{
+	//	perror("pipe");
+	//	return;
+	//}
+	
+	//if (fd != STDIN_FILENO)
+	//	close(fd);
+	//close(connect[1]);
+//}
 
-void	handle_heredoc(char **eof, int *fd, t_token *tokens)
+void	handle_heredoc(char **eof, int fd, t_token *tokens)
 {
 	char	*line;
 	char	*r_lines;
@@ -148,7 +147,7 @@ void	handle_heredoc(char **eof, int *fd, t_token *tokens)
 		return;
 	if (ft_strncmp(line, *eof, ft_strlen(*eof) + 1) == 0) //eof al inicio
 	{
-		write_in_pipe("", fd);
+		write(fd, "", 1); //write_in_pipe("", fd);
 		return;
 	}
 	if (tokens->next->next->next)
@@ -173,7 +172,7 @@ void	handle_heredoc(char **eof, int *fd, t_token *tokens)
 		r_lines = ft_strjoin(temp, "\n");
 		free(temp);
 	}
-	write_in_pipe(r_lines, fd);
+	write(fd, r_lines, ft_strlen(r_lines)); //write_in_pipe(r_lines, fd);
 	free(line);
 	free(r_lines);
 }
@@ -184,6 +183,7 @@ void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 	int	aux_move;
 	pid_t	pid;
     int status;
+	int connect[2];
 
 	t_token *temp_tokens; // probar sin temporal
 	temp_tokens = tokens->next;
@@ -237,6 +237,11 @@ void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 		else if (temp_tokens->type == T_HERE_DOC && temp_tokens->next)
 		{
 			ign_signal();
+			if (pipe(connect) == -1)
+			{
+				perror("pipe");
+				return;
+			}
 			pid = fork();
 			if (pid == -1)
 			{
@@ -245,12 +250,16 @@ void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 			}
 			else if (pid == 0)
 			{
+				close(connect[0]);
 				signals('h');
-				handle_heredoc(&temp_tokens->next->content, fds[0], tokens); //no se esta mod el fd
-				exit(0); //el hijo continuaba
+				handle_heredoc(&temp_tokens->next->content, connect[1], tokens); //no se esta mod el fd
+				close(connect[1]);
+				exit(0);
 			}
+			close(connect[1]);
 			waitpid(pid, &status, 0);
 			signals('f');
+			(*fds)[0] = connect[0];
 		}
 		else if (temp_tokens && temp_tokens->type == T_PIPE)
 			break ;

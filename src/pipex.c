@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/21 19:33:25 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/24 10:46:10 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -334,7 +334,7 @@ int	first_command(t_token **tokens, int num_commands, int *count)
 			else
 			{
 				exe((*tokens), args, original_stdout);
-				// exit(exit_num);
+				exit(exit_num);
 			}
 		}
 		free_array(args);

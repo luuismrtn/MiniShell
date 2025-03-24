@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  -g3 #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror  -g3 -fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -49,16 +49,9 @@ re: fclean all
 
 
 # LEAKS
-# quotes not closed -> leak + espacio final en clean_tokens
-# leaks con: hola... "no such file or directory"
-# con: ñ
-# despues de haber ejecutado algo, si se hace control d
-# al ejecutar cada builtin
-# leaks con: echo hola
-# echo $?
 
 # MASS PRUEBAS CON ERROR:
-
+#seguir mirando lo de $p="ls -l"
 #tenemos un problema con hacer el heredoc en un hijo... se hace un doble/triple/etc.. hijo;(((( -->prueba varios << y luego control d
 
 #--------------------cosas de las q podriamos pasar:

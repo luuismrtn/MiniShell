@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/23 02:01:17 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/24 10:43:51 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void	exe(t_token *tokens, char **comnd, int stdout)
 	struct stat	statbuf;
 
 	parse_cmd(&comnd);
-	print_2(comnd);
+	print_2(comnd); //acordarse de quitar eso, q si no con algo tipo cat hola > 2, lo mete en 2
 	if ((ft_strchr(comnd[0], '/') != NULL) && (access(comnd[0], X_OK) == 0))
 	{
 		close(stdout);
