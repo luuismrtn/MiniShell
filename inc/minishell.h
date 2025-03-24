@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/20 13:01:03 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/24 21:03:14 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,10 +96,15 @@ int						pipex(char *argv, t_token *tokens);
 void					setup_redirections(t_token *tokens, int (*fds)[2],
 							int count);
 char					**build_command_string(t_token *tokens, int *count);
+void change_fds_redir(int (*fds)[2], int *o_stdin, int *o_stdout, int builtin_father);
+void executor(t_tokens *tokens, int (*fds)[2], char **args, int original_stdout);
+void clean_father_material(int (*fds)[2], char ***args);
+void error_pipe_fork(int *pipe_in, int *pipe_out, char ***args, char c);
 
 //  BUILTINS
 void					handle_builtin(char **args, t_token *tokens);
 void					modify_pwd(t_token **tokens, char *dir);
+void	modify_shlvl(t_token **tokens, char *var);
 void					ft_cd(char **args, t_token **tokens);
 void					ft_echo(char **args);
 void					ft_env(t_env *env);
@@ -107,7 +112,7 @@ void					ft_exit(char **arg);
 void					ft_export(t_token *tokens, char **args);
 void					ft_pwd(t_token *tokens);
 void					ft_unset(t_token *tokens, char **args);
-void					modify_pwd(t_token **tokens, char *dir);
+
 
 // CD_UTILS
 void					print_cd_error(char *path);
@@ -141,5 +146,6 @@ void					get_env_content_and_replace(t_token **tokens,
 int						count_args(char **args);
 int						match_string(char *str1, char *str2);
 char					*handle_env_var(char *str, t_token *tokens);
+int	num_pipes(char *str);
 
 #endif

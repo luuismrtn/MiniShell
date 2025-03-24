@@ -1,0 +1,102 @@
+Revisado hasta este commit (incluido)>>>
+commit 8bc162455c3f06aef3a14ed8970c8d9820ef0463
+Author: Luis Martín <luismartingarcia4@gmail.com>
+Date:   Tue Mar 18 13:19:06 2025 +0100
+    Builtin con documentación y depurados
+
+
+
+PIPEX
+cat | cat | ls (hace el ls, tras dos enter cierra)
+exit 3 | ls (hace ls)
+exit 5 | ls (echo $? = 0)
+    sdffggb | sleep 1 (echo $? = 0)
+    sleep 1  | sdfg (echo $? = 127)
+    #exit 5 |exit 4 | exit 3 (echo $? = 3)
+#pwd | cat | cat -e >3 | wc -l (bash: 0 y crea 3 con print dwl pwd) (mshell: hace el pwd y no crea 3)
+
+
+
+EXPORT
+Export p="ls -l" --> ejecutar $p (funciona)
+#si hacemos export a y luego export a=hola (tenemos dos variables a, y el unset solo quita la del =)
+#export a
+    #./minishell
+    #se queda como sin env
+# echo $a?$PATH
+    # echo $a+++++$PATH
+    # $a+++++$PATH -------estas tres anteriores, tiene que expandir ambas (si estan separadas por no:alfanum)
+# echo $PATHa$HOME ----pero esta solo expande HOME, la anterior la toma como PATHa y no la encuentra (esto ahora ok, pero cuidado cd implementemos lo de arriba)
+# echo $$$PATH ----cuidado con esto tb cd se implemente lo de arriba
+# echo $1234$HOME (bash: 234/home/aldferna), (mshell: /home/aldferna)
+# echo $1234-$HOME (bash: 234-/home/aldferna), (mshell: -/home/aldferna)
+# export a=hola
+    # export a=$a:/home  (esto tendria que expandir a hola:/home)
+# export 234=h (ok da error)
+    # export E234=h (da error pero si que debe exportarlo)
+
+
+
+HEREDOC
+Con control c tiene que salir
+Hacer varios heredocs acabados con control C y luego control D... varios hijos?
+#<<eof cat | ls (bash pilla eof como delimitador y al acabar heredoc hace ls) 
+    #(mshell pilla: eofcat como delimit y al cerrar se queda en el aire)
+    #<<eof cat | cat -e | cat -e (igual)
+    #<<eof cat | cat (igual)
+No expansion delimitador con comillas
+# aldferna@c2r9s3:~/Desktop/MiniShell$ cat << l'e't
+    # > $HOME
+    # > let
+    # $HOME
+# /home/aldferna/Desktop/MiniShell ~ cat << $HOME
+    # > hola
+    # > $HOME
+    # hola
+    # /home/aldferna
+# /home/aldferna/Desktop/MiniShell ~ << $A   (no para, probablemente expandde el eof)
+    # > hola
+    # > $A
+    # > $A
+    # > 
+# /home/aldferna/Desktop/MiniShell ~ cat << $A (heap use after free)
+    # > $A
+
+
+
+ECHO
+echo $? actualizado
+
+
+
+EXIT
+#exit ajkjga asjdgdakjfv (que de numeric argument required, exit 2 y si que sale)
+    exit 5 wsh (too many arguments)
+
+
+
+CD
+bash:
+    aldferna@c2r7s6:~$ cd ../aldferna/..
+    aldferna@c2r7s6:/home$ 
+crear dir, meterse y luego salir, (encontrar el path)
+#/home/aldferna/Desktop/MiniShell ~ cd
+    #free(): double free detected in tcache 2
+    #[3]    2212968 IOT instruction (core dumped)  ./minishell
+#cd - (OLDPWD)
+#cd ~ (HOME)
+#cd // (ROOT)
+#cd -- (no args)
+#cd este implementado probar si hay un dir '-'
+
+
+
+CAT
+/home/aldferna/Desktop/MiniShell ~ cat <2
+      minishell: open: No such file or directory  (ok error, pero se queda pillado)
+
+
+
+#--------------------cosas de las q podriamos pasar:
+
+#echo $"$'$PWD'"  (bash: $'/home/aldferna/Desktop/MiniShell') (mshell: $$'/home/aldferna/Desktop/MiniShell')

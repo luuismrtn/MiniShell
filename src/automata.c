@@ -6,7 +6,7 @@
 /*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/24 11:23:15 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/24 20:55:55 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,21 +121,6 @@ int find_the_dollar(char *str)
 	return 1;
 } 
 
-//void write_in_pipe(char *content, int fd)
-//{
-	//int 	connect[2];
-	
-	//if (pipe(connect) == -1)
-	//{
-	//	perror("pipe");
-	//	return;
-	//}
-	
-	//if (fd != STDIN_FILENO)
-	//	close(fd);
-	//close(connect[1]);
-//}
-
 void	handle_heredoc(char **eof, int fd, t_token *tokens)
 {
 	char	*line;
@@ -145,9 +130,9 @@ void	handle_heredoc(char **eof, int fd, t_token *tokens)
 	line = readline("> ");
 	if (!line)
 		return;
-	if (ft_strncmp(line, *eof, ft_strlen(*eof) + 1) == 0) //eof al inicio
+	if (ft_strncmp(line, *eof, ft_strlen(*eof) + 1) == 0)
 	{
-		write(fd, "", 1); //write_in_pipe("", fd);
+		write(fd, "", 1);
 		return;
 	}
 	if (tokens->next->next->next)
@@ -172,7 +157,7 @@ void	handle_heredoc(char **eof, int fd, t_token *tokens)
 		r_lines = ft_strjoin(temp, "\n");
 		free(temp);
 	}
-	write(fd, r_lines, ft_strlen(r_lines)); //write_in_pipe(r_lines, fd);
+	write(fd, r_lines, ft_strlen(r_lines));
 	free(line);
 	free(r_lines);
 }
@@ -252,7 +237,7 @@ void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 			{
 				close(connect[0]);
 				signals('h');
-				handle_heredoc(&temp_tokens->next->content, connect[1], tokens); //no se esta mod el fd
+				handle_heredoc(&temp_tokens->next->content, connect[1], tokens);
 				close(connect[1]);
 				exit(0);
 			}
@@ -284,7 +269,7 @@ static int	count_args_aut(t_token *tokens)
 	return (count);
 }
 
-char	**build_command_string(t_token *tokens, int *count)
+char	**build_command_string(t_token *tokens, int count)
 {
 	char	**args;
 	int		num_args;
@@ -293,7 +278,7 @@ char	**build_command_string(t_token *tokens, int *count)
 
 	t_token *temp_tokens; // esto se podria quitar
 	temp_tokens = tokens->next;
-	aux_move = (*count);
+	aux_move = count;
 	while (aux_move > 0) // && temp_tokens->type
 	{
 		if (temp_tokens->type == T_PIPE)

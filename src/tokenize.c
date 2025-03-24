@@ -514,28 +514,76 @@ int	has_pipe(t_token *tokens)
 	return (0);
 }
 
-// int	main2(char *string, t_token *tokens)
-// {
-// 	char	*input;
-// 	int		result;
+void only_one_comnd(t_token **tokens)
+{
+	int		fds[2];
+	char	**args;
+	pid_t	pid;
+	int		status;
 
-// 	input = string;
-// 	if (check_quotes_closed(input) == ERROR)
-// 	{
-// 		printf("Error: quotes not closed\n");
-// 		return (ERROR);
-// 	}
-// 	tokens = tokenize(input, tokens);
-// 	if (!tokens)
-// 		return (ERROR);
-// 	clean_tokens(&tokens);
-// 	result = automata(tokens);
-// 	if (result == 0)
-// 		pipex(input, tokens);
-// 	return (0);
-// }
+	fds[0] = STDIN_FILENO;
+	fds[1] = STDOUT_FILENO;
+	setup_redirections(*tokens, &fds, 0);
+	args = build_command_string(*tokens, 0);
+	if (!args || !args[0])
+		return (ERROR);
+	if (is_builtin(args) == 1 && num_commands == 1)
+	{
+		executor((*tokens), &fds, args, -1);
+		free_array(args);
+		return ;
+	}
+	signals('c');
+	if (ft_strncmp(args[0], "./minishell", 12) == 0)
+		ign_signal();
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("fork");
+		return (ERROR);
+	}
+	else if (pid == 0)
+	{
+		if (ft_strncmp(args[0], "./minishell", 12) == 0)
+			modify_shlvl(tokens, "SHLVL");
+		executor((*tokens), &fds, args, dup(STDOUT_FILENO));
+		exit(exit_num);
+	}
+	clean_father_material(&fds, &args);
+	waitpid(pid, &status, 0);
+	exit_num = WEXITSTATUS(status);
+	signals('f');
+}
 
 int	main2(char *string, t_token *tokens)
+{
+	char	*input;
+	int		result;
+	int num_commands;
+
+	input = string;
+	if (check_quotes_closed(input) == ERROR)
+	{
+		printf("Error: quotes not closed\n");
+		return (ERROR);
+	}
+	tokens = tokenize(input, tokens);
+	if (!tokens)
+		return (ERROR);
+	clean_tokens(&tokens);
+	result = automata(tokens);
+	if (result == 0)
+	{
+		num_commands = num_pipes(input) + 1;
+		if (num_commands == 1)
+			only_one_cmnd(&tokens);
+		else
+			pipex(input, tokens, num_commands);
+	}
+	return (0);
+}
+
+/* int	main2(char *string, t_token *tokens)
 {
 	t_token	*aux;
 	t_token	*aux1;
@@ -570,4 +618,4 @@ int	main2(char *string, t_token *tokens)
 		pipex(input, tokens);
 	}
 	return (0);
-}
+} */

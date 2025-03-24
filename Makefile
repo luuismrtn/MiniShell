@@ -49,10 +49,10 @@ re: fclean all
 
 
 # LEAKS
+#mirar fds abiertos
 
 # MASS PRUEBAS CON ERROR:
 #seguir mirando lo de $p="ls -l"
-#tenemos un problema con hacer el heredoc en un hijo... se hace un doble/triple/etc.. hijo;(((( -->prueba varios << y luego control d
 
 #--------------------cosas de las q podriamos pasar:
 

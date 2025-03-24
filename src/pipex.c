@@ -6,7 +6,7 @@
 /*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/24 10:46:10 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/24 21:06:38 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,78 @@ void	modify_shlvl(t_token **tokens, char *var)
 	(*tokens)->env_mshell = new_var;
 }
 
+void change_fds_redir(int (*fds)[2], int *o_stdin, int *o_stdout, int builtin_father)
+{
+	if ((*fds)[0] != STDIN_FILENO)
+	{
+		if (builtin_father == 1)
+			(*o_stdin) = dup(STDIN_FILENO);
+		dup2((*fds)[0], STDIN_FILENO);
+		close((*fds)[0]);
+	}
+	if ((*fds)[1] != STDOUT_FILENO)
+	{
+		if (builtin_father == 1)
+			(*o_stdout) = dup(STDOUT_FILENO);
+		dup2((*fds)[1], STDOUT_FILENO);
+		close((*fds)[1]);
+	}
+}
+
+void executor(t_tokens *tokens, int (*fds)[2], char **args, int original_stdout)
+{
+	int		original_stdin;
+	
+	if (is_builtin(args) == 1)
+	{
+		original_stdin = -1;
+		change_fds_redir(fds, &original_stdin, &original_stdout, 1);
+		handle_builtin(args, *tokens);
+		if (original_stdin != -1)
+		{
+			dup2(original_stdin, STDIN_FILENO);
+			close(original_stdin);
+		}
+		if (original_stdout != -1)
+		{
+			dup2(original_stdout, STDOUT_FILENO);
+			close(original_stdout);
+		}
+	}
+	else
+	{
+		change_fds_redir(fds, NULL, NULL, 0);
+		exe(tokens, args, original_stdout);
+	}
+}
+
+void clean_father_material(int (*fds)[2], char ***args)
+{
+	if ((*fds)[0] != STDIN_FILENO)
+		close((*fds)[0]);
+	if ((*fds)[1] != STDOUT_FILENO)
+		close((*fds)[1]);
+	free_array((*args));
+}
+
+void error_pipe_fork(int *pipe_in, int *pipe_out, char ***args, char c)
+{
+	free_array((*args));
+	if (char == 'p')
+		perror("pipe");
+	if (char == 'f')
+	{
+		perror("fork");
+		close((*pipe_in));
+		close((*pipe_out));
+	}
+	if (char == 'e')
+	{
+		perror("fork");
+		close((*pipe_in));
+	}
+}
+
 int	middle_command(int *count, t_token **tokens, int fd_in)
 {
 	int		fds[2];
@@ -71,63 +143,28 @@ int	middle_command(int *count, t_token **tokens, int fd_in)
 	if (!args || !args[0])
 		return (ERROR);
 	if (pipe(connect) == -1)
-	{
-		perror("pipe");
-		free_array(args);
-		return (ERROR);
-	}
+		return (error_pipe_fork(NULL, NULL, &args, 'p'), ERROR);
 	pid = fork();
 	if (pid == -1)
-	{
-		perror("fork");
-		close(connect[0]);
-		close(connect[1]);
-		free_array(args);
-		return (ERROR);
-	}
+		return (error_pipe_fork(&connect[0], &connect[1], &args, 'f'), ERROR);
 	else if (pid == 0)
 	{
-		close(connect[0]);
-		if (fd_in >= 0)
-		{
-			dup2(fd_in, STDIN_FILENO);
-			close(fd_in);
-		}
-		else
+		if (fd_in < 0)
 		{
 			perror("fd_in\n");
 			exit(1);
 		}
+		dup2(fd_in, STDIN_FILENO);
+		close(fd_in);
+		close(connect[0]);
+		original_stdout = dup(STDOUT_FILENO); 
 		dup2(connect[1], STDOUT_FILENO);
 		close(connect[1]);
-		original_stdout = dup(STDOUT_FILENO);
-		if (fds[0] != STDIN_FILENO)
-		{
-			dup2(fds[0], STDIN_FILENO);
-			close(fds[0]);
-		}
-		if (fds[1] != STDOUT_FILENO)
-		{
-			dup2(fds[1], STDOUT_FILENO);
-			close(fds[1]);
-		}
-		if (is_builtin(args) == 1)
-		{
-			handle_builtin(args, (*tokens));
-			// exit (0);
-		}
-		else
-		{
-			exe((*tokens), args, original_stdout);
-			// exit(EXIT_FAILURE);
-		}
-	}
-	free_array(args);
+		executor((*tokens), &fds, args, original_stdout);
+		exit(exit_num);
+	} 
 	close(connect[1]);
-	if (fds[0] != STDIN_FILENO)
-		close(fds[0]);
-	if (fds[1] != STDOUT_FILENO)
-		close(fds[1]);
+	clean_father_material(&fds, &args);
 	close(fd_in);
 	return (connect[0]);
 }
@@ -137,7 +174,6 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 	pid_t	pid;
 	int		fds[2];
 	char	**args;
-	int		original_stdout;
 	int status;
 
 	fds[0] = STDIN_FILENO;
@@ -151,42 +187,18 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 		ign_signal();
 	pid = fork();
 	if (pid == -1)
-	{
-		perror("fork");
-		free_array(args);
-		close(fd_in);
-		return ;
-	}
+		return (error_pipe_fork(&fd_in, NULL, &args, 'e'), ERROR);
 	else if (pid == 0)
 	{
-		dup2(fd_in, STDIN_FILENO);
-		close(fd_in);
 		if (fd_in < 0)
 		{
 			perror("error output file");
 			exit(1);
 		}
-		original_stdout = dup(STDOUT_FILENO);
-		if (fds[1] != STDOUT_FILENO)
-		{
-			dup2(fds[1], STDOUT_FILENO);
-			close(fds[1]);
-		}
-		if (fds[0] != STDIN_FILENO)
-		{
-			dup2(fds[0], STDIN_FILENO);
-			close(fds[0]);
-		}
-		if (is_builtin(args) == 1)
-		{
-			handle_builtin(args, *tokens);
-			close(fds[1]);
-			exit(exit_num);
-		}
-		else
-		{
-			exe((*tokens), args, original_stdout);
-		}
+		dup2(fd_in, STDIN_FILENO);
+		close(fd_in);
+		executor((*tokens), &fds, args, dup(STDOUT_FILENO));
+		exit(exit_num);
 	}
 	waitpid(pid, &status, 0); 
 	exit_num = WEXITSTATUS(status);
@@ -201,8 +213,6 @@ int	first_command(t_token **tokens, int num_commands, int *count)
 	int		connect[2];
 	char	**args;
 	pid_t	pid;
-	int		i;
-	int		original_stdin;
 	int		original_stdout;
 	int		status;
 
@@ -212,169 +222,35 @@ int	first_command(t_token **tokens, int num_commands, int *count)
 	args = build_command_string(*tokens, count);
 	if (!args || !args[0])
 		return (ERROR);
-	if (is_builtin(args) == 1 && num_commands == 1)
+	if (pipe(connect) == -1)
+		return (error_pipe_fork(NULL, NULL, &args, 'p'), ERROR);
+	if (ft_strncmp(args[0], "./minishell", 12) == 0)
+		return (close(connect[1]), connect[0]);
+	pid = fork();
+	if (pid == -1)	
+		return (error_pipe_fork(&connect[0], &connect[1], &args, 'f'), ERROR);
+	else if (pid == 0)
 	{
-		original_stdin = -1;
-		original_stdout = -1;
-		if (fds[0] != STDIN_FILENO)
-		{
-			original_stdin = dup(STDIN_FILENO);
-			dup2(fds[0], STDIN_FILENO);
-		}
-		if (fds[1] != STDOUT_FILENO)
-		{
-			original_stdout = dup(STDOUT_FILENO);
-			dup2(fds[1], STDOUT_FILENO);
-		}
-		handle_builtin(args, *tokens);
-		if (original_stdin != -1)
-		{
-			dup2(original_stdin, STDIN_FILENO);
-			close(original_stdin);
-		}
-		if (original_stdout != -1)
-		{
-			dup2(original_stdout, STDOUT_FILENO);
-			close(original_stdout);
-		}
-		if (fds[0] != STDIN_FILENO)
-			close(fds[0]);
-		if (fds[1] != STDOUT_FILENO)
-			close(fds[1]);
-		i = 0;
-		while (args[i])
-			free(args[i++]);
-		free(args);
-		return (STDOUT_FILENO);
-	}
-	if (num_commands == 1)
-	{
-		signals('c');
-		if (ft_strncmp(args[0], "./minishell", 12) == 0)
-			ign_signal();
-		pid = fork();
-		if (pid == -1)
-		{
-			perror("fork");
-			return (ERROR);
-		}
-		else if (pid == 0) // Proceso hijo
-		{
-			if (ft_strncmp(args[0], "./minishell", 12) == 0)
-				modify_shlvl(tokens, "SHLVL");
-			original_stdout = dup(STDOUT_FILENO);
-			if (fds[0] != STDIN_FILENO)
-			{
-				dup2(fds[0], STDIN_FILENO);
-				close(fds[0]);
-			}
-			if (fds[1] != STDOUT_FILENO)
-			{
-				dup2(fds[1], STDOUT_FILENO);
-				close(fds[1]);
-			}
-			exe((*tokens), args, original_stdout);
-			exit(exit_num);
-		}
-		i = 0;
-		while (args[i])
-			free(args[i++]);
-		free(args);
-		if (fds[0] != STDIN_FILENO)
-			close(fds[0]);
-		if (fds[1] != STDOUT_FILENO)
-			close(fds[1]);
-		waitpid(pid, &status, 0);
-		exit_num = WEXITSTATUS(status);
-		signals('f');
-		return (STDOUT_FILENO);
-	}
-	else
-	{
-		if (pipe(connect) == -1)
-		{
-			perror("pipe");
-			return (ERROR);
-		}
-		if (ft_strncmp(args[0], "./minishell", 12) == 0)
-		{
-			close(connect[1]);
-			return (connect[0]);
-		}
-		pid = fork();
-		if (pid == -1)
-		{
-			perror("fork");
-			close(connect[0]);
-			close(connect[1]);
-			return (ERROR);
-		}
-		else if (pid == 0)
-		{
-			close(connect[0]);
-			dup2(connect[1], STDOUT_FILENO);
-			close(connect[1]);
-			original_stdout = dup(STDOUT_FILENO);
-			if (fds[0] != STDIN_FILENO)
-			{
-				dup2(fds[0], STDIN_FILENO);
-				close(fds[0]);
-			}
-			if (fds[1] != STDOUT_FILENO)
-			{
-				dup2(fds[1], STDOUT_FILENO);
-				close(fds[1]);
-			}
-			if (is_builtin(args) == 1)
-			{
-				handle_builtin(args, *tokens);
-				close(fds[1]);
-				exit(exit_num);
-			}
-			else
-			{
-				exe((*tokens), args, original_stdout);
-				exit(exit_num);
-			}
-		}
-		free_array(args);
+		close(connect[0]);
+		original_stdout = dup(STDOUT_FILENO);
+		dup2(connect[1], STDOUT_FILENO);
 		close(connect[1]);
-		if (fds[0] != STDIN_FILENO)
-			close(fds[0]);
-		if (fds[1] != STDOUT_FILENO)
-			close(fds[1]);
-		return (connect[0]);
+		executor((*tokens), &fds, args, original_stdout);
+		exit(exit_num);
 	}
+	clean_father_material(&fds, &args);
+	return (close(connect[1]), connect[0]);
 }
 
-int	pipex(char *argv_str, t_token *tokens)
+int	pipex(char *argv_str, t_token *tokens, int num_commands)
 {
 	int		fd_in;
-	int		num_commands;
 	int		i;
-	char	**env;
 	int		count;
 	int		status;
 
-	env = join_env(tokens->env_mshell);
-	if (!env)
-		return (ERROR);
-	num_commands = num_pipes(argv_str) + 1;
 	count = 0;
 	fd_in = first_command(&tokens, num_commands, &count);
-	if (fd_in < 0)
-	{
-		free_array(env);
-		return (ERROR);
-	}
-	if (num_commands == 1)
-	{
-		if (fd_in != STDOUT_FILENO)
-			close(fd_in);
-		waitpid(-1, &status, 0);
-		free_array(env);
-		return (0);
-	}
 	if (num_commands > 1)
 	{
 		count = 1;
@@ -394,6 +270,5 @@ int	pipex(char *argv_str, t_token *tokens)
 			i++;
 		}
 	}
-	free_array(env);
 	return (0);
 }
