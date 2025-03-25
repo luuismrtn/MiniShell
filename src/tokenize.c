@@ -437,7 +437,6 @@ t_token	*tokenize(char *input, t_token *tokens)
 	i = 0;
 	while (input[i])
 	{
-		// printf("Input[%d]: %c\n", i, input[i]);
 		if (ft_isspace(input[i]))
 			handle_spaces(&tokens, input, &i);
 		else if (input[i] == '\'')
@@ -471,8 +470,7 @@ int	check_quotes_closed(char *input)
 	in_s_quote = 0;
 	while (input[i])
 	{
-		if (input[i] == '\\' && input[i + 1] && (input[i + 1] == '\'' || input[i
-				+ 1] == '\"'))
+		if (input[i] == '\\' && input[i + 1] && (input[i + 1] == '\'' || input[i + 1] == '\"'))
 		{
 			i += 2;
 			continue ;

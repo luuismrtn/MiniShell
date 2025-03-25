@@ -4,7 +4,8 @@ CFLAGS = -Wall -Wextra -Werror  -g3 #-fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
-	src/pipex.c \
+	src/exe/executor_pipex.c src/exe/executor.c src/exe/executor_utils.c\
+	src/exe/exe.c src/exe/env_exe.c src/exe/search_path_exe.c \
 	src/history.c \
 	src/tokenize.c \
 	src/env_build_in.c \
@@ -21,9 +22,8 @@ SRC = src/main.c \
 	src/builtins/ft_unset.c \
 	src/builtins/modify_pwd.c \
 	src/builtins/modify_pwd_utils.c \
-	src/exe/exe.c \
-	src/exe/env_exe.c \
-	src/exe/search_path_exe.c \
+	src/modify_env.c \
+	src/utils_general.c\
 
 INCLUDE = -I libft -I.
 
@@ -86,7 +86,7 @@ re: fclean all
 # /home/aldferna/Desktop/MiniShell ~ cat | cat | ls
 # errors.txt  inc  libft  Makefile  minishell  src
 # ^C
-# /home/aldferna/Desktop/MiniShell ~ cat | cat | ls/home/aldferna/Desktop/MiniShell ~ 
+# /home/aldferna/Desktop/MiniShell ~ /home/aldferna/Desktop/MiniShell ~ 
 
 
 
