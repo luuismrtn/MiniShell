@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/25 15:20:34 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/25 18:13:03 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 	}
 	waitpid(pid, &status, 0);
 	exit_num = WEXITSTATUS(status);
-	return (signals('f'), close(fd_in), free_array(args));
+	return (close(fd_in), free_array(args)); //signals('f')->a pipex
 }
 
 int	first_command(t_token **tokens, int count)
@@ -119,7 +119,6 @@ int	first_command(t_token **tokens, int count)
 void	pipex(t_token *tokens, int num_commands)
 {
 	int	fd_in;
-	int	i;
 	int	count;
 	int	status;
 
@@ -127,20 +126,19 @@ void	pipex(t_token *tokens, int num_commands)
 	if (num_commands > 1)
 	{
 		count = 1;
-		i = 1;
-		while (i < num_commands - 1)
+		while (count < num_commands - 1)
 		{
 			fd_in = middle_command(&count, &tokens, fd_in);
 			count++;
-			i++;
 		}
-		if (i < num_commands)
+		if (count < num_commands)
 			final_command(&count, &tokens, fd_in);
-		i = 0;
-		while (i < num_commands)
+		count = 0;
+		while (count < num_commands)
 		{
 			waitpid(-1, &status, 0);
-			i++;
+			count++;
 		}
+		signals('f'); //señalado x si aca
 	}
 }

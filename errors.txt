@@ -88,6 +88,15 @@ crear dir, meterse y luego salir, (encontrar el path)
 #cd // (ROOT)
 #cd -- (no args)
 #cd este implementado probar si hay un dir '-'
+# ➜  MiniShell git:(main) ✗ make && ./minishell
+    # /home/aldferna/Desktop/MiniShell ~ cd
+    # /home/aldferna ~ ^C
+    # /home/aldferna ~ cd -
+    # double free or corruption (fasttop)
+    # [1]    2844121 IOT instruction (core dumped)  ./minishell
+# ➜  MiniShell git:(main) ✗ make && ./minishell
+    # /home/aldferna/Desktop/MiniShell ~ cd -
+    # �m ~ 
 
 
 

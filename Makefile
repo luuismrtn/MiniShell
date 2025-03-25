@@ -59,7 +59,7 @@ re: fclean all
 # /home/aldferna/Desktop/MiniShell ~  (control D)
 
 # /home/aldferna/Desktop/MiniShell ~ cat 3
-# /home/aldferna/Desktop/MiniShell$
+#	 /home/aldferna/Desktop/MiniShell$
 # /home/aldferna/Desktop/MiniShell ~ (control D)
 
 # echo hola | ls
@@ -78,17 +78,24 @@ re: fclean all
 
 # MASS PRUEBAS CON ERROR:
 #seguir mirando lo de $p="ls -l"
-#"ls -l" no deberiaa funcionar
+#"ls -l"
 
 # /home/aldferna/Desktop/MiniShell ~ ./minishell | ./minishell
 # /home/aldferna/Desktop/MiniShell ~ /home/aldferna/Desktop/MiniShell ~ 
+#esto antes funcionaba (no se cd), puede ser q tenga relacion con q no se crea un hijo
 
-# /home/aldferna/Desktop/MiniShell ~ cat | cat | ls
-# errors.txt  inc  libft  Makefile  minishell  src
-# ^C
-# /home/aldferna/Desktop/MiniShell ~ /home/aldferna/Desktop/MiniShell ~ 
+#con cd -
+# ➜  MiniShell git:(main) ✗ make && ./minishell
+# /home/aldferna/Desktop/MiniShell ~ cd
+# /home/aldferna ~ ^C
+# /home/aldferna ~ ^C
+# /home/aldferna ~ cd -
+# double free or corruption (fasttop)
+# [1]    2844121 IOT instruction (core dumped)  ./minishell
 
-
+# ➜  MiniShell git:(main) ✗ make && ./minishell
+# /home/aldferna/Desktop/MiniShell ~ cd -
+# �m ~ 
 
 
 #--------------------cosas de las q podriamos pasar:
