@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  #-g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror  -g3 #-fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -50,11 +50,46 @@ re: fclean all
 .PHONY: all clean fclean re
 
 
-# LEAKS
+# LEAKS:
+#pwd | cat | cat -e >3 | wc -l
+
+# /home/aldferna/Desktop/MiniShell ~ cat | cat | ls
+# 3  errors.txt  inc  libft  Makefile  minishell  src
+# /home/aldferna/Desktop/MiniShell ~ ^C
+# /home/aldferna/Desktop/MiniShell ~  (control D)
+
+# /home/aldferna/Desktop/MiniShell ~ cat 3
+# /home/aldferna/Desktop/MiniShell$
+# /home/aldferna/Desktop/MiniShell ~ (control D)
+
+# echo hola | ls
+
+# jdf | sleep 2
+
+
+
+
+
 #mirar fds abiertos
+
+
+
+
 
 # MASS PRUEBAS CON ERROR:
 #seguir mirando lo de $p="ls -l"
+#"ls -l" no deberiaa funcionar
+
+# /home/aldferna/Desktop/MiniShell ~ ./minishell | ./minishell
+# /home/aldferna/Desktop/MiniShell ~ /home/aldferna/Desktop/MiniShell ~ 
+
+# /home/aldferna/Desktop/MiniShell ~ cat | cat | ls
+# errors.txt  inc  libft  Makefile  minishell  src
+# ^C
+# /home/aldferna/Desktop/MiniShell ~ cat | cat | ls/home/aldferna/Desktop/MiniShell ~ 
+
+
+
 
 #--------------------cosas de las q podriamos pasar:
 

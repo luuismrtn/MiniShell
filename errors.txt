@@ -96,6 +96,18 @@ CAT
       minishell: open: No such file or directory  (ok error, pero se queda pillado)
 
 
+SEÑALES
+/home/aldferna/Desktop/MiniShell ~ cat | cat | ls
+    errors.txt  inc  libft  Makefile  minishell  src
+    ^C
+    /home/aldferna/Desktop/MiniShell ~ cat | cat | ls/home/aldferna/Desktop/MiniShell ~ 
+
+
+OTROS
+"ls -l" debe ser command not found
+/home/aldferna/Desktop/MiniShell ~ ./minishell | ./minishell
+    /home/aldferna/Desktop/MiniShell ~ /home/aldferna/Desktop/MiniShell ~ 
+
 
 #--------------------cosas de las q podriamos pasar:
 

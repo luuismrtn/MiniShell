@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/24 23:55:12 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/25 15:24:55 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,17 +95,22 @@ void					try_exec_with_path(char *cmd, char **args, char **env);
 int						count_env_vars(t_env *env_list);
 
 //  PIPEX
-int						pipex(t_token *tokens, int num_commands);
+void					pipex(t_token *tokens, int num_commands);
 void					setup_redirections(t_token *tokens, int (*fds)[2],
 							int count);
 char					**build_command_string(t_token *tokens, int count);
+void					executor(t_token **tokens, int (*fds)[2], char **args,
+							int original_stdout);
+void					one_comnd(t_token **tokens);
+
+//	PIPEX UTILS
+int						child_pipe_fdin_redir(int *fd_in, char **args,
+							int (*connect)[2]);
 void					change_fds_redir(int (*fds)[2], int *o_stdin,
 							int *o_stdout, int builtin_father);
-void					executor(t_token *tokens, int (*fds)[2], char **args,
-							int original_stdout);
 void					clean_father_material(int (*fds)[2], char ***args);
-void					error_pipe_fork(int *pipe_in, int *pipe_out,
-							char ***args, char c);
+void					errors_pipex(int *pipe_in, int *pipe_out, char ***args,
+							char c);
 
 //  BUILTINS
 void					handle_builtin(char **args, t_token *tokens);
@@ -152,5 +157,9 @@ int						match_string(char *str1, char *str2);
 char					*handle_env_var(char *str, t_token *tokens);
 int						num_pipes(char *str);
 int						len_array(char **array);
+int						count_args(char **args);
+
+// LIST UTILS
+int						has_pipe(t_token *tokens);
 
 #endif

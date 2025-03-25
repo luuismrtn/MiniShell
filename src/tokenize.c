@@ -500,61 +500,6 @@ int	check_quotes_closed(char *input)
 	return (ERROR);
 }
 
-int	has_pipe(t_token *tokens)
-{
-	t_token	*aux;
-
-	aux = tokens->next;
-	while (aux != NULL)
-	{
-		if (aux->type == T_PIPE)
-			return (1);
-		aux = aux->next;
-	}
-	return (0);
-}
-
-void one_comnd(t_token **tokens)
-{
-	int		fds[2];
-	char	**args;
-	pid_t	pid;
-	int		status;
-
-	fds[0] = STDIN_FILENO;
-	fds[1] = STDOUT_FILENO;
-	setup_redirections(*tokens, &fds, 0);
-	args = build_command_string(*tokens, 0);
-	if (!args || !args[0])
-		return ;
-	if (is_builtin(args) == 1)
-	{
-		executor((*tokens), &fds, args, -1);
-		free_array(args);
-		return ;
-	}
-	signals('c');
-	if (ft_strncmp(args[0], "./minishell", 12) == 0)
-		ign_signal();
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("fork");
-		return ;
-	}
-	else if (pid == 0)
-	{
-		if (ft_strncmp(args[0], "./minishell", 12) == 0)
-			modify_shlvl(tokens, "SHLVL");
-		executor((*tokens), &fds, args, dup(STDOUT_FILENO));
-		exit(exit_num);
-	}
-	clean_father_material(&fds, &args);
-	waitpid(pid, &status, 0);
-	exit_num = WEXITSTATUS(status);
-	signals('f');
-}
-
 int	main2(char *string, t_token *tokens)
 {
 	char	*input;
