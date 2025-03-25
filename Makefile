@@ -4,10 +4,19 @@ CFLAGS = -Wall -Wextra -Werror  -g3 #-fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
-	src/exe/executor_pipex.c src/exe/executor.c src/exe/executor_utils.c\
-	src/exe/exe.c src/exe/env_exe.c src/exe/search_path_exe.c \
+	src/exe/executor_pipex.c \
+	src/exe/executor.c \
+	src/exe/executor_utils.c \
+	src/exe/exe.c \
+	src/exe/env_exe.c \
+	src/exe/search_path_exe.c \
 	src/history.c \
-	src/tokenize.c \
+	src/tokenize/tokenize.c \
+	src/tokenize/clean_tokens.c \
+	src/tokenize/handle_quotes.c \
+	src/tokenize/handle_quotes_utils.c \
+	src/tokenize/handle_redirections.c \
+	src/tokenize/tokens.c \
 	src/env_build_in.c \
 	src/automata.c \
 	src/builtins/builtins.c \

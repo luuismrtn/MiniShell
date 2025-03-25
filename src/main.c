@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/25 18:04:53 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/25 21:42:46 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -273,19 +273,45 @@ void	free_tokens(t_token *tokens)
 }
 
 /**
- * @brief Cuenta el número de elementos en un array de strings.
+ * @brief Punto de entrada secundario para el procesamiento de comandos
  *
- * @param array Array de strings terminado en NULL.
- * @return int Número de elementos en el array.
+ * Procesa una cadena de entrada como un comando de shell:
+ * 1. Verifica que las comillas estén correctamente cerradas
+ * 2. Tokeniza la entrada
+ * 3. Limpia y optimiza los tokens
+ * 4. Analiza la sintaxis con el autómata
+ * 5. Ejecuta el comando o pipeline según corresponda
+ *
+ * @param string Cadena de entrada que contiene el comando a procesar
+ * @param tokens Token inicial donde se almacenarán los tokens procesados
+ * @return int 0 en caso de éxito, ERROR en caso de error
  */
-int	len_array(char **array)
+int	main2(char *string, t_token *tokens)
 {
-	int	count;
+	char	*input;
+	int		result;
+	int		num_commands;
 
-	count = 0;
-	while (array[count])
-		count++;
-	return (count);
+	input = string;
+	if (check_quotes_closed(input) == ERROR)
+	{
+		printf("Error: quotes not closed\n");
+		return (ERROR);
+	}
+	tokens = tokenize(input, tokens);
+	if (!tokens)
+		return (ERROR);
+	clean_tokens(&tokens);
+	result = automata(tokens);
+	if (result == 0)
+	{
+		num_commands = num_pipes(input) + 1;
+		if (num_commands == 1)
+			one_comnd(&tokens);
+		else
+			pipex(tokens, num_commands);
+	}
+	return (0);
 }
 
 int	main(int argc, char **argv, char **env)

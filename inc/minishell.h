@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/25 15:24:55 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/25 21:42:19 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,6 @@ int						write_line_history(char *history_file, char *line);
 
 //  PARSE
 int						check_quotes_closed(char *input);
-t_token					*tokenize(char *input, t_token *tokens);
 void					delete_tokens(t_token **tokens);
 void					clean_tokens(t_token **tokens);
 int						automata(t_token *tokens);
@@ -84,6 +83,19 @@ int						ft_len_var_name(char *str, int i);
 // ENV
 t_env					*env_buildin(char **env);
 t_env					*find_env_var(t_env *env, char *var_name);
+
+// TOKENIZE
+t_token					*tokenize(char *input, t_token *tokens);
+void					add_token(t_token **head, t_token_value type,
+							char *content, int quotes);
+void					handle_redirections(t_token **tokens, char *input,
+							int *i);
+void					handle_quotes(t_token **tokens, char *input, int *i,
+							t_token_value type);
+char					*process_env_in_quotes(char *result, char *input,
+							int *i, t_token **tokens);
+char					*expand_var_in_quotes(char *result, char *var_name,
+							t_token **tokens);
 
 // EXE
 char					**join_env(t_env *env_mshell);
