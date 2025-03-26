@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 16:31:15 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/03/26 20:59:08 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/27 00:05:23 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void expand_in_heredoc(char **line, t_token *tokens)
 			}
 			else
 			{
-				var_content = get_env_content(tokens, line, i, &start_after_$);
+				var_content = get_env_content(tokens, *line, i, &start_after_$);
 				temp = ft_strjoin(content, var_content);
 				free(content);
 				free(var_content);

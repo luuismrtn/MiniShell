@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/25 12:32:07 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/27 00:07:48 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,8 @@ void	exe(t_token *tokens, char **cmd, int stdout_fd)
 {
 	char	**env;
 
-	parse_cmd(&cmd);
+	if (tokens->next->quotes != 1)
+		parse_cmd(&cmd);
 	//print_2(cmd);
 	env = join_env(tokens->env_mshell);
 	if (ft_strchr(cmd[0], '/') != NULL && access(cmd[0], X_OK) == 0)

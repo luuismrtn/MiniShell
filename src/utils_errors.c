@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_errors.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 20:19:51 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/03/26 20:20:24 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/27 00:10:08 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,9 @@ int	check_quotes_closed(char *input)
 
 	i = 0;
 	count_s_d[0] = 0;
-	count_s_d[0] = 0;
+	count_s_d[1] = 0;
 	in_quote_s_d[0] = 0;
-	in_quote_s_d[0] = 0;
+	in_quote_s_d[1] = 0;
 	check_quotes(input, i, &in_quote_s_d, &count_s_d);
 	if ((count_s_d[1] % 2 == 0) && (count_s_d[0] % 2 == 0))
 		return (SUCCESS);
