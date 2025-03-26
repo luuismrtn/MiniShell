@@ -6,22 +6,43 @@
 /*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 16:31:15 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/03/26 18:11:09 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/26 20:59:08 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
+static char *get_env_content(t_token *tokens, char *line, int i, int *start_after_$)
+{
+	int len_var_name;
+	char *var_name;
+	char *var_content;
+	t_env	*current;
+
+	len_var_name = ft_len_var_name(line, i);
+	var_name = ft_substr(line, i, len_var_name);
+	current = tokens->env_mshell;
+	while (current)
+	{
+		if (ft_strncmp(current->name, var_name, len_var_name) == SUCCESS)
+		{
+			free(var_name);
+			var_content = ft_strdup(current->content);
+			break ;
+		}
+		current = current->next;
+	}
+	(*start_after_$) = i + len_var_name;
+	return(var_content);
+}
+
 void expand_in_heredoc(char **line, t_token *tokens)
 {
 	int i;
-	int len_var_name;
-	char *var_name;
 	char *var_content;
 	char *content;
 	char *temp;
 	int start_after_$;
-	t_env *current_env_list;
 
 	i = 0;
 	content = NULL;
@@ -43,24 +64,10 @@ void expand_in_heredoc(char **line, t_token *tokens)
 			}
 			else
 			{
-				len_var_name = ft_len_var_name(line[0], i);
-				var_name = ft_substr(line[0], i, len_var_name);
-				current_env_list = tokens->env_mshell;
-				while (current_env_list != NULL)
-				{
-					if (ft_strncmp(current_env_list->name, var_name,
-							len_var_name) == SUCCESS)
-					{
-						free(var_name);
-						var_content = ft_strdup(current_env_list->content);
-						break ;
-					}
-					current_env_list = current_env_list->next;
-				}
+				var_content = get_env_content(tokens, line, i, &start_after_$);
 				temp = ft_strjoin(content, var_content);
-				free(var_content);
 				free(content);
-				start_after_$ = i + len_var_name;
+				free(var_content);
 			}
 		}
 		i++;
@@ -89,23 +96,9 @@ void	handle_heredoc(char *eof, int fd, t_token *tokens)
 	char	*r_lines;
 	char 	*temp;
 
-	line = readline("> ");
-	if (!line)
-		return;
-	if (ft_strncmp(line, eof, ft_strlen(eof) + 1) == 0)
-	{
-		write(fd, "", 1);
-		return;
-	}
-	if (tokens && tokens->next && tokens->next->next && tokens->next->next->next)
-	{
-		if (find_the_dollar(line) == SUCCESS && tokens->next->next->next->quotes == 0)
-			expand_in_heredoc(&line, tokens);
-	}
-	r_lines = ft_strjoin(line, "\n");
+	r_lines = ft_strdup("");
 	while ((ft_strlen(line) != ft_strlen(eof)) || ft_strcmp(line, eof) != 0)
 	{
-		free(line);
 		line = readline("> ");
 		if (!line || ft_strncmp(line, eof, ft_strlen(eof) + 1) == 0)
 			break;
@@ -118,6 +111,7 @@ void	handle_heredoc(char *eof, int fd, t_token *tokens)
 		free(r_lines);
 		r_lines = ft_strjoin(temp, "\n");
 		free(temp);
+		free(line);
 	}
 	write(fd, r_lines, ft_strlen(r_lines));
 	free(line);
