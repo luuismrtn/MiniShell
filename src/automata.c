@@ -6,22 +6,29 @@
 /*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/24 20:55:55 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/26 19:17:57 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
+static void print_automat_error(int prev_token)
+{
+	char	*elements[9] = {"command", "flag", "|", "newline", "newline",
+		"newline", "newline", "err"};
+
+	printf("syntax error: %s\n\n", elements[prev_token]);
+	exit_num = 1;
+}
+
 int	automata(t_token *tokens)
 {
 	int		current_state;
 	int		prev_token;
-	char	*elements[9] = {"command", "flag", "|", "newline", "newline",
-			"newline", "newline", "err"};
 
 	if (tokens->next == NULL)
 		return (0);
-	tokens = tokens->next; // cat | -l
+	tokens = tokens->next;
 	int automata[6][8] = {
 		{1, 5, 5, 3, 3, 3, 3, 2}, // inicial
 		{2, 1, 4, 3, 3, 3, 3, 1}, // comando
@@ -38,278 +45,6 @@ int	automata(t_token *tokens)
 		tokens = tokens->next;
 	}
 	if (current_state != 1 && current_state != 2)
-	{
-		printf("syntax error: %s\n\n", elements[prev_token]);
-		exit_num = 1;
-		return (1);
-	}
-	else
-	{
-		return (0);
-	}
-	return (1);
-}
-
-void expand_in_heredoc(char **line, t_token *tokens)
-{
-	int i;
-	int len_var_name;
-	char *var_name;
-	char *var_content;
-	char *content;
-	char *temp;
-	int start_after_$;
-	t_env *current_env_list;
-
-	i = 0;
-	content = NULL;
-	while (line[0][i])
-	{
-		if (line[0][i] == '$')
-		{
-			if (content == NULL)
-				content = ft_substr(line[0], 0, i);
-			else
-				content = ft_strjoin(temp, ft_substr(line[0], start_after_$, i - start_after_$));
-			i++;
-			if (line[0][i] == '?')
-			{
-				i++;
-				temp = ft_strjoin(content, ft_itoa(exit_num));
-				free(content);
-				start_after_$ = i;
-			}
-			else
-			{
-				len_var_name = ft_len_var_name(line[0], i);
-				var_name = ft_substr(line[0], i, len_var_name);
-				current_env_list = tokens->env_mshell;
-				while (current_env_list != NULL)
-				{
-					if (ft_strncmp(current_env_list->name, var_name,
-							len_var_name) == SUCCESS)
-					{
-						free(var_name);
-						var_content = ft_strdup(current_env_list->content);
-						break ;
-					}
-					current_env_list = current_env_list->next;
-				}
-				temp = ft_strjoin(content, var_content);
-				free(var_content);
-				free(content);
-				start_after_$ = i + len_var_name;
-			}
-		}
-		i++;
-	}
-	(*line) = ft_strjoin(temp, ft_substr(line[0], start_after_$, i - start_after_$));
-	free(temp);
-}
-
-int find_the_dollar(char *str)
-{
-	int i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '$' && str[i + 1] && !ft_isspace(str[i + 1]))
-			return 0;
-		i++;
-	}
-	return 1;
-} 
-
-void	handle_heredoc(char **eof, int fd, t_token *tokens)
-{
-	char	*line;
-	char	*r_lines;
-	char 	*temp;
-
-	line = readline("> ");
-	if (!line)
-		return;
-	if (ft_strncmp(line, *eof, ft_strlen(*eof) + 1) == 0)
-	{
-		write(fd, "", 1);
-		return;
-	}
-	if (tokens->next->next->next)
-	{
-		if (find_the_dollar(line) == SUCCESS && tokens->next->next->next->quotes == 0)
-			expand_in_heredoc(&line, tokens);
-	}
-	r_lines = ft_strjoin(line, "\n");
-	while ((ft_strlen(line) != ft_strlen(*eof)) || ft_strcmp(line, *eof) != 0)
-	{
-		free(line);
-		line = readline("> ");
-		if (!line || ft_strncmp(line, *eof, ft_strlen(*eof) + 1) == 0)
-			break;
-		if (tokens->next->next->next)
-		{
-			if (find_the_dollar(line) == SUCCESS && tokens->next->next->next->quotes == 0)
-				expand_in_heredoc(&line, tokens);	
-		}
-		temp = ft_strjoin(r_lines, line);
-		free(r_lines);
-		r_lines = ft_strjoin(temp, "\n");
-		free(temp);
-	}
-	write(fd, r_lines, ft_strlen(r_lines));
-	free(line);
-	free(r_lines);
-}
-
-void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
-{
-	int	new_fd;
-	int	aux_move;
-	pid_t	pid;
-    int status;
-	int connect[2];
-
-	t_token *temp_tokens; // probar sin temporal
-	temp_tokens = tokens->next;
-	aux_move = count;
-	while (aux_move > 0) //&& temp_tokens->type
-	{
-		if (temp_tokens->type == T_PIPE)
-			aux_move--;
-		temp_tokens = temp_tokens->next;
-	}
-	while (temp_tokens)
-	{
-		if (temp_tokens->type == T_REDIR_RIGHT && temp_tokens->next)
-		{
-			new_fd = open(temp_tokens->next->content,
-					O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			if (new_fd == -1)
-			{
-				perror("minishell: open");
-				return ;
-			}
-			if ((*fds)[1] != STDOUT_FILENO)
-				close((*fds)[1]);
-			(*fds)[1] = new_fd;
-		}
-		else if (temp_tokens->type == T_APPEND && temp_tokens->next)
-		{
-			new_fd = open(temp_tokens->next->content,
-					O_WRONLY | O_CREAT | O_APPEND, 0644);
-			if (new_fd == -1)
-			{
-				perror("minishell: open");
-				return ;
-			}
-			if ((*fds)[1] != STDOUT_FILENO)
-				close((*fds)[1]);
-			(*fds)[1] = new_fd;
-		}
-		else if (temp_tokens->type == T_REDIR_LEFT && temp_tokens->next)
-		{
-			new_fd = open(temp_tokens->next->content, O_RDONLY);
-			if (new_fd == -1)
-			{
-				perror("minishell: open");
-				return ;
-			}
-			if ((*fds)[0] != STDIN_FILENO)
-				close((*fds)[0]);
-			(*fds)[0] = new_fd;
-		}
-		else if (temp_tokens->type == T_HERE_DOC && temp_tokens->next)
-		{
-			ign_signal();
-			if (pipe(connect) == -1)
-			{
-				perror("pipe");
-				return;
-			}
-			pid = fork();
-			if (pid == -1)
-			{
-				perror("fork");
-				return ;
-			}
-			else if (pid == 0)
-			{
-				close(connect[0]);
-				signals('h');
-				handle_heredoc(&temp_tokens->next->content, connect[1], tokens);
-				close(connect[1]);
-				exit(0);
-			}
-			close(connect[1]);
-			waitpid(pid, &status, 0);
-			signals('f');
-			(*fds)[0] = connect[0];
-		}
-		else if (temp_tokens && temp_tokens->type == T_PIPE)
-			break ;
-		temp_tokens = temp_tokens->next;
-	}
-}
-
-static int	count_args_aut(t_token *tokens)
-{
-	int	count;
-
-	count = 0;
-	while (tokens)
-	{
-		if (tokens->type == T_WORD || tokens->type == T_FLAG
-			|| tokens->type == T_ENV)
-			count++;
-		if (tokens->type == T_PIPE)
-			break ;
-		tokens = tokens->next;
-	}
-	return (count);
-}
-
-char	**build_command_string(t_token *tokens, int count)
-{
-	char	**args;
-	int		num_args;
-	int		i;
-	int		aux_move;
-
-	t_token *temp_tokens; // esto se podria quitar
-	temp_tokens = tokens->next;
-	aux_move = count;
-	while (aux_move > 0) // && temp_tokens->type
-	{
-		if (temp_tokens->type == T_PIPE)
-			aux_move--;
-		temp_tokens = temp_tokens->next;
-	}
-	num_args = count_args_aut(temp_tokens);
-	args = malloc((num_args + 1) * sizeof(char *));
-	if (!args)
-		return (NULL);
-	i = 0;
-	while ((i < num_args) && temp_tokens)
-	{
-		if (temp_tokens->type == T_WORD || temp_tokens->type == T_FLAG
-			|| temp_tokens->type == T_ENV)
-		{
-			args[i] = ft_strdup(temp_tokens->content);
-			if (!args[i])
-				return (free(args), NULL);
-			i++;
-		}
-		if (temp_tokens && temp_tokens->type == T_PIPE)
-			break ;
-		if (temp_tokens->type == T_REDIR_RIGHT || temp_tokens->type == T_APPEND
-			|| temp_tokens->type == T_REDIR_LEFT || temp_tokens->type == T_HERE_DOC)
-		{
-			temp_tokens = temp_tokens->next->next;
-			continue ;
-		}
-		temp_tokens = temp_tokens->next;
-	}
-	args[i] = NULL;
-	return (args);
+		return(print_automat_error(prev_token), 1);
+	return (0);
 }

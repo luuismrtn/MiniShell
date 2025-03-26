@@ -1,8 +1,8 @@
-Revisado hasta este commit (incluido)>>>
-commit 8bc162455c3f06aef3a14ed8970c8d9820ef0463
-Author: Luis Martín <luismartingarcia4@gmail.com>
-Date:   Tue Mar 18 13:19:06 2025 +0100
-    Builtin con documentación y depurados
+Revisado hasta este (incluido)>>>
+commit 64b1065c9b7eede0bacb8ee6fbc1d2d3ed86bfb4
+Author: Aldara Fernandez Garcia <aldferna@c1r6s6.42madrid.com>
+Date:   Tue Mar 11 16:11:16 2025 +0100
+    SHLVL OKK
 
 
 
@@ -14,6 +14,16 @@ sdffggb | sleep 1 (echo $? = 0)
 sleep 1  | sdfg (echo $? = 127)
 exit 5 |exit 4 | exit 3 (echo $? = 3)
 pwd | cat | cat -e >3 | wc -l (bash: 0 y crea 3 con print dwl pwd) (mshell: hace el pwd y no crea 3)
+#bash-3.2$ echo < 1 | echo < 2 | echo < 3
+    bash: echo: write error: Broken pipe
+# env | sort | grep -v SHLVL | grep -v ^_ 
+    # mini exit code = 139
+    # bash exit code = 0
+    # mini error = ( Broken pipe)
+    # bash error = ()
+# cat minishell.h | grep ");"$ 
+    # mini exit code = 0
+    # bash exit code = 1
 
 
 
@@ -23,17 +33,15 @@ export p="ls -l" --> ejecutar $p (funciona)
 #export a
     #./minishell
     #se queda como sin env
-# echo $a?$PATH
-    # echo $a+++++$PATH
-    # $a+++++$PATH -------estas tres anteriores, tiene que expandir ambas (si estan separadas por no:alfanum)
-# echo $PATHa$HOME ----pero esta solo expande HOME, la anterior la toma como PATHa y no la encuentra (esto ahora ok, pero cuidado cd implementemos lo de arriba)
-# echo $$$PATH ----cuidado con esto tb cd se implemente lo de arriba
-# echo $1234$HOME (bash: 234/home/aldferna), (mshell: /home/aldferna)
-# echo $1234-$HOME (bash: 234-/home/aldferna), (mshell: -/home/aldferna)
 # export a=hola
     # export a=$a:/home  (esto tendria que expandir a hola:/home)
 # export 234=h (ok da error)
     # export E234=h (da error pero si que debe exportarlo)
+# export $E=ech
+# export E=ech
+# export O=o
+# $E$O hola
+# si solo 'export' imprimir las variables exportadas
 
 
 
@@ -61,21 +69,29 @@ No expansion delimitador con comillas
     # > 
 # /home/aldferna/Desktop/MiniShell ~ cat << $A (heap use after free)
     # > $A
+# el heredoc: expansion: boleano comillas/no comillas en el delimitador
+# cat << h (solo expande la ultima)
+    # > $? $USER $PWD
+    # > h
+    # $? $USER /home/aldferna/Desktop/MiniShell
 
 
 
 ECHO
 echo $? actualizado
+# echo '' --> exit code = 0
 
 
 
 EXIT
 #exit ajkjga asjdgdakjfv (que de numeric argument required, exit 2 y si que sale)
     exit 5 wsh (too many arguments)
+# exit -100 --> exit code = 156
 
 
 
 CD
+# cd $PWD hi --> too many arguments
 bash:
     aldferna@c2r7s6:~$ cd ../aldferna/..
     aldferna@c2r7s6:/home$ 
@@ -97,12 +113,23 @@ crear dir, meterse y luego salir, (encontrar el path)
 # ➜  MiniShell git:(main) ✗ make && ./minishell
     # /home/aldferna/Desktop/MiniShell ~ cd -
     # �m ~ 
+#escribe siempre que se hace cd (OKK)
+    #/home/aldferna/Desktop/MiniShell ~ cd
+    #/home/aldferna/Desktop/MiniShell//home/aldferna ~ cd
+    #/home/aldferna/Desktop/MiniShell//home/aldferna//home/aldferna ~ cd
+#borra una de mas cd ../../../
+    #/home/aldferna/Desktop/MiniShell/1/2/3 ~ cd ../../../
+    #/home/aldferna/Desktop ~ ls
+    #1  inc  libft  Makefile  minishell  src
+# cd .. hasta que si existe, entonces actualiza el pwd (no sigue añadiendo ../, ni da error)
+    #/home/aldferna/Desktop/MiniShell/1/2/3/.../../../../../../../../../../../.. ~ cd
+    #/home/aldferna/Desktop/MiniShell/1/2/3/.../../../../../../../../../../../..//home/aldferna ~ cd
+    #/home/aldferna/Desktop/MiniShell/1/2/3/.../../../../../../../../../../../..//home/aldferna//home/aldferna ~ pwd
+    #/home/aldferna
+#dar error si mas de dos puntoooos:
+    #/home/aldferna/Desktop/MiniShell/1/2/3/.../../
+#refrescar $PWD cuando se hace cd
 
-
-
-CAT
-/home/aldferna/Desktop/MiniShell ~ cat <2
-      minishell: open: No such file or directory  (ok error, pero se queda pillado)
 
 
 SEÑALES
@@ -110,12 +137,63 @@ SEÑALES
     errors.txt  inc  libft  Makefile  minishell  src
     ^C
     /home/aldferna/Desktop/MiniShell ~ cat | cat | ls/home/aldferna/Desktop/MiniShell ~ 
+# señal control-c cd se ejecuta minishell dentro de minishell
+
+
+
+PARSEO
+# echo "" hola que "" "" "" "" "" "" "" tal > '$'
+# echo "" hola que "" "" "" "" "" "" "" tal > "hola"
+# echo "" hola que "" "" "" "" "" "" "" tal > hola
+# echo "" hola que "" "" "" "" "" "" "" tal > $USER
+# ./missing.out 
+    # mini output = (./missing.out: command not found)
+    # bash output = ()
+    # mini error = ()
+    # bash error = ( No such file or directory)
+"ls -l" debe ser command not found
+
+
+
+EXPANSION
+# $USER$USER
+# echo $USER$USER
+# $USE
+# echo $a?$PATH
+    # echo $a+++++$PATH
+    # $a+++++$PATH -------estas tres anteriores, tiene que expandir ambas (si estan separadas por no:alfanum)
+# echo $PATHa$HOME ----pero esta solo expande HOME, la anterior la toma como PATHa y no la encuentra (esto ahora ok, pero cuidado cd implementemos lo de arriba)
+# echo $$$PATH ----cuidado con esto tb cd se implemente lo de arriba
+# echo $1234$HOME (bash: 234/home/aldferna), (mshell: /home/aldferna)
+# echo $1234-$HOME (bash: 234-/home/aldferna), (mshell: -/home/aldferna)
+echo "$USER $PWD"
+echo "hola $USER que tal $USER jeje"
+# echo "$? $HOME"  --------->>>> el $?
+    # /home/luis-la /home/luis-la (deberia dar --> 0 /home/luis-la)
+echo "$?"
+echo "$ "
+echo "$? $USER $?"
+echo "$? $HOME $PWD"
+# echo "$" --> $
+# echo $?HELLO --> 0HELLO
+probar comillas simples dentro de dobles, dentro de simples, dentro de dobles.....
+
 
 
 OTROS
-"ls -l" debe ser command not found
 /home/aldferna/Desktop/MiniShell ~ ./minishell | ./minishell
     /home/aldferna/Desktop/MiniShell ~ /home/aldferna/Desktop/MiniShell ~ 
+# Ver lo de eliminar carpeta --> se queda en bucle infinito
+       aldferna@c1r13s6:~/Desktop/1/2/3$ rm -rf ../../../1
+       aldferna@c1r13s6:~/Desktop/1/2/3$ pwd
+       /home/aldferna/Desktop/1/2/3
+# clonado en un sitio q no sea HOME.. .hystory??
+probar sin environment
+# guardar $SHLVL (si ./minishell)->env// y $PWD (cuado haces cd) ->env
+    cambiar shellevl  ((Si ./mini SI sube, pero ./mini | ./mini NO))
+/home/aldferna/Desktop/MiniShell ~ cat <2
+      minishell: open: No such file or directory  (ok error, pero se queda pillado)
+
 
 
 #--------------------cosas de las q podriamos pasar:

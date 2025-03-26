@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   executor_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 15:00:46 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/25 15:20:38 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/26 19:42:41 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-void	errors_pipex(int *pipe_in, int *pipe_out, char ***args, char c)
+void	errors_pipex(int *pipe_in, int *pipe_out, char **args, char c)
 {
-	free_array((*args));
+	free_array(args);
 	if (c == 'p')
 		perror("pipe");
 	if (c == 'f')
@@ -43,7 +43,7 @@ int	child_pipe_fdin_redir(int *fd_in, char **args, int (*connect)[2]) //cambia p
 	if (fd_in != NULL)
 	{
 		if ((*fd_in) < 0)
-			errors_pipex(NULL, NULL, &args, 'd');
+			errors_pipex(NULL, NULL, args, 'd');
 		dup2((*fd_in), STDIN_FILENO);
 		close((*fd_in));
 	}
@@ -77,11 +77,11 @@ void	change_fds_redir(int (*fds)[2], int *o_stdin, int *o_stdout,
 	}
 }
 
-void	clean_father_material(int (*fds)[2], char ***args)
+void	clean_father_material(int (*fds)[2], char **args)
 {
 	if ((*fds)[0] != STDIN_FILENO)
 		close((*fds)[0]);
 	if ((*fds)[1] != STDOUT_FILENO)
 		close((*fds)[1]);
-	free_array((*args));
+	free_array(args);
 }

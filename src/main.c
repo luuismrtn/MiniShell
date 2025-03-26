@@ -3,130 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/25 21:42:46 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/26 20:26:11 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
 unsigned char	exit_num = 0;
-
-void	handle_signal(int sig)
-{
-	if (sig == SIGINT)
-	{
-		exit_num = 130;
-		write(1, "\n", 1);
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
-	}
-	else if (sig == SIGQUIT)
-		return ;
-}
-
-void	handle_signal_child(int sig)
-{
-	if (sig == SIGINT)
-	{
-		exit_num = 130;
-		write(1, "\n", 1);
-		rl_replace_line("", 0);
-		rl_on_new_line();
-	}
-	else if (sig == SIGQUIT)
-		return ;
-}
-
-void	handle_signal_heredoc(int sig)
-{
-	if (sig == SIGINT)
-	{
-		exit_num = 130;
-		write(1, "\n", 1);
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		exit(130);
-	}
-	else if (sig == SIGQUIT)
-		return ;
-}
-
-void	signals(char c)
-{
-	struct sigaction	sa;
-
-	if (c == 'f')
-		sa.sa_handler = handle_signal;
-	else if (c == 'c')
-		sa.sa_handler = handle_signal_child;
-	else if (c == 'h')
-		sa.sa_handler = handle_signal_heredoc;
-	sa.sa_flags = 0;
-	if (sigaction(SIGINT, &sa, NULL) == -1)
-	{
-		perror("sigaction1 \n");
-		exit(1);
-	}
-	sa.sa_handler = SIG_IGN;
-	if (sigaction(SIGQUIT, &sa, NULL) == -1)
-	{
-		perror("sigaction2 \n");
-		exit(1);
-	}
-}
-
-void	ign_signal(void)
-{
-	struct sigaction	sa;
-
-	sa.sa_handler = SIG_IGN;
-	sa.sa_flags = 0;
-	if (sigaction(SIGINT, &sa, NULL) == -1)
-	{
-		perror("sigaction1 \n");
-		exit(1);
-	}
-	if (sigaction(SIGQUIT, &sa, NULL) == -1)
-	{
-		perror("sigaction2 \n");
-		exit(1);
-	}
-}
-
-void	print_2(char **str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		printf("str[%d] = %s\n", i, str[i]);
-		i++;
-	}
-}
-
-/**
- * @brief Cuenta el número de argumentos en un array.
- *
- * Recorre el array de cadenas hasta encontrar un NULL,
- * contando el número total de elementos.
- *
- * @param args Array de cadenas terminado en NULL.
- * @return int El número de elementos en el array.
- */
-int	count_args(char **args)
-{
-	int	count;
-
-	count = 0;
-	while (args[count])
-		count++;
-	return (count);
-}
 
 int	match_string(char *str1, char *str2)
 {
@@ -208,21 +94,6 @@ char	*handle_env_var(char *str, t_token *tokens)
 		i++;
 	}
 	return (result);
-}
-
-void	free_array(char **array)
-{
-	int	i;
-
-	i = 0;
-	if (!array)
-		return ;
-	while (array[i])
-	{
-		free(array[i]);
-		i++;
-	}
-	free(array);
 }
 
 char	*get_history_path(void)
@@ -323,9 +194,9 @@ int	main(int argc, char **argv, char **env)
 	char	*pwd_content;
 	char	*trimmed;
 
-	HISTORY_FILE = get_history_path();
 	(void)argc;
 	(void)argv;
+	HISTORY_FILE = get_history_path();
 	tokens = malloc(sizeof(t_token));
 	ft_memset(tokens, 0, sizeof(t_token));
 	tokens->env_mshell = env_buildin(env);

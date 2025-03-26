@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_pipex.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/25 18:13:03 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/26 19:36:42 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,16 +45,16 @@ int	middle_command(int *count, t_token **tokens, int fd_in)
 	if (!args || !args[0])
 		return (ERROR);
 	if (pipe(connect) == -1)
-		return (errors_pipex(NULL, NULL, &args, 'p'), ERROR);
+		return (errors_pipex(NULL, NULL, args, 'p'), ERROR);
 	pid = fork();
 	if (pid == -1)
-		return (errors_pipex(&connect[0], &connect[1], &args, 'f'), ERROR);
+		return (errors_pipex(&connect[0], &connect[1], args, 'f'), ERROR);
 	else if (pid == 0)
 	{
 		original_stdout = child_pipe_fdin_redir(&fd_in, args, &connect);
 		executor(tokens, &fds, args, original_stdout);
 	}
-	clean_father_material(&fds, &args);
+	clean_father_material(&fds, args);
 	return (close(fd_in), close(connect[1]), connect[0]);
 }
 
@@ -76,7 +76,7 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 		ign_signal();
 	pid = fork();
 	if (pid == -1)
-		return (errors_pipex(&fd_in, NULL, &args, 'e'));
+		return (errors_pipex(&fd_in, NULL, args, 'e'));
 	else if (pid == 0)
 	{
 		child_pipe_fdin_redir(&fd_in, args, NULL);
@@ -102,18 +102,18 @@ int	first_command(t_token **tokens, int count)
 	if (!args || !args[0])
 		return (ERROR);
 	if (pipe(connect) == -1)
-		return (errors_pipex(NULL, NULL, &args, 'p'), ERROR);
+		return (errors_pipex(NULL, NULL, args, 'p'), ERROR);
 	if (ft_strncmp(args[0], "./minishell", 12) == 0)
 		return (close(connect[1]), connect[0]);
 	pid = fork();
 	if (pid == -1)
-		return (errors_pipex(&connect[0], &connect[1], &args, 'f'), ERROR);
+		return (errors_pipex(&connect[0], &connect[1], args, 'f'), ERROR);
 	else if (pid == 0)
 	{
 		original_stdout = child_pipe_fdin_redir(NULL, args, &connect);
 		executor(tokens, &fds, args, original_stdout);
 	}
-	return (close(connect[1]), clean_father_material(&fds, &args), connect[0]);
+	return (close(connect[1]), clean_father_material(&fds, args), connect[0]);
 }
 
 void	pipex(t_token *tokens, int num_commands)

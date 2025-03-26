@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_general.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:58:28 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/25 21:42:52 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/26 20:23:49 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,50 +55,6 @@ int	ft_len_var_name(char *str, int i)
 	return (count);
 }
 
-int	check_quotes_closed(char *input)
-{
-	int	i;
-	int	count_s;
-	int	count_d;
-	int	in_d_quote;
-	int	in_s_quote;
-
-	i = 0;
-	count_s = 0;
-	count_d = 0;
-	in_d_quote = 0;
-	in_s_quote = 0;
-	while (input[i])
-	{
-		if (input[i] == '\\' && input[i + 1] && (input[i + 1] == '\'' || input[i
-				+ 1] == '\"'))
-		{
-			i += 2;
-			continue ;
-		}
-		if (input[i] == '\"' && !in_s_quote)
-		{
-			if (!in_d_quote)
-				in_d_quote = 1;
-			else
-				in_d_quote = 0;
-			count_d++;
-		}
-		else if (input[i] == '\'' && !in_d_quote)
-		{
-			if (!in_s_quote)
-				in_s_quote = 1;
-			else
-				in_s_quote = 0;
-			count_s++;
-		}
-		i++;
-	}
-	if ((count_d % 2 == 0) && (count_s % 2 == 0))
-		return (SUCCESS);
-	return (ERROR);
-}
-
 int	len_array(char **array)
 {
 	int	count;
@@ -107,4 +63,50 @@ int	len_array(char **array)
 	while (array[count])
 		count++;
 	return (count);
+}
+
+/**
+ * @brief Cuenta el número de argumentos en un array.
+ *
+ * Recorre el array de cadenas hasta encontrar un NULL,
+ * contando el número total de elementos.
+ *
+ * @param args Array de cadenas terminado en NULL.
+ * @return int El número de elementos en el array.
+ */
+int	count_args(char **args)
+{
+	int	count;
+
+	count = 0;
+	while (args[count])
+		count++;
+	return (count);
+}
+
+void	print_2(char **str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		printf("str[%d] = %s\n", i, str[i]);
+		i++;
+	}
+}
+
+void	free_array(char **array)
+{
+	int	i;
+
+	i = 0;
+	if (!array)
+		return ;
+	while (array[i])
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/25 21:42:19 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/26 19:36:33 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,16 +73,16 @@ typedef struct s_result
 int						ft_read_history(char *history_file);
 int						write_line_history(char *history_file, char *line);
 
+// ENV
+t_env					*env_buildin(char **env);
+t_env					*find_env_var(t_env *env, char *var_name);
+
 //  PARSE
 int						check_quotes_closed(char *input);
 void					delete_tokens(t_token **tokens);
 void					clean_tokens(t_token **tokens);
 int						automata(t_token *tokens);
 int						ft_len_var_name(char *str, int i);
-
-// ENV
-t_env					*env_buildin(char **env);
-t_env					*find_env_var(t_env *env, char *var_name);
 
 // TOKENIZE
 t_token					*tokenize(char *input, t_token *tokens);
@@ -120,8 +120,8 @@ int						child_pipe_fdin_redir(int *fd_in, char **args,
 							int (*connect)[2]);
 void					change_fds_redir(int (*fds)[2], int *o_stdin,
 							int *o_stdout, int builtin_father);
-void					clean_father_material(int (*fds)[2], char ***args);
-void					errors_pipex(int *pipe_in, int *pipe_out, char ***args,
+void					clean_father_material(int (*fds)[2], char **args);
+void					errors_pipex(int *pipe_in, int *pipe_out, char **args,
 							char c);
 
 //  BUILTINS
@@ -151,6 +151,9 @@ void					handle_add_var(t_token *tokens, t_env *new_env,
 
 // MODIFY_PWD_UTILS
 void					create_new_pwd(t_token **tokens, char *dir);
+
+//	HERE DOC
+void	handle_heredoc(char *eof, int fd, t_token *tokens);
 
 //	SIGNALS
 void					signals(char c);

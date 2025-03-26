@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 15:09:29 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/25 17:18:33 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/26 19:36:49 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void one_comnd(t_token **tokens)
 		return (perror("fork"));
 	else if (pid == 0)
 		executor(tokens, &fds, args, dup(STDOUT_FILENO));
-	clean_father_material(&fds, &args);
+	clean_father_material(&fds, args);
 	waitpid(pid, &status, 0);
 	exit_num = WEXITSTATUS(status);
 	signals('f');
