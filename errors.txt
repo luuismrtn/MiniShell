@@ -24,6 +24,8 @@ pwd | cat | cat -e >3 | wc -l (bash: 0 y crea 3 con print dwl pwd) (mshell: hace
 # cat minishell.h | grep ");"$ 
     # mini exit code = 0
     # bash exit code = 1
+# /home/aldferna/Desktop/MiniShell ~ << eof | ls -l
+    # ls: write error: Bad file descriptor
 
 
 
@@ -177,6 +179,8 @@ echo "$? $HOME $PWD"
 # echo "$" --> $
 # echo $?HELLO --> 0HELLO
 probar comillas simples dentro de dobles, dentro de simples, dentro de dobles.....
+# /home/aldferna/Desktop/MiniShell ~ echo $user
+    # [1]    200774 segmentation fault (core dumped)  ./minishell
 
 
 
@@ -193,6 +197,9 @@ probar sin environment
     cambiar shellevl  ((Si ./mini SI sube, pero ./mini | ./mini NO))
 /home/aldferna/Desktop/MiniShell ~ cat <2
       minishell: open: No such file or directory  (ok error, pero se queda pillado)
+#pueden hacer: env -i ./minishell
+    #en ese caso: leer /etc/environment (guardas path desde este y añades PWD y SHLVL->si no exite: 1)
+    #si luego quitan ademas luego hacen env -i $PATH; minishell no ejecuta comandos pero no debe petar
 
 
 

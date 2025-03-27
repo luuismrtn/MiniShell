@@ -3,83 +3,56 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 16:31:15 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/03/27 02:32:32 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/27 16:31:04 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-static char	*get_env_content(t_token *tokens, char *line, int i,
-		int *start_after_d)
-{
-	int		len_var_name;
-	char	*var_name;
-	char	*var_content;
-	t_env	*current;
+// void	expand_in_heredoc(char **line, t_token *tokens)
+// {
+// 	int		i;
+// 	char	*var_content;
+// 	char	*content;
+// 	char	*temp;
+// 	int		start;
 
-	len_var_name = ft_len_var_name(line, i);
-	var_name = ft_substr(line, i, len_var_name);
-	current = tokens->env_mshell;
-	while (current)
-	{
-		if (ft_strncmp(current->name, var_name, len_var_name) == SUCCESS)
-		{
-			free(var_name);
-			var_content = ft_strdup(current->content);
-			break ;
-		}
-		current = current->next;
-	}
-	(*start_after_d) = i + len_var_name;
-	return (var_content);
-}
+// 	i = 0;
+// 	content = NULL;
+// 	while (line[0][i])
+// 	{
+// 		if (line[0][i] == '$')
+// 		{
+// 			if (content == NULL)
+// 				content = ft_substr(line[0], 0, i);
+// 			else
+// 				content = ft_strjoin(temp, ft_substr(line[0], start, i - start));
+// 			i++;
+// 			if (line[0][i] == '?')
+// 			{
+// 				i++;
+// 				temp = ft_strjoin(content, ft_itoa(exit_num));
+// 				free(content);
+// 				start = i;
+// 			}
+// 			else
+// 			{
+// 				var_content = get_env_content(tokens, *line, i, &start);
+// 				temp = ft_strjoin(content, var_content);
+// 				free(content);
+// 				free(var_content);
+// 			}
+// 		}
+// 		i++;
+// 	}
+// 	(*line) = ft_strjoin(temp, ft_substr(line[0], start, i - start));
+// 	free(temp);
+// }
 
-void	expand_in_heredoc(char **line, t_token *tokens)
-{
-	int		i;
-	char	*var_content;
-	char	*content;
-	char	*temp;
-	int		start_after_d;
-
-	i = 0;
-	content = NULL;
-	while (line[0][i])
-	{
-		if (line[0][i] == '$')
-		{
-			if (content == NULL)
-				content = ft_substr(line[0], 0, i);
-			else
-				content = ft_strjoin(temp, ft_substr(line[0], start_after_d, i
-							- start_after_d));
-			i++;
-			if (line[0][i] == '?')
-			{
-				i++;
-				temp = ft_strjoin(content, ft_itoa(exit_num));
-				free(content);
-				start_after_d = i;
-			}
-			else
-			{
-				var_content = get_env_content(tokens, *line, i, &start_after_d);
-				temp = ft_strjoin(content, var_content);
-				free(content);
-				free(var_content);
-			}
-		}
-		i++;
-	}
-	(*line) = ft_strjoin(temp, ft_substr(line[0], start_after_d, i
-				- start_after_d));
-	free(temp);
-}
-
-int	find_the_dollar(char *str)
+int	fnd_dollar(char *str)
 {
 	int	i;
 
@@ -100,16 +73,14 @@ void	handle_heredoc(char *eof, int fd, t_token *tokens)
 	char	*temp;
 
 	r_lines = ft_strdup("");
-	while ((ft_strlen(line) != ft_strlen(eof)) || ft_strcmp(line, eof) != 0)
+	while (1)
 	{
 		line = readline("> ");
 		if (!line || ft_strncmp(line, eof, ft_strlen(eof) + 1) == 0)
 			break ;
-		if (tokens && tokens->next && tokens->next->next
-			&& tokens->next->next->next)
+		if (tokens && tokens->next && tokens->next->next && tokens->next->next->next)
 		{
-			if (find_the_dollar(line) == SUCCESS
-				&& tokens->next->next->next->quotes == 0)
+			if (fnd_dollar(line) == 0 && tokens->next->next->next->quotes == 0)
 				expand_in_heredoc(&line, tokens);
 		}
 		temp = ft_strjoin(r_lines, line);

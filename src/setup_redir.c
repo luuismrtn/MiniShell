@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup_redir.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 16:25:22 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/03/27 00:33:02 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/27 16:07:58 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ int	handle_redir_left(t_token *tokens, int (*fds)[2])
  * @param tokens El token actual con la redirección
  * @return int Descriptor de archivo para leer el contenido del heredoc
  */
-int	handle_redir_heredoc(t_token *tokens)
+int	handle_redir_heredoc(t_token *tokens, t_token *head_tokens)
 {
 	int		status;
 	pid_t	pid;
@@ -114,7 +114,7 @@ int	handle_redir_heredoc(t_token *tokens)
 	{
 		signals('h');
 		close(connect[0]);
-		handle_heredoc(tokens->next->content, connect[1], tokens);
+		handle_heredoc(tokens->next->content, connect[1], head_tokens);
 		close(connect[1]);
 		exit(0);
 	}
@@ -140,6 +140,9 @@ int	handle_redir_heredoc(t_token *tokens)
  */
 void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 {
+	t_token *head_tokens;
+
+	head_tokens = tokens;
 	tokens = tokens->next;
 	while (count > 0)
 	{
@@ -156,7 +159,7 @@ void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 		else if (tokens->type == T_REDIR_LEFT && tokens->next)
 			(*fds)[0] = handle_redir_left(tokens, fds);
 		else if (tokens->type == T_HERE_DOC && tokens->next)
-			(*fds)[0] = handle_redir_heredoc(tokens);
+			(*fds)[0] = handle_redir_heredoc(tokens, head_tokens);
 		else if (tokens && tokens->type == T_PIPE)
 			break ;
 		tokens = tokens->next;

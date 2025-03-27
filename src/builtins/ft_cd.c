@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:54 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/21 14:47:32 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/27 14:33:16 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	cd_to_oldpwd(t_token **tokens)
 		exit_num = 0;
 	}
 	else
-		print_cd_error(oldpwd_path);
+		print_cd_error(oldpwd_path, NULL, NULL);
 	free(oldpwd_path);
 }
 
@@ -63,7 +63,7 @@ static void	cd_to_root(t_token **tokens, char *args)
 		exit_num = 0;
 	}
 	else
-		print_cd_error(args);
+		print_cd_error(args, NULL, NULL);
 }
 
 /**
@@ -96,7 +96,7 @@ static void	cd_to_home(t_token **tokens)
 			exit_num = 0;
 		}
 		else
-			print_cd_error(home_path);
+			print_cd_error(home_path, NULL, NULL);
 	}
 }
 
@@ -164,7 +164,7 @@ void	ft_cd(char **args, t_token **tokens)
 		else if (chdir(path) == 0)
 			modify_pwd(tokens, path);
 		else
-			print_cd_error(path);
+			print_cd_error(path, NULL, NULL);
 		free(path);
 	}
 }

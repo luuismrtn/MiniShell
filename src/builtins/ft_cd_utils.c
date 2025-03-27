@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:49:21 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/27 01:41:31 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/27 14:36:11 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,12 +87,22 @@ static char	*find_desired_path(char *pwd, char *dir)
  *
  * @param path La ruta que causó el error.
  */
-void	print_cd_error(char *path)
+void	print_cd_error(char *path, t_token **tokens, char *input_path)
 {
-	ft_putstr_fd("cd: ", 2);
-	ft_putstr_fd(path, 2);
-	ft_putstr_fd(": No such file or directory\n", 2);
-	exit_num = 1;
+	if (input_path)
+	{
+		ft_putstr_fd("cd: error retrieving current directory: getcwd: ", 2);
+		ft_putstr_fd("cannot access parent directories: ", 2);
+		ft_putstr_fd("No such file or directory\n", 2);
+		modify_pwd(tokens, input_path);
+	}
+	else
+	{
+		ft_putstr_fd("cd: ", 2);
+		ft_putstr_fd(path, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+		exit_num = 1;
+	}
 }
 
 /**
@@ -112,10 +122,7 @@ void	handle_broken_pwd(t_token **tokens, char *input_path)
 	t_env	*current;
 
 	if (!validate_input_cd(input_path))
-	{
-		print_cd_error(input_path);
-		return ;
-	}
+		return(print_cd_error(input_path, NULL, NULL));
 	desired_path = find_desired_path(find_env_var((*tokens)->env_mshell,
 				"PWD")->content, input_path);
 	if (chdir(desired_path) == 0)
@@ -125,20 +132,12 @@ void	handle_broken_pwd(t_token **tokens, char *input_path)
 		while (current)
 		{
 			if (ft_strncmp(current->name, "PWD", ft_strlen("PWD")) == 0)
-			{
-				printf("content PWD: %s\n", current->content);
 				break ;
-			}
 			current = current->next;
 		}
 	}
 	else
-	{
-		ft_putstr_fd("cd: error retrieving current directory: getcwd: ", 2);
-		ft_putstr_fd("cannot access parent directories: ", 2);
-		ft_putstr_fd("No such file or directory\n", 2);
-		modify_pwd(tokens, input_path);
-	}
+		print_cd_error(NULL, tokens, input_path);
 }
 
 /**

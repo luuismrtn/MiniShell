@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   automata.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/27 02:29:01 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/27 14:04:07 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static void	print_automat_error(int prev_token)
 	elements[5] = "newline";
 	elements[6] = "newline";
 	elements[7] = "err";
-	printf("syntax error: %s\n\n", elements[prev_token]);
+	printf("syntax error: %s\n", elements[prev_token]);
 	exit_num = 1;
 }
 
@@ -120,10 +120,7 @@ int	automata(t_token *tokens)
 	while (current_state != 5 && tokens != NULL)
 	{
 		prev_token = tokens->type;
-		if (prev_token >= 0 && prev_token < 8)
-			current_state = automata[current_state][prev_token];
-		else
-			current_state = 5;
+		current_state = automata[current_state][prev_token];
 		tokens = tokens->next;
 	}
 	result = (current_state != 1 && current_state != 2);

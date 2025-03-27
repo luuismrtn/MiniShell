@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror  -g3 #-fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -16,6 +16,7 @@ SRC = src/main.c \
 	src/automata.c \
 	src/setup_redir.c \
 	src/heredoc.c \
+	src/heredoc_utils.c \
 	src/build_command.c \
 	src/exe/executor_pipex.c \
 	src/exe/executor.c \
@@ -93,6 +94,16 @@ re: fclean all
 
 # MASS PRUEBAS CON ERROR:
 
+# /home/aldferna/Desktop/MiniShell ~ echo $user
+# [1]    200774 segmentation fault (core dumped)  ./minishell
+
+# /home/aldferna/Desktop/MiniShell ~ << eof | ls -l
+# ls: write error: Bad file descriptor
+
+#pueden hacer: env -i ./minishell
+#en ese caso: leer /etc/environment (guardas path desde este y añades PWD y SHLVL->si no exite: 1)
+#si luego quitan ademas luego hacen env -i $PATH; minishell no ejecuta comandos pero no debe petar
+
 # /home/aldferna/Desktop/MiniShell ~ ./minishell | ./minishell
 # /home/aldferna/Desktop/MiniShell ~ /home/aldferna/Desktop/MiniShell ~ 
 #esto antes funcionaba (no se cd), puede ser q tenga relacion con q no se crea un hijo
@@ -110,12 +121,9 @@ re: fclean all
 # /home/aldferna/Desktop/MiniShell ~ cd -
 # �m ~ 
 
+#limitar historial (uede petar si esta muy lleno)-> al momento de escribir en el archivo; cuantass lineas hay?
+
 
 #--------------------cosas de las q podriamos pasar:
 
 #echo $"$'$PWD'"  (bash: $'/home/aldferna/Desktop/MiniShell') (mshell: $$'/home/aldferna/Desktop/MiniShell')
-
-
-# NORMINETTE
-# ft_cd_utils.c
-# utils_general.c

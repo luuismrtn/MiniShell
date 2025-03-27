@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/27 01:33:37 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/27 14:58:54 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ void					ft_pwd(t_token *tokens);
 void					ft_unset(t_token *tokens, char **args);
 
 // CD_UTILS
-void					print_cd_error(char *path);
+void					print_cd_error(char *path, t_token **tokens, char *input_path);
 void					handle_broken_pwd(t_token **tokens, char *input_path);
 int						validate_input_cd(char *input);
 char					*find_path(char **args);
@@ -158,6 +158,8 @@ void					create_new_pwd(t_token **tokens, char *dir);
 
 //	HERE DOC
 void					handle_heredoc(char *eof, int fd, t_token *tokens);
+char	*get_env_content(t_token *tokens, char *line, int i, int *start_after_d);
+void expand_in_heredoc(char **line, t_token *tokens);
 
 //	SIGNALS
 void					signals(char c);
