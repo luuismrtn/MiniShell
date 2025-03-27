@@ -95,33 +95,26 @@ re: fclean all
 # MASS PRUEBAS CON ERROR:
 
 # /home/aldferna/Desktop/MiniShell ~ echo $user
-# [1]    200774 segmentation fault (core dumped)  ./minishell
+# user
 
 # /home/aldferna/Desktop/MiniShell ~ << eof | ls -l
-# ls: write error: Bad file descriptor
+# ls: write error: Bad file descriptor 
 
-#pueden hacer: env -i ./minishell
-#en ese caso: leer /etc/environment (guardas path desde este y añades PWD y SHLVL->si no exite: 1)
-#si luego quitan ademas luego hacen env -i $PATH; minishell no ejecuta comandos pero no debe petar
+#env -i ./minishell
+#en ese caso: leer /etc/environment (guardar path y añadir PWD y SHLVL->si no exite: 1)
+#si ademas luego hacen env -i $PATH; minishell no ejecuta comandos pero no debe petar
 
 # /home/aldferna/Desktop/MiniShell ~ ./minishell | ./minishell
 # /home/aldferna/Desktop/MiniShell ~ /home/aldferna/Desktop/MiniShell ~ 
 #esto antes funcionaba (no se cd), puede ser q tenga relacion con q no se crea un hijo
 
-#con cd -
-# ➜  MiniShell git:(main) ✗ make && ./minishell
-# /home/aldferna/Desktop/MiniShell ~ cd
-# /home/aldferna ~ ^C
-# /home/aldferna ~ ^C
-# /home/aldferna ~ cd -
-# double free or corruption (fasttop)
-# [1]    2844121 IOT instruction (core dumped)  ./minishell
-
-# ➜  MiniShell git:(main) ✗ make && ./minishell
+#cd -(no esta funcionandoo)
 # /home/aldferna/Desktop/MiniShell ~ cd -
-# �m ~ 
+# /home/aldferna/Desktop/MiniShell/ ~ cd src
+# /home/aldferna/Desktop/MiniShell//src ~ cd -
+# cd: /home/aldferna/Desktop/MiniShell/: No such file or directory
 
-#limitar historial (uede petar si esta muy lleno)-> al momento de escribir en el archivo; cuantass lineas hay?
+#limitar historial (uede petar si esta muy lleno)-> al momento de escribir en el archivo chequear ctas lineas hay
 
 
 #--------------------cosas de las q podriamos pasar:

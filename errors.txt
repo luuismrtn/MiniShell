@@ -112,6 +112,10 @@ crear dir, meterse y luego salir, (encontrar el path)
     # /home/aldferna ~ cd -
     # double free or corruption (fasttop)
     # [1]    2844121 IOT instruction (core dumped)  ./minishell
+/home/aldferna/Desktop/MiniShell ~ cd -
+    /home/aldferna/Desktop/MiniShell/ ~ cd src
+    /home/aldferna/Desktop/MiniShell//src ~ cd -
+    cd: /home/aldferna/Desktop/MiniShell/: No such file or directory
 # ➜  MiniShell git:(main) ✗ make && ./minishell
     # /home/aldferna/Desktop/MiniShell ~ cd -
     # �m ~ 
@@ -181,6 +185,8 @@ echo "$? $HOME $PWD"
 probar comillas simples dentro de dobles, dentro de simples, dentro de dobles.....
 # /home/aldferna/Desktop/MiniShell ~ echo $user
     # [1]    200774 segmentation fault (core dumped)  ./minishell
+# /home/aldferna/Desktop/MiniShell ~ echo $user
+    # user
 
 
 

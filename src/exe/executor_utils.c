@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 15:00:46 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/27 01:45:43 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/27 18:12:18 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

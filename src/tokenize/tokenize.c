@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 20:53:45 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/25 21:42:34 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/27 17:58:17 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,20 @@ static void	handle_pipe(t_token **tokens, char input, t_token_value type,
 	add_token(tokens, type, ft_strdup(quotes), 0);
 }
 
+int check_var_exist(char *var, t_token *tokens)
+{
+	t_env *current;
+
+	current = tokens->env_mshell;
+	while(current)
+	{
+		if (ft_strncmp(current->name, var, ft_strlen(var) + 1) == SUCCESS)
+			return(1);
+		current = current->next;
+	}
+	return(0);
+}
+
 /**
  * @brief Procesa variables de entorno en la cadena de entrada
  *
@@ -86,6 +100,8 @@ static void	handle_env(t_token **tokens, char *input, int *i)
 	if (len_var_name == 0)
 		return (add_token(tokens, T_WORD, ft_strdup("$"), 0));
 	var_name = ft_substr(input, *i, len_var_name);
+	if (!check_var_exist(var_name, *tokens))
+		return (free(var_name));
 	var_content = find_env_var((*tokens)->env_mshell, var_name)->content;
 	(*i) += len_var_name;
 	add_token(tokens, T_ENV, var_content, 0);

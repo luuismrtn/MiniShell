@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:54 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/27 14:33:16 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/27 17:31:27 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static void	cd_to_oldpwd(t_token **tokens)
 	}
 	else
 		print_cd_error(oldpwd_path, NULL, NULL);
-	free(oldpwd_path);
+	//free(oldpwd_path); //double free
 }
 
 /**
