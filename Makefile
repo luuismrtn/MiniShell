@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  -g3 #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror  -g3 -fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -31,6 +31,7 @@ SRC = src/main.c \
 	src/builtins/ft_exit.c \
 	src/builtins/ft_export.c \
 	src/builtins/ft_export_utils.c \
+	src/builtins/ft_export_utils_2.c \
 	src/builtins/ft_pwd.c \
 	src/builtins/ft_unset.c \
 	src/builtins/modify_pwd.c \
@@ -91,8 +92,6 @@ re: fclean all
 
 
 # MASS PRUEBAS CON ERROR:
-#seguir mirando lo de $p="ls -l"
-#"ls -l"
 
 # /home/aldferna/Desktop/MiniShell ~ ./minishell | ./minishell
 # /home/aldferna/Desktop/MiniShell ~ /home/aldferna/Desktop/MiniShell ~ 
@@ -115,3 +114,8 @@ re: fclean all
 #--------------------cosas de las q podriamos pasar:
 
 #echo $"$'$PWD'"  (bash: $'/home/aldferna/Desktop/MiniShell') (mshell: $$'/home/aldferna/Desktop/MiniShell')
+
+
+# NORMINETTE
+# ft_cd_utils.c
+# utils_general.c

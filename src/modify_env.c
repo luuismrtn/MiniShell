@@ -3,15 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   modify_env.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 15:04:33 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/25 15:04:48 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/27 00:29:43 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
+/**
+ * @brief Modifica o crea la variable SHLVL en el entorno
+ *
+ * Esta función se encarga de incrementar el nivel de shell (SHLVL)
+ * cada vez que se inicia una nueva instancia de la shell. Si la variable
+ * ya existe en el entorno, incrementa su valor en 1. Si no existe,
+ * la crea con valor inicial 1.
+ *
+ * El nivel de shell (SHLVL) indica la profundidad de anidamiento de shells.
+ * Por ejemplo, si ejecutas bash dentro de bash, SHLVL será 2.
+ *
+ * @param tokens Doble puntero al token que contiene la lista del entorno
+ * @param var Nombre de la variable a modificar (normalmente "SHLVL")
+ */
 void	modify_shlvl(t_token **tokens, char *var)
 {
 	t_env	*aux;
@@ -39,4 +53,3 @@ void	modify_shlvl(t_token **tokens, char *var)
 	new_var->next = (*tokens)->env_mshell;
 	(*tokens)->env_mshell = new_var;
 }
-

@@ -3,22 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 20:25:06 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/03/26 20:25:32 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/27 01:17:28 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
+/**
+ * @brief Maneja las señales en el proceso principal del shell
+ *
+ * Esta función gestiona las señales SIGINT (Ctrl+C) y SIGQUIT (Ctrl+\)
+ * en el proceso principal del shell. Para SIGINT, actualiza el código
+ * de salida, muestra un nuevo prompt y reinicia la línea actual. Para
+ * SIGQUIT, ignora la señal.
+ *
+ * @param sig Número de la señal recibida (SIGINT o SIGQUIT)
+ */
 void	handle_signal(int sig)
 {
 	if (sig == SIGINT)
 	{
 		exit_num = 130;
 		write(1, "\n", 1);
-		//rl_replace_line("", 0);
+		rl_replace_line("", 0);
 		rl_on_new_line();
 		rl_redisplay();
 	}
@@ -26,26 +36,43 @@ void	handle_signal(int sig)
 		return ;
 }
 
+/**
+ * @brief Maneja las señales en procesos hijos
+ *
+ * Esta función gestiona las señales SIGINT (Ctrl+C) y SIGQUIT (Ctrl+\)
+ * en procesos hijos. Para SIGINT, actualiza el código de salida y
+ * muestra una nueva línea. Para SIGQUIT, ignora la señal.
+ *
+ * @param sig Número de la señal recibida (SIGINT o SIGQUIT)
+ */
 void	handle_signal_child(int sig)
 {
 	if (sig == SIGINT)
 	{
 		exit_num = 130;
 		write(1, "\n", 1);
-		//rl_replace_line("", 0);
 		rl_on_new_line();
 	}
 	else if (sig == SIGQUIT)
 		return ;
 }
 
+/**
+ * @brief Maneja las señales en procesos de heredoc
+ *
+ * Esta función gestiona las señales SIGINT (Ctrl+C) y SIGQUIT (Ctrl+\)
+ * específicamente durante la lectura de un heredoc. Para SIGINT,
+ * actualiza el código de salida, muestra una nueva línea y termina
+ * el proceso de heredoc con código 130. Para SIGQUIT, ignora la señal.
+ *
+ * @param sig Número de la señal recibida (SIGINT o SIGQUIT)
+ */
 void	handle_signal_heredoc(int sig)
 {
 	if (sig == SIGINT)
 	{
 		exit_num = 130;
 		write(1, "\n", 1);
-		//rl_replace_line("", 0);
 		rl_on_new_line();
 		exit(130);
 	}
@@ -53,6 +80,17 @@ void	handle_signal_heredoc(int sig)
 		return ;
 }
 
+/**
+ * @brief Configura los manejadores de señales según el contexto
+ *
+ * Esta función configura SIGINT y SIGQUIT con diferentes manejadores
+ * según el contexto de ejecución especificado por el parámetro:
+ * - 'f': Configuración para el shell principal
+ * - 'c': Configuración para procesos hijos
+ * - 'h': Configuración para procesos de heredoc
+ *
+ * @param c Carácter que indica el contexto ('f', 'c' o 'h')
+ */
 void	signals(char c)
 {
 	struct sigaction	sa;
@@ -77,6 +115,11 @@ void	signals(char c)
 	}
 }
 
+/**
+ * @brief Ignora completamente las señales SIGINT y SIGQUIT
+ *
+ * Esta función configura tanto SIGINT como SIGQUIT para ser ignoradas.
+ */
 void	ign_signal(void)
 {
 	struct sigaction	sa;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:49:21 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/21 15:12:04 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/27 01:41:31 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ void	print_cd_error(char *path)
 void	handle_broken_pwd(t_token **tokens, char *input_path)
 {
 	char	*desired_path;
-				t_env	*current;
+	t_env	*current;
 
 	if (!validate_input_cd(input_path))
 	{
@@ -121,7 +121,6 @@ void	handle_broken_pwd(t_token **tokens, char *input_path)
 	if (chdir(desired_path) == 0)
 	{
 		get_env_content_and_replace(tokens, "PWD", desired_path);
-
 		current = (*tokens)->env_mshell;
 		while (current)
 		{
@@ -140,7 +139,6 @@ void	handle_broken_pwd(t_token **tokens, char *input_path)
 		ft_putstr_fd("No such file or directory\n", 2);
 		modify_pwd(tokens, input_path);
 	}
-	//free(desired_path); esto daba problema cd encuentra el dir q existe
 }
 
 /**

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 20:57:00 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/27 00:12:01 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/27 01:29:46 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,6 @@ void	delete_tokens(t_token **tokens)
 	t_token	*aux;
 	t_token	*next;
 
-	env = NULL;
 	var = (*tokens)->exp_var;
 	env = (*tokens)->env_mshell;
 	content = (*tokens)->content;
@@ -110,4 +109,24 @@ void	delete_tokens(t_token **tokens)
 	(*tokens)->env_mshell = env;
 	(*tokens)->exp_var = var;
 	(*tokens)->content = content;
+}
+
+/**
+ * @brief Elimina todos los tokens de la lista
+ *
+ * Esta función libera la memoria de todos los tokens en la lista,
+ * incluyendo el contenido de cada nodo. No conserva la información
+ * de entorno ni el contenido del nodo inicial.
+ *
+ * @param tokens Doble puntero al inicio de la lista de tokens
+ */
+void	free_tokens(t_token *tokens)
+{
+	if (!tokens)
+		return ;
+	if (tokens->env_mshell)
+		free_env_list(tokens->env_mshell);
+	if (tokens->content)
+		free(tokens->content);
+	free(tokens);
 }

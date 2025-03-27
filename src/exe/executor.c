@@ -3,15 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 15:09:29 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/26 19:36:49 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/27 01:49:55 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
+/**
+ * @brief Ejecuta un comando en un proceso padre
+ *
+ * Esta función se encarga de ejecutar un comando en el proceso padre.
+ * Configura las redirecciones de entrada/salida según sea necesario y
+ * ejecuta el comando con execve().
+ *
+ * @param tokens Lista de tokens que contiene el comando a ejecutar
+ * @param fds Array de descriptores de archivo [stdin, stdout]
+ * @param args Array de argumentos del comando
+ * @param original_stdout Descriptor original de stdout
+ */
 void	executor_father(t_token *tokens, int (*fds)[2], char ***args,
 		int original_stdout)
 {
@@ -33,7 +45,16 @@ void	executor_father(t_token *tokens, int (*fds)[2], char ***args,
 	free_array((*args));
 }
 
-void one_comnd(t_token **tokens)
+/**
+ * @brief Ejecuta solo un comando
+ *
+ * Esta función se encarga de ejecutar un comando que no contiene pipes.
+ * Configura las redirecciones de entrada/salida según sea necesario y
+ * ejecuta el comando con execve().
+ *
+ * @param tokens Lista de tokens que contiene el comando a ejecutar
+ */
+void	one_comnd(t_token **tokens)
 {
 	int		fds[2];
 	char	**args;

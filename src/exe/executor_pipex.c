@@ -3,19 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   executor_pipex.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/26 19:36:42 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/27 01:55:43 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
+/**
+ * @brief Ejecuta un comando, ya sea un builtin o un programa externo
+ *
+ * Esta función se encarga de ejecutar el comando especificado en el proceso
+ * hijo. Determina si el comando es un builtin o un programa externo y actúa
+ * en consecuencia. Si es una nueva instancia de minishell, incrementa la
+ * variable SHLVL.
+ *
+ * @param tokens Doble puntero al token que contiene la información de entorno
+ * @param fds Puntero al array de descriptores [entrada, salida] para
+ * redirección
+ * @param args Array de argumentos del comando
+ * @param original_stdout Descriptor original de salida estándar
+ */
 void	executor(t_token **tokens, int (*fds)[2], char **args,
 		int original_stdout)
 {
-	if ((ft_strncmp(args[0], "./minishell", 12) == 0) && !has_pipe(*tokens))
+	if ((ft_strncmp(args[0], "./minishell", 12) == 0)
+		&& num_pipes(*tokens) == 0)
 		modify_shlvl(tokens, "SHLVL");
 	if (is_builtin(args) == 1)
 	{
@@ -30,6 +45,22 @@ void	executor(t_token **tokens, int (*fds)[2], char **args,
 	exit(exit_num);
 }
 
+/**
+ * @brief Procesa un comando intermedio en una tubería
+ *
+ * Esta función maneja los comandos que no son ni el primero ni el último
+ * en una tubería. Crea una nueva tubería para conectar este comando con
+ * el siguiente, y configura las redirecciones para que:
+ * - La entrada estándar reciba datos del comando anterior
+ * - La salida estándar envíe datos al siguiente comando
+ *
+ * @param count Puntero al contador de comandos (se usa para construir
+ * argumentos)
+ * @param tokens Doble puntero al token que contiene la información del comando
+ * @param fd_in Descriptor de archivo para la entrada desde el comando anterior
+ * @return int Descriptor de lectura de la nueva tubería para el siguiente
+ * comando
+ */
 int	middle_command(int *count, t_token **tokens, int fd_in)
 {
 	int		fds[2];
@@ -58,6 +89,23 @@ int	middle_command(int *count, t_token **tokens, int fd_in)
 	return (close(fd_in), close(connect[1]), connect[0]);
 }
 
+/**
+ * @brief Procesa el último comando en una tubería
+ *
+ * Esta función maneja el comando final en una tubería.
+ * Configura las redirecciones para que:
+ * - La entrada estándar reciba datos del comando anterior
+ * - La salida estándar mantenga su comportamiento normal o se redirija según
+ *   las especificaciones del usuario
+ *
+ * A diferencia de los comandos intermedios, espera a que este comando termine
+ * y actualiza el código de salida.
+ *
+ * @param count Puntero al contador de comandos (se usa para construir
+ * argumentos)
+ * @param tokens Doble puntero al token que contiene la información del comando
+ * @param fd_in Descriptor de archivo para la entrada desde el comando anterior
+ */
 void	final_command(int *count, t_token **tokens, int fd_in)
 {
 	int		fds[2];
@@ -84,9 +132,21 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 	}
 	waitpid(pid, &status, 0);
 	exit_num = WEXITSTATUS(status);
-	return (close(fd_in), free_array(args)); //signals('f')->a pipex
+	return (close(fd_in), free_array(args));
 }
 
+/**
+ * @brief Procesa el primer comando en una tubería
+ *
+ * Esta función maneja el primer comando en una tubería.
+ * Crea una tubería para conectar este comando con el siguiente y
+ * configura las redirecciones para que la salida estándar envíe
+ * datos al siguiente comando.
+ *
+ * @param tokens Doble puntero al token que contiene la información del comando
+ * @param count Índice del comando actual (0 para el primero)
+ * @return int Descriptor de lectura de la tubería para el siguiente comando
+ */
 int	first_command(t_token **tokens, int count)
 {
 	int		fds[2];
@@ -116,6 +176,21 @@ int	first_command(t_token **tokens, int count)
 	return (close(connect[1]), clean_father_material(&fds, args), connect[0]);
 }
 
+/**
+ * @brief Ejecuta una serie de comandos conectados mediante tuberías
+ *
+ * Esta función coordina la ejecución de múltiples comandos conectados por
+ * pipes. Divide el proceso en tres fases:
+ * 1. Ejecutar el primer comando y crear la primera tubería
+ * 2. Ejecutar los comandos intermedios, conectando las tuberías entre ellos
+ * 3. Ejecutar el último comando, recibiendo datos del penúltimo
+ *
+ * Al final, espera a que todos los procesos hijos terminen y restaura
+ * los manejadores de señal originales.
+ *
+ * @param tokens Token que contiene la información de todos los comandos
+ * @param num_commands Número total de comandos a ejecutar
+ */
 void	pipex(t_token *tokens, int num_commands)
 {
 	int	fd_in;
@@ -139,6 +214,6 @@ void	pipex(t_token *tokens, int num_commands)
 			waitpid(-1, &status, 0);
 			count++;
 		}
-		signals('f'); //señalado x si aca
+		signals('f');
 	}
 }

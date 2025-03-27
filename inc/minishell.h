@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/26 19:36:33 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/27 01:33:37 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ int						write_line_history(char *history_file, char *line);
 // ENV
 t_env					*env_buildin(char **env);
 t_env					*find_env_var(t_env *env, char *var_name);
+t_token					*initialize_shell(char **env);
 
 //  PARSE
 int						check_quotes_closed(char *input);
@@ -96,6 +97,8 @@ char					*process_env_in_quotes(char *result, char *input,
 							int *i, t_token **tokens);
 char					*expand_var_in_quotes(char *result, char *var_name,
 							t_token **tokens);
+void					free_tokens(t_token *tokens);
+void					free_env_list(t_env *env_list);
 
 // EXE
 char					**join_env(t_env *env_mshell);
@@ -148,12 +151,13 @@ char					*extract_var_name(char *arg);
 void					print_env_as_export(t_token *tokens);
 void					handle_add_var(t_token *tokens, t_env *new_env,
 							char *content);
+char					*handle_env_var(char *str, t_token *tokens);
 
 // MODIFY_PWD_UTILS
 void					create_new_pwd(t_token **tokens, char *dir);
 
 //	HERE DOC
-void	handle_heredoc(char *eof, int fd, t_token *tokens);
+void					handle_heredoc(char *eof, int fd, t_token *tokens);
 
 //	SIGNALS
 void					signals(char c);
@@ -170,11 +174,7 @@ void					get_env_content_and_replace(t_token **tokens,
 							char *name, char *content);
 int						match_string(char *str1, char *str2);
 char					*handle_env_var(char *str, t_token *tokens);
-int						num_pipes(char *str);
+int						num_pipes(t_token *tokens);
 int						len_array(char **array);
-int						count_args(char **args);
-
-// LIST UTILS
-int						has_pipe(t_token *tokens);
 
 #endif

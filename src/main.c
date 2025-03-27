@@ -3,104 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/26 20:26:11 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/27 01:37:10 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
+/**
+ * @brief Código de salida del último comando ejecutado
+ *
+ * Esta variable global almacena el código de salida del último comando
+ * ejecutado.
+ */
 unsigned char	exit_num = 0;
 
-int	match_string(char *str1, char *str2)
-{
-	return (ft_strncmp(str1, str2, ft_strlen(str2)) == 0
-		&& ft_strlen(str1) == ft_strlen(str2));
-}
-
-static void	join_result(t_token *tokens, char *str, int *i, char **result)
-{
-	int		j;
-	char	*var_name;
-	char	*var_value;
-	char	*temp;
-	t_env	*env_var;
-	char	*substr;
-
-	if (str[(*i)] == '$')
-	{
-		j = (*i) + 1;
-		while (str[j] && str[j] != ':' && str[j] != '$' && str[j] != '='
-			&& str[j] != ' ' && str[j] != '\t')
-			j++;
-		var_name = ft_substr(str, (*i) + 1, j - (*i) - 1);
-		if (!var_name)
-			return ;
-		env_var = find_env_var(tokens->env_mshell, var_name);
-		if (!env_var)
-		{
-			free(var_name);
-			return ;
-		}
-		var_value = env_var->content;
-		if (var_value)
-		{
-			temp = *result;
-			*result = ft_strjoin(*result, var_value);
-			free(temp);
-		}
-		free(var_name);
-		(*i) = j - 1;
-	}
-	else
-	{
-		temp = *result;
-		substr = ft_substr(str, (*i), 1);
-		if (substr)
-		{
-			*result = ft_strjoin(*result, substr);
-			free(substr);
-			free(temp);
-		}
-	}
-}
-
 /**
- * @brief Expande las variables de entorno en una cadena.
+ * @brief Obtiene la ruta completa al archivo de historial
  *
- * Busca patrones como $VARIABLE en la cadena y los reemplaza por sus valores.
- * Por ejemplo, si la variable "a" contiene "hola", entonces "$a:/home" se
- * convertirá en "hola:/home". Soporta múltiples variables en una cadena.
+ * Genera la ruta al archivo de historial basándose en el directorio de trabajo
+ * actual. El archivo se llama ".minishell_history" y se guarda en el directorio
+ * desde donde se ejecutó el shell.
  *
- * @param str La cadena original que puede contener referencias a variables.
- * @param tokens Puntero a la estructura de tokens con variables de entorno.
- * @return char* Nueva cadena con las variables expandidas o NULLen caso de
- * error. Esta cadena debe ser liberada por el llamador.
+ * @return char* Ruta completa al archivo de historial
  */
-char	*handle_env_var(char *str, t_token *tokens)
-{
-	int		i;
-	char	*result;
-
-	if (!str)
-		return (NULL);
-	result = ft_strdup("");
-	i = 0;
-	while (str[i])
-	{
-		join_result(tokens, str, &i, &result);
-		i++;
-	}
-	return (result);
-}
-
-char	*get_history_path(void)
+static char	*get_history_path(void)
 {
 	char	*path;
 	char	*cwd;
-	char	*temp;
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
@@ -108,75 +40,43 @@ char	*get_history_path(void)
 		perror("getcwd");
 		exit(EXIT_FAILURE);
 	}
-	temp = ft_strjoin(cwd, "/.minishell_history");
+	path = ft_strjoin(cwd, "/.minishell_history");
 	free(cwd);
-	path = temp;
 	return (path);
 }
 
 /**
- * @brief Libera los recursos asociados a una estructura t_token
+ * @brief Procesa y ejecuta una línea de comando
  *
- * Libera la lista enlazada de variables de entorno, el contenido del token
- * y finalmente el token mismo.
- *
- * @param tokens Puntero al token que se va a liberar.
- */
-void	free_tokens(t_token *tokens)
-{
-	t_env	*aux;
-	t_env	*next;
-
-	if (!tokens)
-		return ;
-	aux = tokens->env_mshell;
-	while (aux)
-	{
-		next = aux->next;
-		free(aux->name);
-		free(aux->content);
-		free(aux);
-		aux = next;
-	}
-	if (tokens->content)
-		free(tokens->content);
-	free(tokens);
-}
-
-/**
- * @brief Punto de entrada secundario para el procesamiento de comandos
- *
- * Procesa una cadena de entrada como un comando de shell:
+ * Esta función implementa el flujo principal de procesamiento de un comando:
  * 1. Verifica que las comillas estén correctamente cerradas
- * 2. Tokeniza la entrada
+ * 2. Tokeniza la línea de entrada
  * 3. Limpia y optimiza los tokens
- * 4. Analiza la sintaxis con el autómata
+ * 4. Verifica la sintaxis mediante el autómata
  * 5. Ejecuta el comando o pipeline según corresponda
  *
- * @param string Cadena de entrada que contiene el comando a procesar
- * @param tokens Token inicial donde se almacenarán los tokens procesados
+ * @param line Línea de comando a procesar
+ * @param tokens Token inicial con información de entorno
  * @return int 0 en caso de éxito, ERROR en caso de error
  */
-int	main2(char *string, t_token *tokens)
+static int	run(char *line, t_token *tokens)
 {
-	char	*input;
-	int		result;
-	int		num_commands;
+	int	result;
+	int	num_commands;
 
-	input = string;
-	if (check_quotes_closed(input) == ERROR)
+	if (check_quotes_closed(line) == ERROR)
 	{
 		printf("Error: quotes not closed\n");
 		return (ERROR);
 	}
-	tokens = tokenize(input, tokens);
+	tokens = tokenize(line, tokens);
 	if (!tokens)
 		return (ERROR);
 	clean_tokens(&tokens);
 	result = automata(tokens);
 	if (result == 0)
 	{
-		num_commands = num_pipes(input) + 1;
+		num_commands = num_pipes(tokens) + 1;
 		if (num_commands == 1)
 			one_comnd(&tokens);
 		else
@@ -185,52 +85,102 @@ int	main2(char *string, t_token *tokens)
 	return (0);
 }
 
+/**
+ * @brief Procesa una línea de entrada del usuario
+ *
+ * Realiza el preprocesamiento de la línea ingresada:
+ * 1. Elimina espacios en blanco iniciales y finales
+ * 2. Verifica si la línea está vacía
+ * 3. Añade la línea al historial
+ * 4. Ejecuta la línea como comando
+ * 5. Limpia los recursos utilizados
+ *
+ * @param line Línea de entrada a procesar
+ * @param tokens Doble puntero al token con información de entorno
+ * @param history_file Ruta al archivo de historial
+ */
+static void	process_line(char *line, t_token **tokens, char *history_file)
+{
+	char	*trimmed;
+
+	trimmed = ft_strtrim(line, " \t\n\r\f\v");
+	if (!trimmed || trimmed[0] == '\0')
+	{
+		free(line);
+		free(trimmed);
+		return ;
+	}
+	free(trimmed);
+	add_history(line);
+	write_line_history(history_file, line);
+	if (run(line, *tokens) == ERROR)
+	{
+		free(line);
+		delete_tokens(tokens);
+		exit(1);
+	}
+	free(line);
+	delete_tokens(tokens);
+}
+
+/**
+ * @brief Muestra el prompt personalizado y lee la entrada del usuario
+ *
+ * Genera un prompt que muestra el directorio de trabajo actual,
+ * lo muestra al usuario y lee una línea de entrada mediante readline.
+ *
+ * @param tokens Token con información de entorno
+ * @return char* Línea leída del usuario (NULL si hay error o EOF)
+ */
+static char	*show_prompt(t_token *tokens)
+{
+	char	*pwd_content;
+	char	*prompt;
+	char	*line;
+
+	pwd_content = find_env_var(tokens->env_mshell, "PWD")->content;
+	prompt = ft_strjoin(pwd_content, " ~ ");
+	line = readline(prompt);
+	free(prompt);
+	return (line);
+}
+
+/**
+ * @brief Punto de entrada principal del programa
+ *
+ * Inicializa el shell, configura el entorno y el historial,
+ * y entra en el bucle principal que lee y procesa comandos
+ * hasta que el usuario salga del programa.
+ *
+ * @param argc Número de argumentos de línea de comandos
+ * @param argv Array de argumentos de línea de comandos
+ * @param env Variables de entorno del sistema
+ * @return int SUCCESS en caso de éxito, ERROR en caso de error
+ */
 int	main(int argc, char **argv, char **env)
 {
 	char	*line;
 	t_token	*tokens;
-	char	*HISTORY_FILE;
-	char	*prompt;
-	char	*pwd_content;
-	char	*trimmed;
+	char	*history_file;
 
 	(void)argc;
 	(void)argv;
-	HISTORY_FILE = get_history_path();
-	tokens = malloc(sizeof(t_token));
-	ft_memset(tokens, 0, sizeof(t_token));
-	tokens->env_mshell = env_buildin(env);
-	if (ft_read_history(HISTORY_FILE) == ERROR)
+	history_file = get_history_path();
+	tokens = initialize_shell(env);
+	if (!tokens || ft_read_history(history_file) == ERROR)
 	{
-		free(HISTORY_FILE);
+		free(history_file);
 		free_tokens(tokens);
 		return (ERROR);
 	}
-	signals('f');
-	tokens->content = ft_strdup("0");
 	while (1)
 	{
-		pwd_content = find_env_var(tokens->env_mshell, "PWD")->content;
-		prompt = ft_strjoin(pwd_content, " ~ ");
-		line = readline(prompt);
-		free(prompt);
+		line = show_prompt(tokens);
 		if (!line)
 			break ;
-		trimmed = ft_strtrim(line, " \t\n\r\f\v");
-		if (!trimmed || trimmed[0] == '\0')
-		{
-			free(line);
-			free(trimmed);
-			continue ;
-		}
-		free(trimmed);
-		add_history(line);
-		write_line_history(HISTORY_FILE, line);
-		main2(line, tokens);
-		free(line);
-		delete_tokens(&tokens);
+		process_line(line, &tokens, history_file);
 	}
-	free(HISTORY_FILE);
+	free(history_file);
 	free_tokens(tokens);
 	return (SUCCESS);
 }

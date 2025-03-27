@@ -6,13 +6,30 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 20:19:51 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/03/27 00:10:08 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/27 00:47:35 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-void check_quotes(char *l, int i, int (*in_quote_s_d)[2], int (*count_s_d)[2])
+/**
+ * @brief Analiza el estado de las comillas en una cadena de texto
+ *
+ * Esta función recorre una cadena de entrada caracter por caracter,
+ * rastreando el estado de las comillas simples y dobles. Mantiene un
+ * seguimiento de:
+ * 1. Si actualmente estamos dentro de comillas (simples o dobles)
+ * 2. El número total de cada tipo de comillas encontradas
+ *
+ * @param l Cadena de entrada a analizar
+ * @param i Índice desde donde comenzar el análisis
+ * @param in_quote_s_d Arreglo donde se almacena el estado de las comillas:
+ *                     [0] para comillas simples, [1] para comillas dobles
+ * @param count_s_d Arreglo donde se cuenta el número de comillas:
+ *                  [0] para comillas simples, [1] para comillas dobles
+ */
+void	check_quotes(char *l, int i, int (*in_quote_s_d)[2],
+		int (*count_s_d)[2])
 {
 	while (l[i])
 	{
@@ -41,6 +58,22 @@ void check_quotes(char *l, int i, int (*in_quote_s_d)[2], int (*count_s_d)[2])
 	}
 }
 
+/**
+ * @brief Verifica si todas las comillas en una cadena están correctamente
+ * cerradas
+ *
+ * Esta función analiza una cadena de entrada para determinar si todas las
+ * comillas (simples y dobles) están correctamente cerradas. Una comilla está
+ * bien cerrada si hay un número par de cada tipo de comilla. Se tienen en
+ * cuenta los siguientes casos especiales:
+ * - Comillas escapadas con barra invertida (\' o \")
+ * - Comillas simples dentro de comillas dobles (que no cuentan para cerrar)
+ * - Comillas dobles dentro de comillas simples (que no cuentan para cerrar)
+ *
+ * @param input Cadena de entrada a verificar
+ * @return int SUCCESS (0) si todas las comillas están correctamente cerradas,
+ *             ERROR (-1) si algún tipo de comilla está abierto
+ */
 int	check_quotes_closed(char *input)
 {
 	int	i;

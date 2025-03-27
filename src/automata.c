@@ -3,48 +3,132 @@
 /*                                                        :::      ::::::::   */
 /*   automata.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/26 19:17:57 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/27 02:29:01 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
-static void print_automat_error(int prev_token)
+/**
+ * @brief Muestra un mensaje de error de sintaxis
+ *
+ * Esta función muestra un mensaje de error según el tipo de token
+ * que causó el problema en la sintaxis. También establece el código
+ * de salida a 1 para indicar un error.
+ *
+ * Los tipos de token posibles son:
+ * 0: Comando
+ * 1: Flag/Argumento
+ * 2: Pipe
+ * 3-6: Redirecciones (<, >, <<, >>)
+ * 7: Error
+ *
+ * @param prev_token Tipo de token que causó el error
+ */
+static void	print_automat_error(int prev_token)
 {
-	char	*elements[9] = {"command", "flag", "|", "newline", "newline",
-		"newline", "newline", "err"};
+	char	*elements[9];
 
+	elements[0] = "command";
+	elements[1] = "flag";
+	elements[2] = "|";
+	elements[3] = "newline";
+	elements[4] = "newline";
+	elements[5] = "newline";
+	elements[6] = "newline";
+	elements[7] = "err";
 	printf("syntax error: %s\n\n", elements[prev_token]);
 	exit_num = 1;
 }
 
+/**
+ * @brief Crea la matriz de transición del autómata
+ *
+ * Genera una matriz representada como un array de enteros donde:
+ * - Cada fila corresponde a un estado del autómata
+ * - Cada columna corresponde a un tipo de token
+ * - Los valores indican el estado siguiente tras la transición
+ *
+ * @return int** Matriz de transición del autómata
+ */
+static int	**create_automata(void)
+{
+	int	**automata;
+	int	i;
+
+	automata = malloc(sizeof(int *) * 6);
+	i = 0;
+	while (i < 6)
+	{
+		automata[i] = malloc(sizeof(int) * 8);
+		if (!automata[i])
+		{
+			while (--i >= 0)
+				free(automata[i]);
+			free(automata);
+			return (NULL);
+		}
+		i++;
+	}
+	automata[0] = (int []){1, 5, 5, 3, 3, 3, 3, 2};
+	automata[1] = (int []){2, 1, 4, 3, 3, 3, 3, 1};
+	automata[2] = (int []){2, 2, 4, 3, 3, 3, 3, 2};
+	automata[3] = (int []){2, 2, 5, 5, 5, 5, 5, 2};
+	automata[4] = (int []){1, 5, 5, 3, 3, 3, 3, 2};
+	automata[5] = (int []){5, 5, 5, 5, 5, 5, 5, 5};
+	return (automata);
+}
+
+/**
+ * @brief Verifica la sintaxis de un comando mediante un autómata finito
+ *
+ * Esta función implementa un autómata finito determinista para
+ * verificar si la secuencia de tokens forma una expresión sintácticamente
+ * válida según las reglas de la shell.
+ *
+ * Estados del autómata:
+ * 0: Estado inicial
+ * 1: Después de un comando
+ * 2: Después de un archivo
+ * 3: Después de una redirección
+ * 4: Después de un pipe
+ * 5: Error
+ *
+ * Transiciones según el tipo de token:
+ * columnas: [WORD, FLAG, PIPE, REDIR_LEFT, REDIR_RIGHT, HERE_DOC, APPEND,
+	ERROR]
+ * filas: estados [INICIAL, COMANDO, ARCHIVO, REDIRECCION, PIPE, ERROR]
+ *
+ * @param tokens Lista de tokens a verificar
+ * @return int 0 si la sintaxis es correcta, 1 si hay error
+ */
 int	automata(t_token *tokens)
 {
-	int		current_state;
-	int		prev_token;
+	int	current_state;
+	int	prev_token;
+	int	**automata;
+	int	result;
 
-	if (tokens->next == NULL)
-		return (0);
+	automata = create_automata();
+	if (!automata || tokens->next == NULL)
+		return (1);
 	tokens = tokens->next;
-	int automata[6][8] = {
-		{1, 5, 5, 3, 3, 3, 3, 2}, // inicial
-		{2, 1, 4, 3, 3, 3, 3, 1}, // comando
-		{2, 2, 4, 3, 3, 3, 3, 2}, // file
-		{2, 2, 5, 5, 5, 5, 5, 2}, // redireccion
-		{1, 5, 5, 3, 3, 3, 3, 2}, // pipe
-		{5, 5, 5, 5, 5, 5, 5, 5}  // err
-	};// w  f  |  <  > <<  >> $
 	current_state = 0;
 	while (current_state != 5 && tokens != NULL)
 	{
 		prev_token = tokens->type;
-		current_state = automata[current_state][tokens->type];
+		if (prev_token >= 0 && prev_token < 8)
+			current_state = automata[current_state][prev_token];
+		else
+			current_state = 5;
 		tokens = tokens->next;
 	}
-	if (current_state != 1 && current_state != 2)
-		return(print_automat_error(prev_token), 1);
-	return (0);
+	result = (current_state != 1 && current_state != 2);
+	if (result)
+		print_automat_error(prev_token);
+	free(automata);
+	return (result);
 }
