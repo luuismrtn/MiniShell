@@ -24,8 +24,13 @@ pwd | cat | cat -e >3 | wc -l (bash: 0 y crea 3 con print dwl pwd) (mshell: hace
 # cat minishell.h | grep ");"$ 
     # mini exit code = 0
     # bash exit code = 1
+#error si redireccion sin comando y luego pipe::>>
 # /home/aldferna/Desktop/MiniShell ~ << eof | ls -l
     # ls: write error: Bad file descriptor
+# /home/aldferna/Desktop/MiniShell ~ < file | cat > file1
+#< file | cat
+#> output.txt | cat
+#< input.txt > output.txt | cat
 
 
 

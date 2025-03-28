@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/27 18:15:54 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/28 16:44:11 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,108 @@ void	executor(t_token **tokens, int (*fds)[2], char **args,
 	}
 	else
 	{
+		printf("Antes\n");
 		change_fds_redir(fds, NULL, NULL, 0);
+		printf("Medio\n");
 		exe((*tokens), args, original_stdout);
+		printf("Despues\n");
 	}
 	exit(exit_num);
+}
+
+/**
+ * @brief Procesa el último comando en una tubería
+ *
+ * Esta función maneja el comando final en una tubería.
+ * Configura las redirecciones para que:
+ * - La entrada estándar reciba datos del comando anterior
+ * - La salida estándar mantenga su comportamiento normal o se redirija según
+ *   las especificaciones del usuario
+ *
+ * A diferencia de los comandos intermedios, espera a que este comando termine
+ * y actualiza el código de salida.
+ *
+ * @param count Puntero al contador de comandos (se usa para construir
+ * argumentos)
+ * @param tokens Doble puntero al token que contiene la información del comando
+ * @param fd_in Descriptor de archivo para la entrada desde el comando anterior
+ */
+void	final_command(int *count, t_token **tokens, int fd_in)
+{
+	int		fds[2];
+	char	**args;
+	pid_t	pid;
+	int		status;
+
+	fds[0] = STDIN_FILENO;
+	fds[1] = STDOUT_FILENO;
+	setup_redirections((*tokens), &fds, *count);
+	printf("fds[0]: %d\n", fds[0]);
+	printf("fds[1]: %d\n", fds[1]);
+	args = build_command_string((*tokens), *count);
+	if (!args || !args[0])
+		return ;
+	signals('c');
+	if (ft_strncmp(args[0], "./minishell", 12) == 0)
+		ign_signal();
+	pid = fork();
+	if (pid == -1)
+		return (errors_pipex(&fd_in, NULL, args, 'e'));
+	else if (pid == 0)
+	{
+		printf("hola\n");
+		child_pipe_fdin_redir(&fd_in, args, NULL);
+		printf("jeje\n");
+		executor(tokens, &fds, args, dup(STDOUT_FILENO)); //fd_in cerrar
+	}
+	printf("hola final comand prev waitpid \n");
+	//close(fd_in);
+	waitpid(pid, &status, 0);
+	printf("hola final comand post waitpid \n");
+	exit_num = WEXITSTATUS(status);
+	return (free_array(args));
+	//return (free_array(args));
+}
+
+/**
+ * @brief Procesa el primer comando en una tubería
+ *
+ * Esta función maneja el primer comando en una tubería.
+ * Crea una tubería para conectar este comando con el siguiente y
+ * configura las redirecciones para que la salida estándar envíe
+ * datos al siguiente comando.
+ *
+ * @param tokens Doble puntero al token que contiene la información del comando
+ * @param count Índice del comando actual (0 para el primero)
+ * @return int Descriptor de lectura de la tubería para el siguiente comando
+ */
+int	first_command(t_token **tokens, int count)
+{
+	int		fds[2];
+	int		connect[2];
+	char	**args;
+	pid_t	pid;
+	int		original_stdout;
+
+	fds[0] = STDIN_FILENO;
+	fds[1] = STDOUT_FILENO;
+	setup_redirections(*tokens, &fds, count);
+	args = build_command_string(*tokens, count);
+	if (!args || !args[0])
+		return (ERROR);
+	if (pipe(connect) == -1)
+		return (errors_pipex(NULL, NULL, args, 'p'), ERROR);
+	if (ft_strncmp(args[0], "./minishell", 12) == 0)
+		return (close(connect[1]), connect[0]);
+	pid = fork();
+	if (pid == -1)
+		return (errors_pipex(&connect[0], &connect[1], args, 'f'), ERROR);
+	else if (pid == 0)
+	{
+		original_stdout = child_pipe_fdin_redir(NULL, args, &connect);
+		executor(tokens, &fds, args, original_stdout);
+	}
+	return (close(connect[1]), clean_father_material(&fds, args), connect[0]);
 }
 
 /**
@@ -87,93 +185,6 @@ int	middle_command(int *count, t_token **tokens, int fd_in)
 	}
 	clean_father_material(&fds, args);
 	return (close(fd_in), close(connect[1]), connect[0]);
-}
-
-/**
- * @brief Procesa el último comando en una tubería
- *
- * Esta función maneja el comando final en una tubería.
- * Configura las redirecciones para que:
- * - La entrada estándar reciba datos del comando anterior
- * - La salida estándar mantenga su comportamiento normal o se redirija según
- *   las especificaciones del usuario
- *
- * A diferencia de los comandos intermedios, espera a que este comando termine
- * y actualiza el código de salida.
- *
- * @param count Puntero al contador de comandos (se usa para construir
- * argumentos)
- * @param tokens Doble puntero al token que contiene la información del comando
- * @param fd_in Descriptor de archivo para la entrada desde el comando anterior
- */
-void	final_command(int *count, t_token **tokens, int fd_in)
-{
-	int		fds[2];
-	char	**args;
-	pid_t	pid;
-	int		status;
-
-	fds[0] = STDIN_FILENO;
-	fds[1] = STDOUT_FILENO;
-	setup_redirections((*tokens), &fds, *count);
-	args = build_command_string((*tokens), *count);
-	if (!args || !args[0])
-		return ;
-	signals('c');
-	if (ft_strncmp(args[0], "./minishell", 12) == 0)
-		ign_signal();
-	pid = fork();
-	if (pid == -1)
-		return (errors_pipex(&fd_in, NULL, args, 'e'));
-	else if (pid == 0)
-	{
-		child_pipe_fdin_redir(&fd_in, args, NULL);
-		executor(tokens, &fds, args, dup(STDOUT_FILENO));
-	}
-	waitpid(pid, &status, 0);
-	exit_num = WEXITSTATUS(status);
-	return (close(fd_in), free_array(args));
-}
-
-/**
- * @brief Procesa el primer comando en una tubería
- *
- * Esta función maneja el primer comando en una tubería.
- * Crea una tubería para conectar este comando con el siguiente y
- * configura las redirecciones para que la salida estándar envíe
- * datos al siguiente comando.
- *
- * @param tokens Doble puntero al token que contiene la información del comando
- * @param count Índice del comando actual (0 para el primero)
- * @return int Descriptor de lectura de la tubería para el siguiente comando
- */
-int	first_command(t_token **tokens, int count)
-{
-	int		fds[2];
-	int		connect[2];
-	char	**args;
-	pid_t	pid;
-	int		original_stdout;
-
-	fds[0] = STDIN_FILENO;
-	fds[1] = STDOUT_FILENO;
-	setup_redirections(*tokens, &fds, count);
-	args = build_command_string(*tokens, count);
-	if (!args || !args[0])
-		return (ERROR);
-	if (pipe(connect) == -1)
-		return (errors_pipex(NULL, NULL, args, 'p'), ERROR);
-	if (ft_strncmp(args[0], "./minishell", 12) == 0)
-		return (close(connect[1]), connect[0]);
-	pid = fork();
-	if (pid == -1)
-		return (errors_pipex(&connect[0], &connect[1], args, 'f'), ERROR);
-	else if (pid == 0)
-	{
-		original_stdout = child_pipe_fdin_redir(NULL, args, &connect);
-		executor(tokens, &fds, args, original_stdout);
-	}
-	return (close(connect[1]), clean_father_material(&fds, args), connect[0]);
 }
 
 /**

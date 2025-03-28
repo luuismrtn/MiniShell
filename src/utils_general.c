@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:58:28 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/27 13:09:21 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/28 14:06:17 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,17 +53,17 @@ int	len_array(char **array)
 	return (count);
 }
 
-// void	print_2(char **str) ------>  esta la podemos borrar
-// {
-// 	int	i;
+void	print_2(char **str)
+{
+	int	i;
 
-// 	i = 0;
-// 	while (str[i])
-// 	{
-// 		printf("str[%d] = %s\n", i, str[i]);
-// 		i++;
-// 	}
-// }
+	i = 0;
+	while (str[i])
+	{
+		printf("str[%d] = %s\n", i, str[i]);
+		i++;
+	}
+}
 
 void	free_array(char **array)
 {

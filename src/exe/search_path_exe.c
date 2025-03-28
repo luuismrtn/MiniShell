@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   search_path_exe.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 23:39:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/24 23:58:41 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/28 14:08:20 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,14 @@ void	try_exec_with_path(char *cmd, char **args, char **env)
 	while (paths[i] != NULL)
 	{
 		if (access(paths[i], R_OK | X_OK) == 0)
+		{
+			if (!env)
+				return(perror("env"));
+			printf("paths: %s\n", paths[i]);
+			print_2(args);
 			execve(paths[i], args, env);
+		printf("try_exec_wiht\n");
+		}
 		i++;
 	}
 	i = 0;

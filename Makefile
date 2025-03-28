@@ -98,7 +98,20 @@ re: fclean all
 # user
 
 # /home/aldferna/Desktop/MiniShell ~ << eof | ls -l
-# ls: write error: Bad file descriptor 
+#esto esta funcionando pero dejando un fd abierto....
+
+# /home/aldferna/Desktop/MiniShell ~ < file | cat > file1
+# cat: -: Bad file descriptor
+# si se cierra el fd del error de arriba, entonces este comando da:
+# cat: standard output: Bad file descriptor
+
+#mas de este tipo
+#< file | cat
+#> output.txt | cat
+#< input.txt > output.txt | cat
+
+
+
 
 #env -i ./minishell
 #en ese caso: leer /etc/environment (guardar path y añadir PWD y SHLVL->si no exite: 1)

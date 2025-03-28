@@ -6,51 +6,11 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 16:31:15 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/03/27 16:31:04 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/28 12:32:39 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
-
-// void	expand_in_heredoc(char **line, t_token *tokens)
-// {
-// 	int		i;
-// 	char	*var_content;
-// 	char	*content;
-// 	char	*temp;
-// 	int		start;
-
-// 	i = 0;
-// 	content = NULL;
-// 	while (line[0][i])
-// 	{
-// 		if (line[0][i] == '$')
-// 		{
-// 			if (content == NULL)
-// 				content = ft_substr(line[0], 0, i);
-// 			else
-// 				content = ft_strjoin(temp, ft_substr(line[0], start, i - start));
-// 			i++;
-// 			if (line[0][i] == '?')
-// 			{
-// 				i++;
-// 				temp = ft_strjoin(content, ft_itoa(exit_num));
-// 				free(content);
-// 				start = i;
-// 			}
-// 			else
-// 			{
-// 				var_content = get_env_content(tokens, *line, i, &start);
-// 				temp = ft_strjoin(content, var_content);
-// 				free(content);
-// 				free(var_content);
-// 			}
-// 		}
-// 		i++;
-// 	}
-// 	(*line) = ft_strjoin(temp, ft_substr(line[0], start, i - start));
-// 	free(temp);
-// }
 
 int	fnd_dollar(char *str)
 {
