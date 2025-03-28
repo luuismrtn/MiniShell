@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/28 16:44:11 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/28 19:18:28 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,30 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 	pid_t	pid;
 	int		status;
 
+	//fds[0] = fd_in;
 	fds[0] = STDIN_FILENO;
 	fds[1] = STDOUT_FILENO;
+	char *result = ft_itoa(fds[0]);
+	write(2, "final command fd[0]", 20);
+	write(2, result, ft_strlen(result));
+	write(2, "\n", 1);
+	result = ft_itoa(fds[1]);
+	write(2, "final command fd[1]", 20);
+	write(2, result, ft_strlen(result));
+	write(2, "\n", 1);
+	//printf("fds[0]: %d\n", fds[0]);
+	//printf("fds[1]: %d\n", fds[1]);
 	setup_redirections((*tokens), &fds, *count);
-	printf("fds[0]: %d\n", fds[0]);
-	printf("fds[1]: %d\n", fds[1]);
+	//printf("fds[0]: %d\n", fds[0]);
+	//printf("fds[1]: %d\n", fds[1]);
+	result = ft_itoa(fds[0]);
+	write(2, "final command fd[0]", 20);
+	write(2, result, ft_strlen(result));
+	write(2, "\n", 1);
+	result = ft_itoa(fds[1]);
+	write(2, "final command fd[1]", 20);
+	write(2, result, ft_strlen(result));
+	write(2, "\n", 1);
 	args = build_command_string((*tokens), *count);
 	if (!args || !args[0])
 		return ;
@@ -88,16 +107,15 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 		return (errors_pipex(&fd_in, NULL, args, 'e'));
 	else if (pid == 0)
 	{
-		printf("hola\n");
+		perror("hola");
 		child_pipe_fdin_redir(&fd_in, args, NULL);
-		printf("jeje\n");
+		perror("jeje");
 		executor(tokens, &fds, args, dup(STDOUT_FILENO)); //fd_in cerrar
 	}
-	printf("hola final comand prev waitpid \n");
-	//close(fd_in);
+	perror("AAAAAAAAAAAAA");
 	waitpid(pid, &status, 0);
-	printf("hola final comand post waitpid \n");
 	exit_num = WEXITSTATUS(status);
+	close(fd_in); //comentado
 	return (free_array(args));
 	//return (free_array(args));
 }
@@ -121,13 +139,36 @@ int	first_command(t_token **tokens, int count)
 	char	**args;
 	pid_t	pid;
 	int		original_stdout;
+	//int original_stdin;
 
 	fds[0] = STDIN_FILENO;
 	fds[1] = STDOUT_FILENO;
+	//original_stdin = dup(STDIN_FILENO);
 	setup_redirections(*tokens, &fds, count);
+	printf("1. fds[0]: %d\n", fds[0]);
+	printf("1. fds[1]: %d\n", fds[1]);
 	args = build_command_string(*tokens, count);
-	if (!args || !args[0])
-		return (ERROR);
+	printf("DEVUELVE1\n");
+	if (!args)
+		return(ERROR);
+	else if (!args || !args[0]) //< file | (no crea args)
+	{
+		perror("quuueu");
+		if (pipe(connect) == -1)
+			return (errors_pipex(NULL, NULL, args, 'p'), ERROR);
+		if (dup2(connect[1], STDOUT_FILENO) == -1)
+		{
+			perror("ERROR AQUI");
+			exit(EXIT_FAILURE);
+		}
+		perror("DEVUELVE2");
+		close(connect[1]);
+		char *result = ft_itoa(fds[0]);
+		write(2, "1st command fd[0]", 18);
+		write(2, result, ft_strlen(result));
+		write(2, "\n", 1);
+		return (connect[0]);
+	}
 	if (pipe(connect) == -1)
 		return (errors_pipex(NULL, NULL, args, 'p'), ERROR);
 	if (ft_strncmp(args[0], "./minishell", 12) == 0)
@@ -140,7 +181,9 @@ int	first_command(t_token **tokens, int count)
 		original_stdout = child_pipe_fdin_redir(NULL, args, &connect);
 		executor(tokens, &fds, args, original_stdout);
 	}
-	return (close(connect[1]), clean_father_material(&fds, args), connect[0]);
+	close(connect[1]);
+	clean_father_material(&fds, args);
+	return (connect[0]);
 }
 
 /**

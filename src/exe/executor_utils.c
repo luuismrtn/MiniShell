@@ -6,7 +6,7 @@
 /*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 15:00:46 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/28 16:44:14 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/28 19:09:57 by aldferna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,14 +82,14 @@ int	child_pipe_fdin_redir(int *fd_in, char **args, int (*connect)[2])
 		dup2((*fd_in), STDIN_FILENO);
 		printf("stdin despues: %d\n", STDIN_FILENO);
 		printf("1\n");
-		//close((*fd_in));
+		close((*fd_in)); //comentado
 		printf("2\n");
 	}
 	if (connect && ((*connect)[0] || (*connect)[1]))
 	{
 		close((*connect)[0]);
 		original_stdout = dup(STDOUT_FILENO);
-		dup2((*connect)[1], STDOUT_FILENO);
+		dup2((*connect)[1], STDOUT_FILENO); //escribe en la pipe al ejecutr
 		close((*connect)[1]);
 	}
 	return (original_stdout);
@@ -124,18 +124,18 @@ void	change_fds_redir(int (*fds)[2], int *o_stdin, int *o_stdout,
 		printf("o entra aqui\n");
 		if (executor_father == 1)
 			(*o_stdout) = dup(STDOUT_FILENO);
-		// dup2((*fds)[1], STDOUT_FILENO);
-		// close((*fds)[1]);
-		printf("HEHE fds[1]: %d\n", (*fds)[1]);
-		if ((*fds)[1] >= 0)
-		{
-			if (dup2((*fds)[1], STDIN_FILENO) == -1)
-			{
-				perror("Error en dup2 para stdin");
-				exit(EXIT_FAILURE);
-			}
-			close((*fds)[1]);
-		}
+		dup2((*fds)[1], STDOUT_FILENO);
+		close((*fds)[1]);
+		// printf("HEHE fds[1]: %d\n", (*fds)[1]);
+		// if ((*fds)[1] >= 0)
+		// {
+		// 	if (dup2((*fds)[1], STDIN_FILENO) == -1)
+		// 	{
+		// 		perror("Error en dup2 para stdin");
+		// 		exit(EXIT_FAILURE);
+		// 	}
+		// 	close((*fds)[1]);
+		// }
 	}
 }
 

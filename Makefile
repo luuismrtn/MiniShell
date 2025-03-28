@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  -g3 #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror  -g3 -fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -100,12 +100,8 @@ re: fclean all
 # /home/aldferna/Desktop/MiniShell ~ << eof | ls -l
 #esto esta funcionando pero dejando un fd abierto....
 
+#problema redir sin comando y pipe:
 # /home/aldferna/Desktop/MiniShell ~ < file | cat > file1
-# cat: -: Bad file descriptor
-# si se cierra el fd del error de arriba, entonces este comando da:
-# cat: standard output: Bad file descriptor
-
-#mas de este tipo
 #< file | cat
 #> output.txt | cat
 #< input.txt > output.txt | cat
