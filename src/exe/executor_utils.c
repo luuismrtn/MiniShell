@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 15:00:46 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/28 19:09:57 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/30 14:57:58 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,14 +76,9 @@ int	child_pipe_fdin_redir(int *fd_in, char **args, int (*connect)[2])
 	if (fd_in != NULL)
 	{
 		if ((*fd_in) < 0)
-			return(errors_pipex(NULL, NULL, args, 'd'), ERROR);
-		printf("que pasa\n");
-		printf("stdin: %d\n", STDIN_FILENO);
+			return(errors_pipex(NULL, NULL, args, 'd'), -1);
 		dup2((*fd_in), STDIN_FILENO);
-		printf("stdin despues: %d\n", STDIN_FILENO);
-		printf("1\n");
-		close((*fd_in)); //comentado
-		printf("2\n");
+		close((*fd_in));
 	}
 	if (connect && ((*connect)[0] || (*connect)[1]))
 	{
@@ -113,7 +108,6 @@ void	change_fds_redir(int (*fds)[2], int *o_stdin, int *o_stdout,
 {
 	if ((*fds)[0] != STDIN_FILENO)
 	{
-		printf("entra aqui\n");
 		if (executor_father == 1)
 			(*o_stdin) = dup(STDIN_FILENO);
 		dup2((*fds)[0], STDIN_FILENO);
@@ -121,21 +115,10 @@ void	change_fds_redir(int (*fds)[2], int *o_stdin, int *o_stdout,
 	}
 	if ((*fds)[1] != STDOUT_FILENO)
 	{
-		printf("o entra aqui\n");
 		if (executor_father == 1)
 			(*o_stdout) = dup(STDOUT_FILENO);
 		dup2((*fds)[1], STDOUT_FILENO);
 		close((*fds)[1]);
-		// printf("HEHE fds[1]: %d\n", (*fds)[1]);
-		// if ((*fds)[1] >= 0)
-		// {
-		// 	if (dup2((*fds)[1], STDIN_FILENO) == -1)
-		// 	{
-		// 		perror("Error en dup2 para stdin");
-		// 		exit(EXIT_FAILURE);
-		// 	}
-		// 	close((*fds)[1]);
-		// }
 	}
 }
 

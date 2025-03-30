@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/28 15:03:31 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/30 13:57:10 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ int						count_env_vars(t_env *env_list);
 
 //  PIPEX
 void					pipex(t_token *tokens, int num_commands);
-void					setup_redirections(t_token *tokens, int (*fds)[2],
+int					setup_redirections(t_token *tokens, int (*fds)[2],
 							int count);
 char					**build_command_string(t_token *tokens, int count);
 void					executor(t_token **tokens, int (*fds)[2], char **args,

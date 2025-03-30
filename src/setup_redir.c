@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup_redir.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 16:25:22 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/03/27 16:07:58 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/30 14:57:29 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	handle_redir_right(t_token *tokens, int (*fds)[2])
 
 	new_fd = open(tokens->next->content, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (new_fd == -1)
-		return (perror("minishell: open"), ERROR);
+		return (perror("minishell: open"), new_fd);
 	if ((*fds)[1] != STDOUT_FILENO)
 		close((*fds)[1]);
 	return (new_fd);
@@ -55,7 +55,7 @@ int	handle_redir_append(t_token *tokens, int (*fds)[2])
 
 	new_fd = open(tokens->next->content, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (new_fd == -1)
-		return (perror("minishell: open"), ERROR);
+		return (perror("minishell: open"), new_fd);
 	if ((*fds)[1] != STDOUT_FILENO)
 		close((*fds)[1]);
 	return (new_fd);
@@ -79,7 +79,7 @@ int	handle_redir_left(t_token *tokens, int (*fds)[2])
 
 	new_fd = open(tokens->next->content, O_RDONLY);
 	if (new_fd == -1)
-		return (perror("minishell: open"), ERROR);
+		return (perror("minishell: open"), new_fd);///new
 	if ((*fds)[0] != STDIN_FILENO)
 		close((*fds)[0]);
 	return (new_fd);
@@ -106,10 +106,10 @@ int	handle_redir_heredoc(t_token *tokens, t_token *head_tokens)
 
 	ign_signal();
 	if (pipe(connect) == -1)
-		return (perror("pipe"), ERROR);
+		return (perror("pipe"), -1);
 	pid = fork();
 	if (pid == -1)
-		return (perror("fork"), ERROR);
+		return (perror("fork"), -1);
 	else if (pid == 0)
 	{
 		signals('h');
@@ -138,7 +138,7 @@ int	handle_redir_heredoc(t_token *tokens, t_token *head_tokens)
 	stdout] donde se guardan los descriptores
  * @param count Contador de pipes para saltar al comando correcto
  */
-void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
+int	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 {
 	t_token *head_tokens;
 
@@ -164,4 +164,7 @@ void	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 			break ;
 		tokens = tokens->next;
 	}
+	if ((*fds)[1] < 0 || (*fds)[0] < 0)
+		return (-1);
+	return (0);
 }

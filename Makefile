@@ -83,39 +83,15 @@ re: fclean all
 # jdf | sleep 2
 
 
-
-
-
-#mirar fds abiertos
-
-
-
+#MIRAR FD's y ejecutando con valgrind:
+#--leak-check=full --track-origins=yes –track-fds=all –trace-children=yes
 
 
 # MASS PRUEBAS CON ERROR:
 
-# /home/aldferna/Desktop/MiniShell ~ echo $user
-# user
-
-# /home/aldferna/Desktop/MiniShell ~ << eof | ls -l
-#esto esta funcionando pero dejando un fd abierto....
-
-#problema redir sin comando y pipe:
-# /home/aldferna/Desktop/MiniShell ~ < file | cat > file1
-#< file | cat
-#> output.txt | cat
-#< input.txt > output.txt | cat
-
-
-
-
 #env -i ./minishell
 #en ese caso: leer /etc/environment (guardar path y añadir PWD y SHLVL->si no exite: 1)
 #si ademas luego hacen env -i $PATH; minishell no ejecuta comandos pero no debe petar
-
-# /home/aldferna/Desktop/MiniShell ~ ./minishell | ./minishell
-# /home/aldferna/Desktop/MiniShell ~ /home/aldferna/Desktop/MiniShell ~ 
-#esto antes funcionaba (no se cd), puede ser q tenga relacion con q no se crea un hijo
 
 #cd -(no esta funcionandoo)
 # /home/aldferna/Desktop/MiniShell ~ cd -
@@ -123,9 +99,21 @@ re: fclean all
 # /home/aldferna/Desktop/MiniShell//src ~ cd -
 # cd: /home/aldferna/Desktop/MiniShell/: No such file or directory
 
-#limitar historial (uede petar si esta muy lleno)-> al momento de escribir en el archivo chequear ctas lineas hay
-
 
 #--------------------cosas de las q podriamos pasar:
 
 #echo $"$'$PWD'"  (bash: $'/home/aldferna/Desktop/MiniShell') (mshell: $$'/home/aldferna/Desktop/MiniShell')
+
+# /home/aldferna/Desktop/MiniShell ~ echo $user
+# user
+
+#limitar historial (uede petar si esta muy lleno)-> al momento de escribir en el archivo chequear ctas lineas hay
+
+# /home/aldferna/Desktop/MiniShell ~ ./minishell | ./minishell
+# /home/aldferna/Desktop/MiniShell ~ /home/aldferna/Desktop/MiniShell ~ 
+#esto antes funcionaba (no se cd), puede ser q tenga relacion con q no se crea un hijo
+
+
+#NORMINETTE
+#executor_pipex
+#setup_redir
