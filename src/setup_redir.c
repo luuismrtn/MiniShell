@@ -6,14 +6,14 @@
 /*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 16:25:22 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/03/30 14:57:29 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/31 18:04:58 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
 /**
- * @brief Maneja la redirección de salida (>)
+ * @brief Maneja la redirección de salida 'r' (>) y el append 'a' (>>)
  *
  * Abre un archivo para escritura, truncándolo si ya existe o creándolo
  * si no existe. Configura los permisos a 0644 (lectura/escritura para
@@ -25,35 +25,14 @@
  * @param fds Array de descriptores de archivo [stdin, stdout]
  * @return int El nuevo descriptor para la salida estándar, o ERROR si falla
  */
-int	handle_redir_right(t_token *tokens, int (*fds)[2])
+int	handle_redir_right_append(t_token *tokens, int (*fds)[2], char c)
 {
 	int	new_fd;
 
-	new_fd = open(tokens->next->content, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (new_fd == -1)
-		return (perror("minishell: open"), new_fd);
-	if ((*fds)[1] != STDOUT_FILENO)
-		close((*fds)[1]);
-	return (new_fd);
-}
-
-/**
- * @brief Maneja la redirección de salida con modo append (>>)
- *
- * Abre un archivo para escritura, pero añade contenido al final en lugar
- * de truncarlo. Si el archivo no existe, lo crea con permisos 0644.
- *
- * Si ya había una redirección previa, cierra el descriptor anterior.
- *
- * @param tokens El token actual con la redirección
- * @param fds Array de descriptores de archivo [stdin, stdout]
- * @return int El nuevo descriptor para la salida estándar, o ERROR si falla
- */
-int	handle_redir_append(t_token *tokens, int (*fds)[2])
-{
-	int	new_fd;
-
-	new_fd = open(tokens->next->content, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (c == 'r')
+		new_fd = open(tokens->next->content, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (c == 'a')
+		new_fd = open(tokens->next->content, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (new_fd == -1)
 		return (perror("minishell: open"), new_fd);
 	if ((*fds)[1] != STDOUT_FILENO)
@@ -124,6 +103,24 @@ int	handle_redir_heredoc(t_token *tokens, t_token *head_tokens)
 	return (connect[0]);
 }
 
+void	make_redirections(t_token *tokens, int (*fds)[2], t_token *head_tokens)
+{
+	while (tokens)
+	{
+		if (tokens->type == T_REDIR_RIGHT && tokens->next)
+			(*fds)[1] = handle_redir_right_append(tokens, fds, 'r');
+		else if (tokens->type == T_APPEND && tokens->next)
+			(*fds)[1] = handle_redir_right_append(tokens, fds, 'a');
+		else if (tokens->type == T_REDIR_LEFT && tokens->next)
+			(*fds)[0] = handle_redir_left(tokens, fds);
+		else if (tokens->type == T_HERE_DOC && tokens->next)
+			(*fds)[0] = handle_redir_heredoc(tokens, head_tokens);
+		else if (tokens->type == T_PIPE)
+			break;
+		tokens = tokens->next;
+	}
+}
+
 /**
  * @brief Configura todas las redirecciones para un comando
  *
@@ -150,20 +147,7 @@ int	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 			count--;
 		tokens = tokens->next;
 	}
-	while (tokens)
-	{
-		if (tokens->type == T_REDIR_RIGHT && tokens->next)
-			(*fds)[1] = handle_redir_right(tokens, fds);
-		else if (tokens->type == T_APPEND && tokens->next)
-			(*fds)[1] = handle_redir_append(tokens, fds);
-		else if (tokens->type == T_REDIR_LEFT && tokens->next)
-			(*fds)[0] = handle_redir_left(tokens, fds);
-		else if (tokens->type == T_HERE_DOC && tokens->next)
-			(*fds)[0] = handle_redir_heredoc(tokens, head_tokens);
-		else if (tokens && tokens->type == T_PIPE)
-			break ;
-		tokens = tokens->next;
-	}
+	make_redirections(tokens, fds, head_tokens);
 	if ((*fds)[1] < 0 || (*fds)[0] < 0)
 		return (-1);
 	return (0);

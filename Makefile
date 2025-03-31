@@ -112,8 +112,3 @@ re: fclean all
 # /home/aldferna/Desktop/MiniShell ~ ./minishell | ./minishell
 # /home/aldferna/Desktop/MiniShell ~ /home/aldferna/Desktop/MiniShell ~ 
 #esto antes funcionaba (no se cd), puede ser q tenga relacion con q no se crea un hijo
-
-
-#NORMINETTE
-#executor_pipex
-#setup_redir

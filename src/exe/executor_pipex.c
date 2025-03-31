@@ -6,7 +6,7 @@
 /*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/30 14:55:45 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/31 17:51:15 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,9 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 	pid_t	pid;
 	int		status;
 
-	fds[0] = STDIN_FILENO;
-	fds[1] = STDOUT_FILENO;
-	char *result = ft_itoa(fds[0]);
+	set_fds(&fds);
 	if (setup_redirections((*tokens), &fds, *count) < 0 || fd_in < 0)
-		return;
+		return ;
 	args = build_command_string((*tokens), *count);
 	if (!args || !args[0])
 		return ;
@@ -113,8 +111,7 @@ int	first_command(t_token **tokens, int count)
 	pid_t	pid;
 	int		original_stdout;
 
-	fds[0] = STDIN_FILENO;
-	fds[1] = STDOUT_FILENO;
+	set_fds(&fds);
 	if (setup_redirections(*tokens, &fds, count) < 0) ///new
 		return(-1);
 	args = build_command_string(*tokens, count);
@@ -132,9 +129,7 @@ int	first_command(t_token **tokens, int count)
 		original_stdout = child_pipe_fdin_redir(NULL, args, &connect);
 		executor(tokens, &fds, args, original_stdout);
 	}
-	close(connect[1]);
-	clean_father_material(&fds, args);
-	return (connect[0]);
+	return (close(connect[1]), clean_father_material(&fds, args), connect[0]);
 }
 
 /**
@@ -161,13 +156,12 @@ int	middle_command(int *count, t_token **tokens, int fd_in)
 	pid_t	pid;
 	int		original_stdout;
 
-	fds[0] = STDIN_FILENO;
-	fds[1] = STDOUT_FILENO;
+	set_fds(&fds);
 	if (setup_redirections(*tokens, &fds, *count) < 0 || fd_in < 0) ///new
-		return(-1);
+		return(close(fd_in), -1);
 	args = build_command_string((*tokens), *count);
 	if (!args || !args[0])
-		return (-1);
+		return (close(fd_in), -1);
 	if (pipe(connect) == -1)
 		return (errors_pipex(NULL, NULL, args, 'p'), -1);
 	pid = fork();

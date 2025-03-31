@@ -6,7 +6,7 @@
 /*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/30 13:57:10 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/31 17:51:43 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,7 @@ void					change_fds_redir(int (*fds)[2], int *o_stdin,
 void					clean_father_material(int (*fds)[2], char **args);
 void					errors_pipex(int *pipe_in, int *pipe_out, char **args,
 							char c);
+void set_fds(int (*fds)[2]);
 
 //  BUILTINS
 void					handle_builtin(char **args, t_token *tokens);

@@ -6,11 +6,17 @@
 /*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 15:00:46 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/30 14:57:58 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/31 17:51:23 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
+
+void set_fds(int (*fds)[2])
+{
+	(*fds)[0] = STDIN_FILENO;
+	(*fds)[1] = STDOUT_FILENO;
+}
 
 /**
  * @brief Maneja errores en el proceso de ejecución de comandos con pipes
