@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 20:53:45 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/27 17:58:17 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/04/01 00:50:08 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,18 +57,18 @@ static void	handle_pipe(t_token **tokens, char input, t_token_value type,
 	add_token(tokens, type, ft_strdup(quotes), 0);
 }
 
-int check_var_exist(char *var, t_token *tokens)
+int	check_var_exist(char *var, t_token *tokens)
 {
-	t_env *current;
+	t_env	*current;
 
 	current = tokens->env_mshell;
-	while(current)
+	while (current)
 	{
-		if (ft_strncmp(current->name, var, ft_strlen(var) + 1) == SUCCESS)
-			return(1);
+		if (match_string(current->name, var))
+			return (1);
 		current = current->next;
 	}
-	return(0);
+	return (0);
 }
 
 /**
@@ -92,18 +92,16 @@ static void	handle_env(t_token **tokens, char *input, int *i)
 	if (input[*i] == '?')
 	{
 		(*i)++;
-		var_name = ft_itoa(exit_num);
-		add_token(tokens, T_ENV, var_name, 0);
-		return ;
+		return (add_token(tokens, T_ENV, ft_itoa(exit_num), 0));
 	}
 	len_var_name = ft_len_var_name(input, *i);
 	if (len_var_name == 0)
 		return (add_token(tokens, T_WORD, ft_strdup("$"), 0));
 	var_name = ft_substr(input, *i, len_var_name);
+	(*i) += len_var_name;
 	if (!check_var_exist(var_name, *tokens))
 		return (free(var_name));
 	var_content = find_env_var((*tokens)->env_mshell, var_name)->content;
-	(*i) += len_var_name;
 	add_token(tokens, T_ENV, var_content, 0);
 	free(var_name);
 	if (input[*i] == '$' && input[*i + 1] != '\0' && (ft_isalnum(input[*i + 1])
