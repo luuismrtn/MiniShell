@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 20:48:33 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/25 20:54:56 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 00:39:38 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,34 @@ static t_token	*handle_space_token(t_token *current)
 }
 
 /**
+ * @brief Limpia el último token de la lista
+ *
+ * Elimina el último token de la lista si es un espacio.
+ *
+ * @param tokens Puntero a la lista de tokens
+ */
+static void	clean_last_token(t_token **tokens)
+{
+	t_token	*aux;
+	t_token	*last;
+
+	if (!tokens || !*tokens)
+		return ;
+	aux = *tokens;
+	while (aux->next != NULL)
+	{
+		last = aux;
+		aux = aux->next;
+	}
+	if (aux->type == T_SPACE)
+	{
+		free(aux->content);
+		free(aux);
+		last->next = NULL;
+	}
+}
+
+/**
  * @brief Limpia y optimiza la lista de tokens
  *
  * Esta función recorre la lista de tokens, fusionando tokens consecutivos
@@ -121,4 +149,5 @@ void	clean_tokens(t_token **tokens)
 			aux = handle_space_token(aux);
 		}
 	}
+	clean_last_token(tokens);
 }

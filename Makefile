@@ -77,8 +77,6 @@ re: fclean all
 #en ese caso: leer /etc/environment (guardar path y añadir PWD y SHLVL->si no exite: 1)
 #si ademas luego hacen env -i $PATH; minishell no ejecuta comandos pero no debe petar
 
-#cat' ' -> sintaxy error cd espacio al final .. cosa q no entiendo xq tenemos el trim *(\-,_ -/)*
-
 #--------------------cosas de las q podriamos pasar:
 
 #echo $"$'$PWD'"  (bash: $'/home/aldferna/Desktop/MiniShell') (mshell: $$'/home/aldferna/Desktop/MiniShell')
