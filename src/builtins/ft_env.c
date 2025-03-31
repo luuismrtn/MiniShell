@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:17:16 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/27 01:40:15 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/31 19:17:33 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,40 @@ void	get_env_content_and_replace(t_token **tokens, char *name, char *content)
 	}
 }
 
+t_env *make_little_env()
+{
+	t_env	*env_mshell;
+	t_env	*node;
+	int fd;
+	char *line;
+	char *pwd;
+
+	env_mshell = NULL;
+	fd = open("/etc/environment", O_RDONLY);
+	line = get_next_line(fd);
+	printf("line path> '%s'\n", line);
+	node = create_env_node(line);
+	if (!node)
+		return (free_env_list(env_mshell), NULL);
+	else
+		add_last(&env_mshell, node);
+	pwd = getcwd(NULL, 0);
+	line = ft_strjoin("PWD=", pwd);
+	printf("line pwd> '%s'\n", line);
+	node = create_env_node(line);
+	if (!node)
+		return (free_env_list(env_mshell), NULL);
+	else
+		add_last(&env_mshell, node);
+	line = ft_strjoin("SHLVL=", ft_itoa(1));
+	node = create_env_node(line);
+	if (!node)
+		return (free_env_list(env_mshell), NULL);
+	else
+		add_last(&env_mshell, node);
+	return (free(pwd), free(line), env_mshell);
+}
+
 /**
  * @brief Inicializa la estructura principal del shell.
  *
@@ -82,7 +116,10 @@ t_token	*initialize_shell(char **env)
 	if (!tokens)
 		return (NULL);
 	ft_memset(tokens, 0, sizeof(t_token));
-	tokens->env_mshell = env_buildin(env);
+	if (!env|| !env[0])
+        tokens->env_mshell = make_little_env();
+	else
+		tokens->env_mshell = env_buildin(env);
 	tokens->content = ft_strdup("0");
 	signals('f');
 	return (tokens);

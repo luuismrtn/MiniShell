@@ -6,7 +6,7 @@
 /*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/31 17:51:43 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/03/31 18:46:41 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ int						write_line_history(char *history_file, char *line);
 t_env					*env_buildin(char **env);
 t_env					*find_env_var(t_env *env, char *var_name);
 t_token					*initialize_shell(char **env);
+t_env	*create_env_node(char *env_var);
+void	add_last(t_env **head, t_env *node);
 
 //  PARSE
 int						check_quotes_closed(char *input);

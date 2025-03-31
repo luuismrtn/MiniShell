@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_build_in.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 15:01:35 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/20 22:08:02 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/03/31 18:45:11 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	free_env_list(t_env *env_list)
  * @param env_var Cadena con la variable de entorno.
  * @return t_env* Puntero al nuevo nodo creado o NULL si hay un error.
  */
-static t_env	*create_env_node(char *env_var)
+t_env	*create_env_node(char *env_var)
 {
 	t_env	*node;
 	char	*name;

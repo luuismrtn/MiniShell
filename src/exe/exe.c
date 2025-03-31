@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/28 14:13:01 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/03/31 19:34:57 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,18 +132,14 @@ void	exe(t_token *tokens, char **cmd, int stdout_fd)
 	env = join_env(tokens->env_mshell);
 	if (ft_strchr(cmd[0], '/') != NULL && access(cmd[0], X_OK) == 0)
 	{
-		printf("eXEEE\n");
 		close(stdout_fd);
-		printf("medio eXEEE\n");
 		execve(cmd[0], cmd, env);
-		printf("fiiiin eXEEE\n");
 
 	}
 	else
 	{
-		//close(stdout_fd);
+		close(stdout_fd);
 		try_exec_with_path(cmd[0], cmd, env);
-		printf("eXEEE\n");
 	}
 	dup2(stdout_fd, STDOUT_FILENO);
 	close(stdout_fd);

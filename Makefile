@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror  -g3 #-fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -67,24 +67,8 @@ re: fclean all
 
 
 # LEAKS:
-#pwd | cat | cat -e >3 | wc -l
-
-# /home/aldferna/Desktop/MiniShell ~ cat | cat | ls
-# 3  errors.txt  inc  libft  Makefile  minishell  src
-# /home/aldferna/Desktop/MiniShell ~ ^C
-# /home/aldferna/Desktop/MiniShell ~  (control D)
-
-# /home/aldferna/Desktop/MiniShell ~ cat 3
-#	 /home/aldferna/Desktop/MiniShell$
-# /home/aldferna/Desktop/MiniShell ~ (control D)
-
-# echo hola | ls
-
-# jdf | sleep 2
-
-
-#MIRAR FD's y ejecutando con valgrind:
-#--leak-check=full --track-origins=yes –track-fds=all –trace-children=yes
+#MIRAR FD's y errores ejecutando con valgrind:
+#--leak-check=full --track-origins=yes --track-fds=all --trace-children=yes
 
 
 # MASS PRUEBAS CON ERROR:
@@ -99,6 +83,7 @@ re: fclean all
 # /home/aldferna/Desktop/MiniShell//src ~ cd -
 # cd: /home/aldferna/Desktop/MiniShell/: No such file or directory
 
+#cat' ' -> sintaxy error cd espacio al final .. cosa q no entiendo xq tenemos el trim *(\-,_ -/)*
 
 #--------------------cosas de las q podriamos pasar:
 
@@ -111,4 +96,11 @@ re: fclean all
 
 # /home/aldferna/Desktop/MiniShell ~ ./minishell | ./minishell
 # /home/aldferna/Desktop/MiniShell ~ /home/aldferna/Desktop/MiniShell ~ 
-#esto antes funcionaba (no se cd), puede ser q tenga relacion con q no se crea un hijo
+#esto antes funcionaba (no se cd), puede ser q tenga relacion con q no se crea un hijo(?)
+
+
+
+
+
+#norminette
+#t_env.c
