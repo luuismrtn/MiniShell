@@ -100,7 +100,5 @@ re: fclean all
 
 
 
-
-
 #norminette
-#t_env.c
+#t_env.
