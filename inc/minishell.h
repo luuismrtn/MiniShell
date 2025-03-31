@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 00:26:02 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 01:20:21 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ extern unsigned char	exit_num;
 
 # define SUCCESS 0
 # define ERROR 1
+# define HISTORY_MAX_LINES 500
 
 typedef enum s_token_value
 {
@@ -72,6 +73,8 @@ typedef struct s_result
 //  HISTORY
 int						ft_read_history(char *history_file);
 int						write_line_history(char *history_file, char *line);
+char					**get_history(char *history_file);
+int						replace_history(char *history_file, char **history);
 
 // ENV
 t_env					*env_buildin(char **env);

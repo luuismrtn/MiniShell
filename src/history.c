@@ -6,21 +6,17 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:57:25 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/20 13:18:28 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 01:19:59 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
 
 /**
- * @brief Lee el historial de comandos desde un archivo.
+ * @brief Lee el historial de comandos desde un archivo
  *
- * Abre el archivo de historial especificado, lee cada línea y la añade
- * al historial de readline para que esté disponible en la sesión actual.
- * Si el archivo no existe, lo crea.
- *
- * @param history_file Ruta al archivo de historial.
- * @return int SUCCESS si se leyó correctamente, ERROR en caso contrario.
+ * @param history_file Ruta al archivo de historial
+ * @return int SUCCESS o ERROR
  */
 int	ft_read_history(char *history_file)
 {
@@ -48,15 +44,10 @@ int	ft_read_history(char *history_file)
 }
 
 /**
- * @brief Retorna la última línea del archivo de historial.
+ * @brief Obtiene la última línea del archivo de historial
  *
- * Lee el archivo completo y devuelve la última línea encontrada.
- * Este enfoque es ineficiente para archivos grandes, pero funciona
- * bien para archivos de historial típicos.
- *
- * @param fd Descriptor de archivo del historial abierto.
- * @return char* Puntero a la última línea leída o NULL si el archivo está
- * vacío.
+ * @param fd Descriptor del archivo de historial
+ * @return char* Última línea o NULL
  */
 char	*return_last_command(int fd)
 {
@@ -81,15 +72,12 @@ char	*return_last_command(int fd)
 }
 
 /**
- * @brief Escribe la línea en el archivo de historial si no es duplicada.
+ * @brief Escribe la línea en el archivo de historial si no es duplicada
  *
- * Compara la línea con la última línea del historial y la escribe
- * solo si es diferente, para evitar duplicados consecutivos.
- *
- * @param fd Descriptor del archivo de historial.
- * @param line_clean Línea limpia a escribir.
- * @param last_command Última línea del archivo de historial.
- * @return int SUCCESS en todos los casos.
+ * @param fd Descriptor del archivo de historial
+ * @param line_clean Línea limpia a escribir
+ * @param last_command Última línea del archivo de historial
+ * @return int SUCCESS en todos los casos
  */
 static int	process_history_line(int fd, char *line_clean, char *last_command)
 {
@@ -116,21 +104,22 @@ static int	process_history_line(int fd, char *line_clean, char *last_command)
 }
 
 /**
- * @brief Escribe una línea en el archivo de historial.
+ * @brief Escribe una línea en el archivo de historial
  *
- * Verifica que la línea no esté vacía, la limpia de espacios en blanco
- * y la pasa a la función que verifica duplicados y la escribe si corresponde.
- *
- * @param history_file Ruta al archivo de historial.
- * @param line Línea a escribir en el historial.
- * @return int SUCCESS si se escribió correctamente, ERROR en caso contrario.
+ * @param history_file Ruta al archivo de historial
+ * @param line Línea a escribir en el historial
+ * @return int SUCCESS si se escribió correctamente, ERROR en caso contrario
  */
 int	write_line_history(char *history_file, char *line)
 {
 	int		fd;
 	char	*line_clean;
 	char	*last_command;
+	char	**history;
 
+	history = get_history(history_file);
+	if (history)
+		replace_history(history_file, history);
 	fd = open(history_file, O_CREAT | O_RDWR | O_APPEND, 0644);
 	if (fd < 0)
 	{

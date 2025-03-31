@@ -5,6 +5,7 @@ RM = rm -f
 
 SRC = src/main.c \
 	src/history.c \
+	src/history_utils.c \
 	src/env_build_in.c \
 	src/signals.c \
 	src/tokenize/tokenize.c \
@@ -81,15 +82,9 @@ re: fclean all
 
 #echo $"$'$PWD'"  (bash: $'/home/aldferna/Desktop/MiniShell') (mshell: $$'/home/aldferna/Desktop/MiniShell')
 
-# /home/aldferna/Desktop/MiniShell ~ echo $user
-# user
-
-#limitar historial (uede petar si esta muy lleno)-> al momento de escribir en el archivo chequear ctas lineas hay
-
 # /home/aldferna/Desktop/MiniShell ~ ./minishell | ./minishell
 # /home/aldferna/Desktop/MiniShell ~ /home/aldferna/Desktop/MiniShell ~ 
 #esto antes funcionaba (no se cd), puede ser q tenga relacion con q no se crea un hijo(?)
-
 
 
 #norminette
