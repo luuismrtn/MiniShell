@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:16:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/20 21:19:17 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 00:25:52 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
  * @param name Nombre de la nueva variable a añadir.
  * @param content Contenido de la variable (o NULL si no tiene valor).
  */
-static void	add_env_var(t_token *tokens, char *name, char *content)
+void	add_env_var(t_token *tokens, char *name, char *content)
 {
 	t_env	*new_env;
 

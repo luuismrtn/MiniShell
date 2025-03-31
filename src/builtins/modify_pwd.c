@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:44:38 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/27 01:40:54 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 00:25:33 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,17 +116,7 @@ static void	modify_oldpwd(t_token *tokens)
 		}
 		aux = aux->next;
 	}
-	aux = tokens->env_mshell;
-	while (aux)
-	{
-		if (ft_strncmp(aux->name, "OLDPWD", ft_strlen("OLDPWD")) == 0)
-		{
-			free(aux->content);
-			aux->content = a_pwd;
-			break ;
-		}
-		aux = aux->next;
-	}
+	add_env_var(tokens, "OLDPWD", a_pwd);
 }
 
 /**

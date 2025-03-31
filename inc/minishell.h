@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/31 18:46:41 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/04/01 00:26:02 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,8 @@ int						write_line_history(char *history_file, char *line);
 t_env					*env_buildin(char **env);
 t_env					*find_env_var(t_env *env, char *var_name);
 t_token					*initialize_shell(char **env);
-t_env	*create_env_node(char *env_var);
-void	add_last(t_env **head, t_env *node);
+t_env					*create_env_node(char *env_var);
+void					add_last(t_env **head, t_env *node);
 
 //  PARSE
 int						check_quotes_closed(char *input);
@@ -113,7 +113,7 @@ int						count_env_vars(t_env *env_list);
 
 //  PIPEX
 void					pipex(t_token *tokens, int num_commands);
-int					setup_redirections(t_token *tokens, int (*fds)[2],
+int						setup_redirections(t_token *tokens, int (*fds)[2],
 							int count);
 char					**build_command_string(t_token *tokens, int count);
 void					executor(t_token **tokens, int (*fds)[2], char **args,
@@ -128,7 +128,7 @@ void					change_fds_redir(int (*fds)[2], int *o_stdin,
 void					clean_father_material(int (*fds)[2], char **args);
 void					errors_pipex(int *pipe_in, int *pipe_out, char **args,
 							char c);
-void set_fds(int (*fds)[2]);
+void					set_fds(int (*fds)[2]);
 
 //  BUILTINS
 void					handle_builtin(char **args, t_token *tokens);
@@ -143,7 +143,8 @@ void					ft_pwd(t_token *tokens);
 void					ft_unset(t_token *tokens, char **args);
 
 // CD_UTILS
-void					print_cd_error(char *path, t_token **tokens, char *input_path);
+void					print_cd_error(char *path, t_token **tokens,
+							char *input_path);
 void					handle_broken_pwd(t_token **tokens, char *input_path);
 int						validate_input_cd(char *input);
 char					*find_path(char **args);
@@ -154,6 +155,7 @@ char					*extract_var_name(char *arg);
 void					print_env_as_export(t_token *tokens);
 void					handle_add_var(t_token *tokens, t_env *new_env,
 							char *content);
+void					add_env_var(t_token *tokens, char *name, char *content);
 char					*handle_env_var(char *str, t_token *tokens);
 
 // MODIFY_PWD_UTILS
@@ -161,8 +163,9 @@ void					create_new_pwd(t_token **tokens, char *dir);
 
 //	HERE DOC
 void					handle_heredoc(char *eof, int fd, t_token *tokens);
-char	*get_env_content(t_token *tokens, char *line, int i, int *start_after_d);
-void expand_in_heredoc(char **line, t_token *tokens);
+char					*get_env_content(t_token *tokens, char *line, int i,
+							int *start_after_d);
+void					expand_in_heredoc(char **line, t_token *tokens);
 
 //	SIGNALS
 void					signals(char c);

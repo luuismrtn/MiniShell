@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  -g3 #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror  -g3 -fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -76,12 +76,6 @@ re: fclean all
 #env -i ./minishell
 #en ese caso: leer /etc/environment (guardar path y añadir PWD y SHLVL->si no exite: 1)
 #si ademas luego hacen env -i $PATH; minishell no ejecuta comandos pero no debe petar
-
-#cd -(no esta funcionandoo)
-# /home/aldferna/Desktop/MiniShell ~ cd -
-# /home/aldferna/Desktop/MiniShell/ ~ cd src
-# /home/aldferna/Desktop/MiniShell//src ~ cd -
-# cd: /home/aldferna/Desktop/MiniShell/: No such file or directory
 
 #cat' ' -> sintaxy error cd espacio al final .. cosa q no entiendo xq tenemos el trim *(\-,_ -/)*
 

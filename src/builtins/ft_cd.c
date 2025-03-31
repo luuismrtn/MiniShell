@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:54 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/27 17:31:27 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/04/01 00:27:55 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,23 +24,23 @@
  */
 static void	cd_to_oldpwd(t_token **tokens)
 {
-	char	*oldpwd_path;
+	t_env	*oldpwd;
 
-	oldpwd_path = find_env_var((*tokens)->env_mshell, "OLDPWD")->content;
-	if (!oldpwd_path)
+	oldpwd = find_env_var((*tokens)->env_mshell, "OLDPWD");
+	if (!oldpwd)
 	{
 		ft_putstr_fd("cd: OLDPWD not set\n", 2);
 		exit_num = 1;
 		return ;
 	}
-	if (chdir(oldpwd_path) == 0)
+	if (chdir(oldpwd->content) == 0)
 	{
-		modify_pwd(tokens, oldpwd_path);
+		modify_pwd(tokens, oldpwd->content);
+		printf("%s\n", oldpwd->content);
 		exit_num = 0;
 	}
 	else
-		print_cd_error(oldpwd_path, NULL, NULL);
-	//free(oldpwd_path); //double free
+		print_cd_error(oldpwd->content, NULL, NULL);
 }
 
 /**
