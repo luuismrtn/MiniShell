@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 21:02:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/25 21:18:44 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 21:30:01 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,22 @@
  */
 static void	handle_here_doc(t_token **tokens, char *input, int *i)
 {
+	int	quotes;
+
+	quotes = 0;
 	(*i) += 2;
 	add_token(tokens, T_HERE_DOC, ft_strdup("<<"), 0);
 	while (input[*i] && ft_isspace(input[*i]))
 		(*i)++;
+	if (input[*i] == '\"' || input[*i] == '\'')
+	{
+		quotes = 1;
+		(*i)++;
+	}
 	while (input[*i] && (!ft_isspace(input[*i]) && input[*i] != '\"'
 			&& input[*i] != '\''))
 	{
-		add_token(tokens, T_WORD, ft_substr(input, (*i), 1), 0);
+		add_token(tokens, T_WORD, ft_substr(input, (*i), 1), quotes);
 		(*i)++;
 	}
 }

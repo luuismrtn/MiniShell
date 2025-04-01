@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 21:07:26 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/25 21:38:51 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 21:37:02 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,19 @@
  */
 char	*expand_var_in_quotes(char *result, char *var_name, t_token **tokens)
 {
+	t_env	*temp_var;
 	char	*temp;
 	char	*var_content;
 
-	var_content = find_env_var((*tokens)->env_mshell, var_name)->content;
+	temp_var = find_env_var((*tokens)->env_mshell, var_name);
+	if (!temp_var)
+	{
+		temp = ft_strjoin(result, "");
+		free(result);
+		free(var_name);
+		return (temp);
+	}
+	var_content = temp_var->content;
 	temp = ft_strjoin(result, var_content);
 	free(result);
 	free(var_name);
