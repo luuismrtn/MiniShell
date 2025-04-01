@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:16 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 20:51:00 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 22:12:54 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,16 @@ static void	print_echo(char **args, int n, int i)
 {
 	while (args[i])
 	{
+		if (match_string(args[i], "-n\0"))
+		{
+			i++;
+			continue ;
+		}
+		if (ft_strncmp(args[i], "-nn", 3) == 0)
+		{
+			i++;
+			continue ;
+		}
 		ft_putstr_fd(args[i], STDOUT_FILENO);
 		if (args[i + 1])
 			ft_putchar_fd(' ', STDOUT_FILENO);

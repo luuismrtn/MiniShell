@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:54 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 00:27:55 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 22:27:22 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ static void	cd_to_home(t_token **tokens)
 		return ;
 	}
 	actual_path = find_env_var((*tokens)->env_mshell, "PWD")->content;
-	if (ft_strncmp(home_path, actual_path, ft_strlen(actual_path)))
+	if (!match_string(home_path, actual_path))
 	{
 		if (chdir(home_path) == 0)
 		{
