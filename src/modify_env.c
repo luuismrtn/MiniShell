@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 15:04:33 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/01 01:58:56 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 19:26:56 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
  * @param line Línea que contiene la variable en formato "NAME=VALUE"
  * @return int SUCCESS si se añadió correctamente, ERROR en caso contrario
  */
-static int	add_env_var(t_env **env_mshell, char *line)
+static int	add_env_var_line(t_env **env_mshell, char *line)
 {
 	t_env	*node;
 
@@ -61,18 +61,18 @@ t_env	*make_little_env(void)
 	fd = open("/etc/environment", O_RDONLY);
 	line = get_next_line(fd);
 	close(fd);
-	if (add_env_var(&env_mshell, line) == ERROR)
+	if (add_env_var_line(&env_mshell, line) == ERROR)
 		return (free(line), NULL);
 	free(line);
 	pwd = getcwd(NULL, 0);
 	line = ft_strjoin("PWD=", pwd);
-	if (add_env_var(&env_mshell, line) == ERROR)
+	if (add_env_var_line(&env_mshell, line) == ERROR)
 		return (free(pwd), free(line), NULL);
 	free(line);
 	shlvl_str = ft_itoa(1);
 	line = ft_strjoin("SHLVL=", shlvl_str);
 	free(shlvl_str);
-	if (add_env_var(&env_mshell, line) == ERROR)
+	if (add_env_var_line(&env_mshell, line) == ERROR)
 		return (free(pwd), free(line), NULL);
 	return (free(pwd), free(line), env_mshell);
 }

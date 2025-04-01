@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 01:55:45 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 19:26:27 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ t_env					*find_env_var(t_env *env, char *var_name);
 t_token					*initialize_shell(char **env);
 t_env					*create_env_node(char *env_var);
 void					add_last(t_env **head, t_env *node);
+t_env					*make_little_env(void);
 
 //  PARSE
 int						check_quotes_closed(char *input);
@@ -158,8 +159,8 @@ char					*extract_var_name(char *arg);
 void					print_env_as_export(t_token *tokens);
 void					handle_add_var(t_token *tokens, t_env *new_env,
 							char *content);
-void					add_env_var(t_token *tokens, char *name, char *content);
 char					*handle_env_var(char *str, t_token *tokens);
+void	add_env_var(t_token *tokens, char *name, char *content);
 
 // MODIFY_PWD_UTILS
 void					create_new_pwd(t_token **tokens, char *dir);
