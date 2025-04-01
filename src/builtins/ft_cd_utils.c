@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:49:21 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/27 14:36:11 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/04/01 01:45:23 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ void	handle_broken_pwd(t_token **tokens, char *input_path)
 	t_env	*current;
 
 	if (!validate_input_cd(input_path))
-		return(print_cd_error(input_path, NULL, NULL));
+		return (print_cd_error(input_path, NULL, NULL));
 	desired_path = find_desired_path(find_env_var((*tokens)->env_mshell,
 				"PWD")->content, input_path);
 	if (chdir(desired_path) == 0)

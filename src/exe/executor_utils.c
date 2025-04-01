@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   executor_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 15:00:46 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/31 17:51:23 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/04/01 01:47:50 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-void set_fds(int (*fds)[2])
+void	set_fds(int (*fds)[2])
 {
 	(*fds)[0] = STDIN_FILENO;
 	(*fds)[1] = STDOUT_FILENO;
@@ -82,7 +82,7 @@ int	child_pipe_fdin_redir(int *fd_in, char **args, int (*connect)[2])
 	if (fd_in != NULL)
 	{
 		if ((*fd_in) < 0)
-			return(errors_pipex(NULL, NULL, args, 'd'), -1);
+			return (errors_pipex(NULL, NULL, args, 'd'), -1);
 		dup2((*fd_in), STDIN_FILENO);
 		close((*fd_in));
 	}
@@ -90,7 +90,7 @@ int	child_pipe_fdin_redir(int *fd_in, char **args, int (*connect)[2])
 	{
 		close((*connect)[0]);
 		original_stdout = dup(STDOUT_FILENO);
-		dup2((*connect)[1], STDOUT_FILENO); //escribe en la pipe al ejecutr
+		dup2((*connect)[1], STDOUT_FILENO);
 		close((*connect)[1]);
 	}
 	return (original_stdout);

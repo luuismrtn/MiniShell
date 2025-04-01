@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 01:20:21 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 01:55:45 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,8 +166,6 @@ void					create_new_pwd(t_token **tokens, char *dir);
 
 //	HERE DOC
 void					handle_heredoc(char *eof, int fd, t_token *tokens);
-char					*get_env_content(t_token *tokens, char *line, int i,
-							int *start_after_d);
 void					expand_in_heredoc(char **line, t_token *tokens);
 
 //	SIGNALS
@@ -187,5 +185,6 @@ int						match_string(char *str1, char *str2);
 char					*handle_env_var(char *str, t_token *tokens);
 int						num_pipes(t_token *tokens);
 int						len_array(char **array);
+int						check_var_exist(char *var, t_token *tokens);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 00:33:07 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 01:46:37 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ static void	print_automat_error(int prev_token)
 	elements[5] = "newline";
 	elements[6] = "newline";
 	elements[7] = "err";
-	printf("number of tokens: %d\n", prev_token);
 	printf("syntax error: %s\n", elements[prev_token]);
 	exit_num = 1;
 }
@@ -58,22 +57,8 @@ static void	print_automat_error(int prev_token)
 static int	**create_automata(void)
 {
 	int	**automata;
-	int	i;
 
 	automata = malloc(sizeof(int *) * 6);
-	i = 0;
-	while (i < 6)
-	{
-		automata[i] = malloc(sizeof(int) * 8);
-		if (!automata[i])
-		{
-			while (--i >= 0)
-				free(automata[i]);
-			free(automata);
-			return (NULL);
-		}
-		i++;
-	}
 	automata[0] = (int []){1, 5, 5, 3, 3, 3, 3, 2};
 	automata[1] = (int []){2, 1, 4, 3, 3, 3, 3, 1};
 	automata[2] = (int []){2, 2, 4, 3, 3, 3, 3, 2};

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 01:19:18 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 01:20:01 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 01:22:41 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 /**
  * @brief Cuenta el número de líneas en el archivo de historial
  *
+ * Esta función cuenta el número de líneas en el archivo de historial.
+ * 
  * @param history_file Ruta al archivo de historial
  * @return int Número de líneas en el archivo, o -1 si hay error
  */
@@ -41,6 +43,8 @@ static int	count_history_lines(char *history_file)
 
 /**
  * @brief Lee el historial de comandos desde un archivo
+ * 
+ * Esta función lee el historial de comandos desde un archivo.
  *
  * @param history_file Ruta al archivo de historial
  * @return Un puntero al array o NULL en caso de error
@@ -66,9 +70,7 @@ char	**get_history(char *history_file)
 		count--;
 	}
 	while (i < count)
-	{
 		history[i++] = get_next_line(fd);
-	}
 	history[i] = NULL;
 	close(fd);
 	return (history);
@@ -77,6 +79,8 @@ char	**get_history(char *history_file)
 /**
  * @brief Reemplaza el historial en el archivo con el nuevo contenido
  *
+ * Esta función reemplaza el contenido del archivo de historial
+ * 
  * @param history_file Ruta al archivo de historial
  * @param history Array de cadenas con el nuevo contenido del historial
  * @return int SUCCESS o ERROR

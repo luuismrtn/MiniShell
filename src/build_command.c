@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_command.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 16:26:41 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/03/28 17:10:52 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/04/01 01:50:26 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,7 @@ static void	fill_args(char **args, int num_args, t_token *tokens)
 		{
 			args[i] = ft_strdup(tokens->content);
 			if (!args[i])
-			{
-				printf("AAAAH\n");
 				return (free(args));
-			}
 			i++;
 		}
 		if (tokens && tokens->type == T_PIPE)

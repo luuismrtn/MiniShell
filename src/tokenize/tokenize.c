@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 20:53:45 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/01 00:50:08 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 01:47:09 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ static void	handle_spaces(t_token **tokens, char *input, int *i)
 		(*i)++;
 	content = ft_substr(input, start, *i - start);
 	add_token(tokens, T_SPACE, content, 0);
+	free(content);
 }
 
 /**
@@ -55,20 +56,6 @@ static void	handle_pipe(t_token **tokens, char input, t_token_value type,
 	quotes[1] = '\0';
 	(*i)++;
 	add_token(tokens, type, ft_strdup(quotes), 0);
-}
-
-int	check_var_exist(char *var, t_token *tokens)
-{
-	t_env	*current;
-
-	current = tokens->env_mshell;
-	while (current)
-	{
-		if (match_string(current->name, var))
-			return (1);
-		current = current->next;
-	}
-	return (0);
 }
 
 /**
@@ -142,6 +129,7 @@ static void	handle_word(t_token **tokens, char *input, int *i)
 		add_token(tokens, T_FLAG, content, 0);
 	else
 		add_token(tokens, T_WORD, content, 0);
+	free(content);
 }
 
 /**

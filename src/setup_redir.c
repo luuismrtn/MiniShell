@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup_redir.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 16:25:22 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/03/31 18:04:58 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/04/01 01:49:46 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,11 @@ int	handle_redir_right_append(t_token *tokens, int (*fds)[2], char c)
 	int	new_fd;
 
 	if (c == 'r')
-		new_fd = open(tokens->next->content, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		new_fd = open(tokens->next->content, O_WRONLY | O_CREAT | O_TRUNC,
+				0644);
 	if (c == 'a')
-		new_fd = open(tokens->next->content, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		new_fd = open(tokens->next->content, O_WRONLY | O_CREAT | O_APPEND,
+				0644);
 	if (new_fd == -1)
 		return (perror("minishell: open"), new_fd);
 	if ((*fds)[1] != STDOUT_FILENO)
@@ -58,7 +60,7 @@ int	handle_redir_left(t_token *tokens, int (*fds)[2])
 
 	new_fd = open(tokens->next->content, O_RDONLY);
 	if (new_fd == -1)
-		return (perror("minishell: open"), new_fd);///new
+		return (perror("minishell: open"), new_fd);
 	if ((*fds)[0] != STDIN_FILENO)
 		close((*fds)[0]);
 	return (new_fd);
@@ -116,7 +118,7 @@ void	make_redirections(t_token *tokens, int (*fds)[2], t_token *head_tokens)
 		else if (tokens->type == T_HERE_DOC && tokens->next)
 			(*fds)[0] = handle_redir_heredoc(tokens, head_tokens);
 		else if (tokens->type == T_PIPE)
-			break;
+			break ;
 		tokens = tokens->next;
 	}
 }
@@ -137,7 +139,7 @@ void	make_redirections(t_token *tokens, int (*fds)[2], t_token *head_tokens)
  */
 int	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 {
-	t_token *head_tokens;
+	t_token	*head_tokens;
 
 	head_tokens = tokens;
 	tokens = tokens->next;

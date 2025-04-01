@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_general.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 14:58:28 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/28 14:06:17 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/04/01 01:47:14 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,4 +84,18 @@ int	match_string(char *str1, char *str2)
 {
 	return (ft_strncmp(str1, str2, ft_strlen(str2)) == 0
 		&& ft_strlen(str1) == ft_strlen(str2));
+}
+
+int	check_var_exist(char *var, t_token *tokens)
+{
+	t_env	*current;
+
+	current = tokens->env_mshell;
+	while (current)
+	{
+		if (match_string(current->name, var))
+			return (1);
+		current = current->next;
+	}
+	return (0);
 }

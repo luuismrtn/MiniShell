@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_pipex.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/31 17:51:15 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/04/01 01:48:43 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,10 +112,10 @@ int	first_command(t_token **tokens, int count)
 	int		original_stdout;
 
 	set_fds(&fds);
-	if (setup_redirections(*tokens, &fds, count) < 0) ///new
-		return(-1);
+	if (setup_redirections(*tokens, &fds, count) < 0)
+		return (-1);
 	args = build_command_string(*tokens, count);
-	if (!args || !args[0]) //< file | (no crea args) ///new
+	if (!args || !args[0])
 		return (-1);
 	if (pipe(connect) == -1)
 		return (errors_pipex(NULL, NULL, args, 'p'), -1);
@@ -157,8 +157,8 @@ int	middle_command(int *count, t_token **tokens, int fd_in)
 	int		original_stdout;
 
 	set_fds(&fds);
-	if (setup_redirections(*tokens, &fds, *count) < 0 || fd_in < 0) ///new
-		return(close(fd_in), -1);
+	if (setup_redirections(*tokens, &fds, *count) < 0 || fd_in < 0)
+		return (close(fd_in), -1);
 	args = build_command_string((*tokens), *count);
 	if (!args || !args[0])
 		return (close(fd_in), -1);

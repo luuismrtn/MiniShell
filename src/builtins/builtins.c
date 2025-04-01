@@ -6,12 +6,24 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:21:08 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/20 12:27:12 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 02:01:18 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
+/**
+ * @brief Maneja la ejecución de comandos internos (builtins)
+ *
+ * Esta función verifica si el primer argumento coincide con
+ * alguno de los comandos internos
+ * ("echo", "cd", "pwd", "export", "unset", "env", "exit").
+ * Si coincide, llama a la función correspondiente para ejecutar
+ * el comando.
+ *
+ * @param args Array de argumentos del comando.
+ * @param tokens Puntero al token actual.
+ */
 void	handle_builtin(char **args, t_token *tokens)
 {
 	if (ft_strncmp(args[0], "echo", 5) == 0)

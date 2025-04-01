@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:57:25 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 01:19:59 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 01:23:58 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 
 /**
  * @brief Lee el historial de comandos desde un archivo
+ * 
+ * Esta función lee el historial de comandos desde un archivo y lo
+ * añade a la lista de historial de readline.
  *
  * @param history_file Ruta al archivo de historial
  * @return int SUCCESS o ERROR
@@ -44,7 +47,9 @@ int	ft_read_history(char *history_file)
 }
 
 /**
- * @brief Obtiene la última línea del archivo de historial
+ * @brief Obtiene la última línea del archivo de historial.
+ * 
+ * Esta función lee el archivo de historial y devuelve la última línea.
  *
  * @param fd Descriptor del archivo de historial
  * @return char* Última línea o NULL
@@ -73,6 +78,9 @@ char	*return_last_command(int fd)
 
 /**
  * @brief Escribe la línea en el archivo de historial si no es duplicada
+ * 
+ * Esta función escribe la línea limpia en el archivo de historial
+ * si no es una duplicada de la última línea.
  *
  * @param fd Descriptor del archivo de historial
  * @param line_clean Línea limpia a escribir
@@ -105,6 +113,8 @@ static int	process_history_line(int fd, char *line_clean, char *last_command)
 
 /**
  * @brief Escribe una línea en el archivo de historial
+ * 
+ * Esta función escribe una línea en el archivo de historial
  *
  * @param history_file Ruta al archivo de historial
  * @param line Línea a escribir en el historial

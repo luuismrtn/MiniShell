@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 20:48:33 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 00:39:38 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 01:45:01 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ static t_token	*merge_tokens(t_token *current)
 	if (!new_content)
 		return (current->next);
 	free(old_content);
-	current->content = new_content;
+	current->content = ft_strdup(new_content);
+	free(new_content);
 	if (current->quotes == 0 && current->next->quotes == 1)
 		current->quotes = 1;
 	temp = current->next;
