@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 20:53:45 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/01 01:47:09 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 20:52:10 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ static void	handle_env(t_token **tokens, char *input, int *i)
 	}
 	len_var_name = ft_len_var_name(input, *i);
 	if (len_var_name == 0)
-		return (add_token(tokens, T_WORD, ft_strdup("$"), 0));
+		return (add_token(tokens, T_WORD, ft_strdup(""), 0));
 	var_name = ft_substr(input, *i, len_var_name);
 	(*i) += len_var_name;
 	if (!check_var_exist(var_name, *tokens))
@@ -120,7 +120,7 @@ static void	handle_word(t_token **tokens, char *input, int *i)
 	}
 	while (input[*i] && !ft_isspace(input[*i]) && input[*i] != '\"'
 		&& input[*i] != '\'' && input[*i] != '|' && input[*i] != '<'
-		&& input[*i] != '>' && input[*i] != '$')
+		&& input[*i] != '>' && !(input[*i] == '$' && input[*i + 1] != '\0'))
 		(*i)++;
 	content = ft_substr(input, start, *i - start);
 	if (!content)
@@ -163,7 +163,7 @@ t_token	*tokenize(char *input, t_token *tokens)
 			handle_redirections(&tokens, input, &i);
 		else if (input[i] == '|')
 			handle_pipe(&tokens, input[i], T_PIPE, &i);
-		else if (input[i] == '$' && input[i + 1] != '\0')
+		else if (input[i] == '$' && input[i + 1] && input[i + 1] != '\0')
 			handle_env(&tokens, input, &i);
 		else
 			handle_word(&tokens, input, &i);

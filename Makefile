@@ -78,6 +78,10 @@ re: fclean all
 #en ese caso: leer /etc/environment (guardar path y añadir PWD y SHLVL->si no exite: 1)
 #si ademas luego hacen env -i $PATH; minishell no ejecuta comandos pero no debe petar
 
+
+#/bin/echo hi >./outfiles/outfile01 | /bin/echo bye
+#/bin/echo <123 <456 hi | /bin/echo 42
+
 #--------------------cosas de las q podriamos pasar:
 
 # /home/aldferna/Desktop/MiniShell ~ ./minishell | ./minishell

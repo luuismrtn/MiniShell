@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldferna <aldferna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:16 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/21 17:37:00 by aldferna         ###   ########.fr       */
+/*   Updated: 2025/04/01 20:51:00 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,13 @@ static void	print_echo(char **args, int n, int i)
 {
 	while (args[i])
 	{
-		ft_putstr_fd(args[i], 1);
+		ft_putstr_fd(args[i], STDOUT_FILENO);
 		if (args[i + 1])
-			ft_putchar_fd(' ', 1);
+			ft_putchar_fd(' ', STDOUT_FILENO);
 		i++;
 	}
 	if (!n)
-		ft_putchar_fd('\n', 1);
+		ft_putchar_fd('\n', STDOUT_FILENO);
 }
 
 /**
@@ -61,7 +61,7 @@ void	ft_echo(char **args)
 		ft_putchar_fd('\n', 1);
 		return ;
 	}
-	if (ft_strncmp(args[1], "-n", 3) == 0)
+	if (ft_strncmp(args[1], "-n\0", 4) == 0)
 	{
 		n = 1;
 		i = 2;

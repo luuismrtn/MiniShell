@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 16:25:22 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/04/01 01:49:46 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/01 20:44:31 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,13 @@ int	handle_redir_right_append(t_token *tokens, int (*fds)[2], char c)
 		new_fd = open(tokens->next->content, O_WRONLY | O_CREAT | O_APPEND,
 				0644);
 	if (new_fd == -1)
-		return (perror("minishell: open"), new_fd);
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(tokens->next->content, 2);
+		ft_putstr_fd(": ", 2);
+		ft_putstr_fd("No such file or directory\n", 2);
+		return (new_fd);
+	}
 	if ((*fds)[1] != STDOUT_FILENO)
 		close((*fds)[1]);
 	return (new_fd);
@@ -60,7 +66,13 @@ int	handle_redir_left(t_token *tokens, int (*fds)[2])
 
 	new_fd = open(tokens->next->content, O_RDONLY);
 	if (new_fd == -1)
-		return (perror("minishell: open"), new_fd);
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(tokens->next->content, 2);
+		ft_putstr_fd(": ", 2);
+		ft_putstr_fd("No such file or directory\n", 2);
+		return (new_fd);
+	}
 	if ((*fds)[0] != STDIN_FILENO)
 		close((*fds)[0]);
 	return (new_fd);
