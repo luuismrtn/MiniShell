@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  -g3 #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror  -g3 -fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -74,20 +74,8 @@ re: fclean all
 
 # MASS PRUEBAS CON ERROR:
 
-#env -i ./minishell
-#en ese caso: leer /etc/environment (guardar path y añadir PWD y SHLVL->si no exite: 1)
-#si ademas luego hacen env -i $PATH; minishell no ejecuta comandos pero no debe petar
-
-
-#/bin/echo hi >./outfiles/outfile01 | /bin/echo bye
-#/bin/echo <123 <456 hi | /bin/echo 42
 
 #--------------------cosas de las q podriamos pasar:
 
-# /home/aldferna/Desktop/MiniShell ~ ./minishell | ./minishell
-# /home/aldferna/Desktop/MiniShell ~ /home/aldferna/Desktop/MiniShell ~ 
-#esto antes funcionaba (no se cd), puede ser q tenga relacion con q no se crea un hijo(?)
-
 
 #norminette
-#t_env.

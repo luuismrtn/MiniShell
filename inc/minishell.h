@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 19:26:27 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 19:31:16 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,14 +79,13 @@ int						replace_history(char *history_file, char **history);
 // ENV
 t_env					*env_buildin(char **env);
 t_env					*find_env_var(t_env *env, char *var_name);
-t_token					*initialize_shell(char **env);
+t_token					*initialize_shell(char **env, char **vars);
 t_env					*create_env_node(char *env_var);
 void					add_last(t_env **head, t_env *node);
 t_env					*make_little_env(void);
 
 //  PARSE
 int						check_quotes_closed(char *input);
-void					delete_tokens(t_token **tokens);
 void					clean_tokens(t_token **tokens);
 int						automata(t_token *tokens);
 int						ft_len_var_name(char *str, int i);
@@ -103,7 +102,8 @@ char					*process_env_in_quotes(char *result, char *input,
 							int *i, t_token **tokens);
 char					*expand_var_in_quotes(char *result, char *var_name,
 							t_token **tokens);
-void					free_tokens(t_token *tokens);
+void					free_tokens_first(t_token *tokens);
+void					free_tokens(t_token **tokens);
 void					free_env_list(t_env *env_list);
 
 // EXE
@@ -160,7 +160,7 @@ void					print_env_as_export(t_token *tokens);
 void					handle_add_var(t_token *tokens, t_env *new_env,
 							char *content);
 char					*handle_env_var(char *str, t_token *tokens);
-void	add_env_var(t_token *tokens, char *name, char *content);
+void					add_env_var(t_token *tokens, char *name, char *content);
 
 // MODIFY_PWD_UTILS
 void					create_new_pwd(t_token **tokens, char *dir);
@@ -187,5 +187,7 @@ char					*handle_env_var(char *str, t_token *tokens);
 int						num_pipes(t_token *tokens);
 int						len_array(char **array);
 int						check_var_exist(char *var, t_token *tokens);
+
+t_token					*dup_token(t_token orig);
 
 #endif

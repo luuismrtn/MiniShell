@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 01:48:03 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 18:32:32 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,7 @@ void	exe(t_token *tokens, char **cmd, int stdout_fd)
 		close(stdout_fd);
 		try_exec_with_path(cmd[0], cmd, env);
 	}
+	free_tokens(&tokens);
 	dup2(stdout_fd, STDOUT_FILENO);
 	close(stdout_fd);
 	handle_error_exit(cmd[0]);

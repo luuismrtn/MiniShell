@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 20:57:00 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/27 01:29:46 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 18:32:14 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ t_token	*create_node(t_token_value type, char *content, int quotes)
 		return (NULL);
 	new_token->type = type;
 	new_token->content = ft_strdup(content);
+	printf("malloc: %p\n", new_token->content);
 	if (!new_token->content)
 		return (free(new_token), NULL);
 	new_token->quotes = quotes;
@@ -74,59 +75,31 @@ void	add_token(t_token **head, t_token_value type, char *content, int quotes)
 	}
 }
 
-/**
- * @brief Elimina todos los tokens de la lista y reinicializa el nodo inicial
- *
- * Esta función libera la memoria de todos los tokens en la lista, pero
- * conserva la información de entorno (env_mshell),	variables de expansión
- * (exp_var) y el contenido del nodo inicial. Luego crea un nuevo nodo
- * inicial con estos valores preservados.
- *
- * @param tokens Doble puntero al inicio de la lista de tokens
- */
-void	delete_tokens(t_token **tokens)
-{
-	t_env	*env;
-	t_env	*var;
-	char	*content;
-	t_token	*aux;
-	t_token	*next;
-
-	var = (*tokens)->exp_var;
-	env = (*tokens)->env_mshell;
-	content = (*tokens)->content;
-	aux = *tokens;
-	while (aux != NULL)
-	{
-		next = aux->next;
-		if (aux->content)
-			aux->content = NULL;
-		free(aux);
-		aux = next;
-	}
-	*tokens = malloc(sizeof(t_token));
-	ft_memset(*tokens, 0, sizeof(t_token));
-	(*tokens)->env_mshell = env;
-	(*tokens)->exp_var = var;
-	(*tokens)->content = content;
-}
-
-/**
- * @brief Elimina todos los tokens de la lista
- *
- * Esta función libera la memoria de todos los tokens en la lista,
- * incluyendo el contenido de cada nodo. No conserva la información
- * de entorno ni el contenido del nodo inicial.
- *
- * @param tokens Doble puntero al inicio de la lista de tokens
- */
-void	free_tokens(t_token *tokens)
+void	free_tokens_first(t_token *tokens)
 {
 	if (!tokens)
 		return ;
 	if (tokens->env_mshell)
 		free_env_list(tokens->env_mshell);
+	if (tokens->exp_var)
+		free_env_list(tokens->exp_var);
 	if (tokens->content)
 		free(tokens->content);
 	free(tokens);
+}
+
+void	free_tokens(t_token **tokens)
+{
+	t_token	*next;
+	t_token	*aux;
+
+	next = *tokens;
+	while (next)
+	{
+		aux = next->next;
+		free(next->content);
+		free(next);
+		next = aux;
+	}
+	*tokens = 0;
 }

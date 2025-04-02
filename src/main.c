@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 21:30:21 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 19:28:41 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,16 +99,19 @@ static int	run(char *line, t_token *tokens)
  * @param tokens Doble puntero al token con información de entorno
  * @param history_file Ruta al archivo de historial
  */
-static void	process_line(char *line, t_token **tokens, char *history_file)
+static t_token	*process_line(char *line, t_token **tokens, char *history_file)
 {
 	char	*trimmed;
+	t_token	*cmd_tokens;
 
+	cmd_tokens = NULL;
 	trimmed = ft_strtrim(line, " \t\n\r\f\v");
 	if (!trimmed || trimmed[0] == '\0')
 	{
 		free(line);
 		free(trimmed);
-		return ;
+		free_tokens(tokens);
+		return (0);
 	}
 	free(trimmed);
 	add_history(line);
@@ -116,11 +119,14 @@ static void	process_line(char *line, t_token **tokens, char *history_file)
 	if (run(line, *tokens) == ERROR)
 	{
 		free(line);
-		delete_tokens(tokens);
+		free_tokens(tokens);
+		free_tokens_first(*tokens);
 		exit(1);
 	}
+	cmd_tokens = dup_token(**tokens);
 	free(line);
-	delete_tokens(tokens);
+	free_tokens(tokens);
+	return (cmd_tokens);
 }
 
 /**
@@ -140,20 +146,23 @@ static char	*show_prompt(t_token *tokens)
 
 	pwd_content = find_env_var(tokens->env_mshell, "PWD")->content;
 	prompt = ft_strjoin(pwd_content, " ~ ");
-	//line = readline(prompt);
-	if (isatty(fileno(stdin)))
-		line = readline(prompt);
-	else
-	{
-		char *line2;
-		line2 = get_next_line(fileno(stdin));
-		line = ft_strtrim(line2, "\n");
-		free(line2);
-	}
+	line = readline(prompt);
 	free(prompt);
 	return (line);
 }
 
+t_token	*dup_token(t_token orig)
+{
+	t_token	*new;
+
+	new = malloc(sizeof(t_token));
+	new->env_mshell = orig.env_mshell;
+	new->exp_var = orig.exp_var;
+	new->type = orig.type;
+	new->content = 0;
+	new->next = 0;
+	return (new);
+}
 /**
  * @brief Punto de entrada principal del programa
  *
@@ -169,27 +178,33 @@ static char	*show_prompt(t_token *tokens)
 int	main(int argc, char **argv, char **env)
 {
 	char	*line;
-	t_token	*tokens;
 	char	*history_file;
+	t_token	*tokens;
+	t_token	*cmd_tokens;
 
 	(void)argc;
 	(void)argv;
+	tokens = initialize_shell(env, NULL);
 	history_file = get_history_path();
-	tokens = initialize_shell(env);
 	if (!tokens || ft_read_history(history_file) == ERROR)
 	{
 		free(history_file);
-		free_tokens(tokens);
+		free_tokens(&tokens);
 		return (ERROR);
 	}
+	cmd_tokens = dup_token(*tokens);
+	printf("CMD_tokens: %s\n", cmd_tokens->env_mshell->name);
 	while (1)
 	{
-		line = show_prompt(tokens);
+		line = show_prompt(cmd_tokens);
 		if (!line)
+		{
+			free_tokens(&cmd_tokens);
 			break ;
-		process_line(line, &tokens, history_file);
+		}
+		cmd_tokens = process_line(line, &cmd_tokens, history_file);
 	}
 	free(history_file);
-	free_tokens(tokens);
+	free_tokens_first(tokens);
 	return (SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 01:19:18 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 01:22:41 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 16:01:30 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,10 +95,7 @@ int	replace_history(char *history_file, char **history)
 	fd = open(history_file, O_CREAT | O_RDWR | O_TRUNC, 0644);
 	if (fd < 0)
 	{
-		i = 0;
-		while (history[i])
-			free(history[i++]);
-		free(history);
+		free_array(history);
 		return (ERROR);
 	}
 	i = 0;

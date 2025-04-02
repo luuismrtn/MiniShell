@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 23:39:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 01:49:10 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 17:29:00 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,28 +25,26 @@
 void	try_exec_with_path(char *cmd, char **args, char **env)
 {
 	char	**paths;
+	char	*path_str;
 	int		i;
 
 	paths = search_path(env, cmd);
+	path_str = NULL;
 	i = 0;
 	while (paths[i] != NULL)
 	{
-		if (access(paths[i], R_OK | X_OK) == 0)
+		path_str = ft_strdup(paths[i]);
+		if (access(path_str, R_OK | X_OK) == 0)
 		{
+			free_array(paths);
 			if (!env)
 				return (perror("env"));
-			execve(paths[i], args, env);
-			printf("try_exec_wiht\n");
+			execve(path_str, args, env);
 		}
+		free(path_str);
 		i++;
 	}
-	i = 0;
-	while (paths[i])
-	{
-		free(paths[i]);
-		i++;
-	}
-	free(paths);
+	free_array(paths);
 }
 
 /**
@@ -83,16 +81,20 @@ static char	*join_path_and_cmd(char *path, char *cmd)
 char	**search_path(char **env, char *cmd)
 {
 	char	**paths;
+	char	**paths_split;
 	char	*path_str;
 	int		i;
 
 	path_str = get_path_from_env(env);
-	paths = ft_split(path_str, ':');
+	paths_split = ft_split(path_str, ':');
+	paths = malloc(sizeof(char *) * (len_array(paths_split) + 1));
 	i = 0;
-	while (paths[i] != NULL)
+	while (paths_split[i] != NULL)
 	{
-		paths[i] = join_path_and_cmd(paths[i], cmd);
+		paths[i] = join_path_and_cmd(paths_split[i], cmd);
 		i++;
 	}
+	paths[i] = NULL;
+	free_array(paths_split);
 	return (paths);
 }

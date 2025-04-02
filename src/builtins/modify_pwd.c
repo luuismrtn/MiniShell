@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:44:38 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 22:19:11 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 15:39:33 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ static void	modify_oldpwd(t_token *tokens)
 	t_env	*aux;
 	char	*a_pwd;
 
+	a_pwd = NULL;
 	aux = tokens->env_mshell;
 	while (aux)
 	{

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/01 01:48:43 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 18:23:56 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ void	executor(t_token **tokens, int (*fds)[2], char **args,
 		change_fds_redir(fds, NULL, NULL, 0);
 		exe((*tokens), args, original_stdout);
 	}
+	free_array(args);
 	exit(exit_num);
 }
 
@@ -113,7 +114,7 @@ int	first_command(t_token **tokens, int count)
 
 	set_fds(&fds);
 	if (setup_redirections(*tokens, &fds, count) < 0)
-		return (-1);
+		return (0);
 	args = build_command_string(*tokens, count);
 	if (!args || !args[0])
 		return (-1);
@@ -158,7 +159,7 @@ int	middle_command(int *count, t_token **tokens, int fd_in)
 
 	set_fds(&fds);
 	if (setup_redirections(*tokens, &fds, *count) < 0 || fd_in < 0)
-		return (close(fd_in), -1);
+		return (close(fd_in), 0);
 	args = build_command_string((*tokens), *count);
 	if (!args || !args[0])
 		return (close(fd_in), -1);
