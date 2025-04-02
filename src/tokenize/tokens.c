@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 20:57:00 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/02 18:32:14 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 19:37:36 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ t_token	*create_node(t_token_value type, char *content, int quotes)
 		return (NULL);
 	new_token->type = type;
 	new_token->content = ft_strdup(content);
-	printf("malloc: %p\n", new_token->content);
 	if (!new_token->content)
 		return (free(new_token), NULL);
 	new_token->quotes = quotes;

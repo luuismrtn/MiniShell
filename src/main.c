@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/02 19:28:41 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 19:37:11 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,10 +108,8 @@ static t_token	*process_line(char *line, t_token **tokens, char *history_file)
 	trimmed = ft_strtrim(line, " \t\n\r\f\v");
 	if (!trimmed || trimmed[0] == '\0')
 	{
-		free(line);
-		free(trimmed);
-		free_tokens(tokens);
-		return (0);
+		cmd_tokens = dup_token(**tokens);
+		return (free(line), free(trimmed), free_tokens(tokens), cmd_tokens);
 	}
 	free(trimmed);
 	add_history(line);
@@ -193,7 +191,6 @@ int	main(int argc, char **argv, char **env)
 		return (ERROR);
 	}
 	cmd_tokens = dup_token(*tokens);
-	printf("CMD_tokens: %s\n", cmd_tokens->env_mshell->name);
 	while (1)
 	{
 		line = show_prompt(cmd_tokens);
