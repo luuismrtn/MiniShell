@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -69,7 +69,7 @@ re: fclean all
 
 # LEAKS:
 #MIRAR FD's y errores ejecutando con valgrind:
-#--leak-check=full --track-origins=yes --track-fds=all --trace-children=yes
+#valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=all --trace-children=yes ./minishell
 
 
 # MASS PRUEBAS CON ERROR:

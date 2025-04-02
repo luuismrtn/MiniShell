@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:44:38 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/02 15:39:33 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 19:59:33 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ static void	update_pwd_other(t_env *aux, char *dir)
 {
 	char	*path;
 	char	*new_pwd;
-	
+
 	if (aux->content[ft_strlen(aux->content) - 1] == '/')
 		path = ft_strdup(dir);
 	else

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/02 18:23:56 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:01:40 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	executor(t_token **tokens, int (*fds)[2], char **args,
 		exe((*tokens), args, original_stdout);
 	}
 	free_array(args);
-	exit(exit_num);
+	exit(g_exit_num);
 }
 
 /**
@@ -88,7 +88,7 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 		executor(tokens, &fds, args, dup(STDOUT_FILENO));
 	}
 	waitpid(pid, &status, 0);
-	exit_num = WEXITSTATUS(status);
+	g_exit_num = WEXITSTATUS(status);
 	return (close(fd_in), free_array(args));
 }
 

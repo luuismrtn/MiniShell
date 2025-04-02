@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 20:57:00 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/02 19:37:36 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:00:34 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,4 +101,17 @@ void	free_tokens(t_token **tokens)
 		next = aux;
 	}
 	*tokens = 0;
+}
+
+t_token	*dup_token(t_token orig)
+{
+	t_token	*new;
+
+	new = malloc(sizeof(t_token));
+	new->env_mshell = orig.env_mshell;
+	new->exp_var = orig.exp_var;
+	new->type = orig.type;
+	new->content = 0;
+	new->next = 0;
+	return (new);
 }

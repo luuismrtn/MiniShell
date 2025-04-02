@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/02 18:32:32 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:01:09 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,14 +102,14 @@ static void	handle_error_exit(char *cmd)
 			printf("%s: Is a directory\n", cmd);
 		else if (access(cmd, F_OK) != 0)
 			printf("%s: No such file or directory\n", cmd);
-		exit_num = 126;
+		g_exit_num = 126;
 	}
 	else
 	{
 		printf("%s: command not found\n", cmd);
-		exit_num = 127;
+		g_exit_num = 127;
 	}
-	exit(exit_num);
+	exit(g_exit_num);
 }
 
 /**

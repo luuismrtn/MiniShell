@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/02 19:37:11 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:03:23 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
  * Esta variable global almacena el código de salida del último comando
  * ejecutado.
  */
-unsigned char	exit_num = 0;
+unsigned char	g_g_exit_num = 0;
 
 /**
  * @brief Obtiene la ruta completa al archivo de historial
@@ -149,18 +149,6 @@ static char	*show_prompt(t_token *tokens)
 	return (line);
 }
 
-t_token	*dup_token(t_token orig)
-{
-	t_token	*new;
-
-	new = malloc(sizeof(t_token));
-	new->env_mshell = orig.env_mshell;
-	new->exp_var = orig.exp_var;
-	new->type = orig.type;
-	new->content = 0;
-	new->next = 0;
-	return (new);
-}
 /**
  * @brief Punto de entrada principal del programa
  *
@@ -185,11 +173,7 @@ int	main(int argc, char **argv, char **env)
 	tokens = initialize_shell(env, NULL);
 	history_file = get_history_path();
 	if (!tokens || ft_read_history(history_file) == ERROR)
-	{
-		free(history_file);
-		free_tokens(&tokens);
-		return (ERROR);
-	}
+		return (free(history_file), free_tokens(&tokens), ERROR);
 	cmd_tokens = dup_token(*tokens);
 	while (1)
 	{
@@ -201,7 +185,5 @@ int	main(int argc, char **argv, char **env)
 		}
 		cmd_tokens = process_line(line, &cmd_tokens, history_file);
 	}
-	free(history_file);
-	free_tokens_first(tokens);
-	return (SUCCESS);
+	return (free(history_file), free_tokens_first(tokens), SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:16:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 00:25:52 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:01:09 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ static int	check_args(char **args)
 			ft_putstr_fd("export: `", 2);
 			ft_putstr_fd(args[i], 2);
 			ft_putstr_fd("': not a valid identifier\n", 2);
-			exit_num = 1;
+			g_exit_num = 1;
 			result = ERROR;
 		}
 		free(var_name);

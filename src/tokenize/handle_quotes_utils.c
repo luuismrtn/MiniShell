@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 21:07:26 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 21:37:02 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:01:09 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ char	*process_env_in_quotes(char *result, char *input, int *i,
 	(*i)++;
 	if (input[*i] == '?')
 	{
-		value = ft_itoa(exit_num);
+		value = ft_itoa(g_exit_num);
 		temp = ft_strjoin(result, value);
 		(*i)++;
 		return (free(result), free(value), temp);

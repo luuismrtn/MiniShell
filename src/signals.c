@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 20:25:06 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/04/01 19:36:56 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:01:09 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	handle_signal(int sig)
 {
 	if (sig == SIGINT)
 	{
-		exit_num = 130;
+		g_exit_num = 130;
 		write(1, "\n", 1);
 		rl_replace_line("", 0);
 		rl_on_new_line();
@@ -49,7 +49,7 @@ void	handle_signal_child(int sig)
 {
 	if (sig == SIGINT)
 	{
-		exit_num = 130;
+		g_exit_num = 130;
 		write(1, "\n", 1);
 		rl_on_new_line();
 	}
@@ -71,7 +71,7 @@ void	handle_signal_heredoc(int sig)
 {
 	if (sig == SIGINT)
 	{
-		exit_num = 130;
+		g_exit_num = 130;
 		write(1, "\n", 1);
 		rl_on_new_line();
 		exit(130);

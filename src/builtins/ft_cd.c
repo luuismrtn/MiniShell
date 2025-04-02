@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:54 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 22:27:22 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:01:09 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,14 @@ static void	cd_to_oldpwd(t_token **tokens)
 	if (!oldpwd)
 	{
 		ft_putstr_fd("cd: OLDPWD not set\n", 2);
-		exit_num = 1;
+		g_exit_num = 1;
 		return ;
 	}
 	if (chdir(oldpwd->content) == 0)
 	{
 		modify_pwd(tokens, oldpwd->content);
 		printf("%s\n", oldpwd->content);
-		exit_num = 0;
+		g_exit_num = 0;
 	}
 	else
 		print_cd_error(oldpwd->content, NULL, NULL);
@@ -60,7 +60,7 @@ static void	cd_to_root(t_token **tokens, char *args)
 	if (chdir(args) == 0)
 	{
 		modify_pwd(tokens, args);
-		exit_num = 0;
+		g_exit_num = 0;
 	}
 	else
 		print_cd_error(args, NULL, NULL);
@@ -84,7 +84,7 @@ static void	cd_to_home(t_token **tokens)
 	if (!home_path)
 	{
 		ft_putstr_fd("cd: HOME not set\n", 2);
-		exit_num = 1;
+		g_exit_num = 1;
 		return ;
 	}
 	actual_path = find_env_var((*tokens)->env_mshell, "PWD")->content;
@@ -93,7 +93,7 @@ static void	cd_to_home(t_token **tokens)
 		if (chdir(home_path) == 0)
 		{
 			modify_pwd(tokens, home_path);
-			exit_num = 0;
+			g_exit_num = 0;
 		}
 		else
 			print_cd_error(home_path, NULL, NULL);
@@ -153,7 +153,7 @@ void	ft_cd(char **args, t_token **tokens)
 		cd_to_oldpwd(tokens);
 	else if (args[1] && args[2])
 	{
-		exit_num = 1;
+		g_exit_num = 1;
 		ft_putstr_fd("cd: too many arguments\n", 2);
 	}
 	else

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 20:53:45 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/01 20:52:10 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:01:09 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static void	handle_pipe(t_token **tokens, char input, t_token_value type,
 	quotes[0] = input;
 	quotes[1] = '\0';
 	(*i)++;
-	add_token(tokens, type, ft_strdup(quotes), 0);
+	add_token(tokens, type, quotes, 0);
 }
 
 /**
@@ -79,7 +79,7 @@ static void	handle_env(t_token **tokens, char *input, int *i)
 	if (input[*i] == '?')
 	{
 		(*i)++;
-		return (add_token(tokens, T_ENV, ft_itoa(exit_num), 0));
+		return (add_token(tokens, T_ENV, ft_itoa(g_exit_num), 0));
 	}
 	len_var_name = ft_len_var_name(input, *i);
 	if (len_var_name == 0)

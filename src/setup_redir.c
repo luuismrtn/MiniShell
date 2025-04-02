@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 16:25:22 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/04/01 21:38:28 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:02:06 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	handle_redir_right_append(t_token *tokens, int (*fds)[2], char c)
 		ft_putstr_fd(tokens->next->content, 2);
 		ft_putstr_fd(": ", 2);
 		ft_putstr_fd("No such file or directory\n", 2);
-		exit_num = 1;
+		g_exit_num = 1;
 		return (new_fd);
 	}
 	if ((*fds)[1] != STDOUT_FILENO)
@@ -147,7 +147,7 @@ void	make_redirections(t_token *tokens, int (*fds)[2], t_token *head_tokens)
  *
  * @param tokens Lista de tokens que contiene el comando y sus redirecciones
  * @param fds Puntero a un array [stdin,
-	stdout] donde se guardan los descriptores
+		stdout] donde se guardan los descriptores
  * @param count Contador de pipes para saltar al comando correcto
  */
 int	setup_redirections(t_token *tokens, int (*fds)[2], int count)

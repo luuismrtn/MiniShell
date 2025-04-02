@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 15:09:29 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/01 21:16:45 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:01:09 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,6 @@ void	one_comnd(t_token **tokens)
 		executor(tokens, &fds, args, dup(STDOUT_FILENO));
 	clean_father_material(&fds, args);
 	waitpid(pid, &status, 0);
-	exit_num = WEXITSTATUS(status);
+	g_exit_num = WEXITSTATUS(status);
 	signals('f');
 }

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:17:44 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/27 01:01:50 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:01:48 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,13 +93,13 @@ void	ft_exit(char **arg)
 	if (args > 2 && ft_isdigit(arg[1][0]))
 	{
 		ft_putstr_fd("exit: too many arguments\n", 2);
-		exit_num = 1;
+		g_exit_num = 1;
 	}
 	else if (arg[1])
 	{
-		exit_num = ft_atoi(arg[1]);
+		g_exit_num = ft_atoi(arg[1]);
 		if (arg_isdigit(arg[1]))
-			exit(exit_num);
+			exit(g_exit_num);
 		else
 		{
 			ft_putstr_fd("exit: ", 2);

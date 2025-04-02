@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/02 19:31:16 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:04:47 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # include <sys/wait.h>
 # include <unistd.h>
 
-extern unsigned char	exit_num;
+extern unsigned char	g_exit_num;
 
 # define SUCCESS 0
 # define ERROR 1
@@ -172,8 +172,6 @@ void					expand_in_heredoc(char **line, t_token *tokens);
 //	SIGNALS
 void					signals(char c);
 void					ign_signal(void);
-
-int						main2(char *string, t_token *tokens);
 
 void					print_2(char **str);
 void					free_array(char **array);

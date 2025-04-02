@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 01:46:37 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:01:09 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static void	print_automat_error(int prev_token)
 	elements[6] = "newline";
 	elements[7] = "err";
 	printf("syntax error: %s\n", elements[prev_token]);
-	exit_num = 1;
+	g_exit_num = 1;
 }
 
 /**
@@ -96,8 +96,8 @@ int	automata(t_token *tokens)
 	int	current_state;
 	int	prev_token;
 	int	**automata;
-	int	result;
 
+	prev_token = 0;
 	automata = create_automata();
 	if (!automata || tokens->next == NULL)
 		return (1);
@@ -109,9 +109,8 @@ int	automata(t_token *tokens)
 		current_state = automata[current_state][prev_token];
 		tokens = tokens->next;
 	}
-	result = (current_state != 1 && current_state != 2);
-	if (result)
+	if ((current_state != 1 && current_state != 2))
 		print_automat_error(prev_token);
 	free(automata);
-	return (result);
+	return ((current_state != 1 && current_state != 2));
 }

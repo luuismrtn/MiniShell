@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:15:28 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/20 12:39:56 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:01:09 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
  * Comportamiento:
  * - Muestra la ruta absoluta del directorio actual
  * - No modifica ninguna variable de entorno
- * - No cambia el código de salida (mantiene exit_num sin cambios)
+ * - No cambia el código de salida (mantiene g_exit_num sin cambios)
  *
  * @param tokens Puntero a la estructura de tokens con variables de entorno.
  * Necesario para acceder a la variable PWD como respaldo.

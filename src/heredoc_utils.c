@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 14:55:17 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/01 01:56:09 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:01:09 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static void	join_content(char **content, char *line, int i, int start)
  * @brief Maneja la expansión de la variable especial $?
  *
  * Esta función expande la variable especial $? reemplazándola por
- * el código de salida de la última ejecución (exit_num).
+ * el código de salida de la última ejecución (g_exit_num).
  * Actualiza la posición actual y el inicio del próximo segmento.
  *
  * @param content Puntero al puntero de la cadena de contenido acumulado
@@ -54,7 +54,7 @@ static void	handle_var_exitnum(char **content, int (*i_start)[2])
 	char	*temp;
 
 	(*i_start)[0]++;
-	temp = ft_strjoin(*content, ft_itoa(exit_num));
+	temp = ft_strjoin(*content, ft_itoa(g_exit_num));
 	free((*content));
 	(*content) = temp;
 	(*i_start)[1] = (*i_start)[0];

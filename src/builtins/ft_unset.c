@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:16:46 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 02:03:54 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:01:09 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,5 +86,5 @@ void	ft_unset(t_token *tokens, char **args)
 		remove_env_var(tokens, args[i]);
 		i++;
 	}
-	exit_num = 0;
+	g_exit_num = 0;
 }
