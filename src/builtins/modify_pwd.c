@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:44:38 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/02 19:59:33 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 20:57:57 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,11 +153,11 @@ void	modify_pwd(t_token **tokens, char *dir)
 		{
 			if (ft_strncmp(dir, ".", 1) == 0)
 				update_pwd_dot(aux, dir);
-			else if (!ft_strncmp(dir, find_env_var((*tokens)->env_mshell,
+			else if (find_env_var((*tokens)->env_mshell, "HOME")
+				&& !ft_strncmp(dir, find_env_var((*tokens)->env_mshell,
 						"HOME")->content, 5))
 				update_pwd_home(aux, dir, tokens);
-			else if (match_string(dir, "/") == 1 || ft_strncmp(dir, "//",
-					3) == 0)
+			else if (match_string(dir, "/") || ft_strncmp(dir, "//", 3) == 0)
 				update_pwd_home(aux, dir, tokens);
 			else
 				update_pwd_other(aux, dir);

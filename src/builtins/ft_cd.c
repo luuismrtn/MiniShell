@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:54 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/02 20:01:09 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 21:11:52 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void	cd_to_oldpwd(t_token **tokens)
 	oldpwd = find_env_var((*tokens)->env_mshell, "OLDPWD");
 	if (!oldpwd)
 	{
-		ft_putstr_fd("cd: OLDPWD not set\n", 2);
+		ft_putstr_fd("minishell: cd: OLDPWD not set\n", 2);
 		g_exit_num = 1;
 		return ;
 	}
@@ -77,16 +77,18 @@ static void	cd_to_root(t_token **tokens, char *args)
  */
 static void	cd_to_home(t_token **tokens)
 {
+	t_env	*home_path_env;
 	char	*home_path;
 	char	*actual_path;
 
-	home_path = find_env_var((*tokens)->env_mshell, "HOME")->content;
-	if (!home_path)
+	home_path_env = find_env_var((*tokens)->env_mshell, "HOME");
+	if (!home_path_env)
 	{
-		ft_putstr_fd("cd: HOME not set\n", 2);
+		ft_putstr_fd("minishell: cd: HOME not set\n", 2);
 		g_exit_num = 1;
 		return ;
 	}
+	home_path = home_path_env->content;
 	actual_path = find_env_var((*tokens)->env_mshell, "PWD")->content;
 	if (!match_string(home_path, actual_path))
 	{
@@ -154,7 +156,7 @@ void	ft_cd(char **args, t_token **tokens)
 	else if (args[1] && args[2])
 	{
 		g_exit_num = 1;
-		ft_putstr_fd("cd: too many arguments\n", 2);
+		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
 	}
 	else
 	{
