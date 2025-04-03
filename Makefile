@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror #-g3 -fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -71,8 +71,15 @@ re: fclean all
 #MIRAR FD's y errores ejecutando con valgrind:
 #valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=all --trace-children=yes ./minishell
 
+#cat <"./test_files/infile_big" | echo hi
+#cat <missing | cat
+
 
 # MASS PRUEBAS CON ERROR:
+
+#cat <"./test_files/infile_big" | cat Makefile
+# Se cierra cuando se ejecuta
+
 
 
 #--------------------cosas de las q podriamos pasar:

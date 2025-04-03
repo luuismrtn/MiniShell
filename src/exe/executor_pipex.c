@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/02 20:01:40 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 12:56:22 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,11 @@
 void	executor(t_token **tokens, int (*fds)[2], char **args,
 		int original_stdout)
 {
+	if (match_string(args[0], ""))
+	{
+		ft_putstr_fd("minishell: '' command not found\n", 2);
+		g_exit_num = 127;
+	}
 	if ((ft_strncmp(args[0], "./minishell", 12) == 0)
 		&& num_pipes(*tokens) == 0)
 		modify_shlvl(tokens, "SHLVL");

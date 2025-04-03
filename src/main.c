@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/02 20:03:23 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 12:44:44 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
  * Esta variable global almacena el código de salida del último comando
  * ejecutado.
  */
-unsigned char	g_g_exit_num = 0;
+unsigned char	g_exit_num = 0;
 
 /**
  * @brief Obtiene la ruta completa al archivo de historial
@@ -144,7 +144,16 @@ static char	*show_prompt(t_token *tokens)
 
 	pwd_content = find_env_var(tokens->env_mshell, "PWD")->content;
 	prompt = ft_strjoin(pwd_content, " ~ ");
-	line = readline(prompt);
+	//line = readline(prompt);
+	if (isatty(fileno(stdin)))
+		line = readline(prompt);
+	else
+	{
+		char *line2;
+		line2 = get_next_line(fileno(stdin));
+		line = ft_strtrim(line2, "\n");
+		free(line2);
+	}
 	free(prompt);
 	return (line);
 }

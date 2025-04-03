@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/02 20:01:09 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 13:13:20 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static void	print_automat_error(int prev_token)
 	elements[6] = "newline";
 	elements[7] = "err";
 	printf("syntax error: %s\n", elements[prev_token]);
-	g_exit_num = 1;
+	g_exit_num = 2;
 }
 
 /**
