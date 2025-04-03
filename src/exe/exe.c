@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/03 13:19:04 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 20:25:45 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,8 @@ static void	handle_error_exit(char *cmd)
 	}
 	else
 	{
-		printf("%s: command not found\n", cmd);
+		ft_putstr_fd(cmd, 2);
+		ft_putstr_fd(": command not found\n", 2);
 		g_exit_num = 127;
 	}
 	exit(g_exit_num);

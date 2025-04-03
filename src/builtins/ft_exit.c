@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:17:44 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/02 20:01:48 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 20:22:16 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ static int	arg_isdigit(char *str)
 	int	i;
 
 	i = 0;
+	if (!str || str[i] == '\0')
+		return (0);
 	while (str[i])
 	{
 		if (i == 0 && (str[i] == '-' || str[i] == '+') && str[i + 1])
@@ -92,7 +94,8 @@ void	ft_exit(char **arg)
 	args = len_array(arg);
 	if (args > 2 && ft_isdigit(arg[1][0]))
 	{
-		ft_putstr_fd("exit: too many arguments\n", 2);
+		ft_putstr_fd("exit\n", 2);
+		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
 		g_exit_num = 1;
 	}
 	else if (arg[1])
@@ -102,7 +105,7 @@ void	ft_exit(char **arg)
 			exit(g_exit_num);
 		else
 		{
-			ft_putstr_fd("exit: ", 2);
+			ft_putstr_fd("minishell: exit: ", 2);
 			ft_putstr_fd(arg[1], 2);
 			ft_putstr_fd(": numeric argument required\n", 2);
 			exit(2);
