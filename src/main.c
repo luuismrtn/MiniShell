@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/03 12:44:44 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 13:34:46 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,18 +111,18 @@ static t_token	*process_line(char *line, t_token **tokens, char *history_file)
 		cmd_tokens = dup_token(**tokens);
 		return (free(line), free(trimmed), free_tokens(tokens), cmd_tokens);
 	}
-	free(trimmed);
-	add_history(line);
-	write_line_history(history_file, line);
-	if (run(line, *tokens) == ERROR)
+	free(line);
+	add_history(trimmed);
+	write_line_history(history_file, trimmed);
+	if (run(trimmed, *tokens) == ERROR)
 	{
-		free(line);
+		free(trimmed);
 		free_tokens(tokens);
 		free_tokens_first(*tokens);
 		exit(1);
 	}
 	cmd_tokens = dup_token(**tokens);
-	free(line);
+	free(trimmed);
 	free_tokens(tokens);
 	return (cmd_tokens);
 }
@@ -144,16 +144,7 @@ static char	*show_prompt(t_token *tokens)
 
 	pwd_content = find_env_var(tokens->env_mshell, "PWD")->content;
 	prompt = ft_strjoin(pwd_content, " ~ ");
-	//line = readline(prompt);
-	if (isatty(fileno(stdin)))
-		line = readline(prompt);
-	else
-	{
-		char *line2;
-		line2 = get_next_line(fileno(stdin));
-		line = ft_strtrim(line2, "\n");
-		free(line2);
-	}
+	line = readline(prompt);
 	free(prompt);
 	return (line);
 }

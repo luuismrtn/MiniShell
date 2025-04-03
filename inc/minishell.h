@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/02 20:04:47 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 13:24:42 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,7 @@ void					handle_add_var(t_token *tokens, t_env *new_env,
 							char *content);
 char					*handle_env_var(char *str, t_token *tokens);
 void					add_env_var(t_token *tokens, char *name, char *content);
+char					*remove_consec_spaces(char *str);
 
 // MODIFY_PWD_UTILS
 void					create_new_pwd(t_token **tokens, char *dir);

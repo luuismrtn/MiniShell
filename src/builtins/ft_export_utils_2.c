@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 01:22:30 by lumartin          #+#    #+#             */
-/*   Updated: 2025/03/27 01:39:27 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 13:30:43 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,5 +120,37 @@ char	*handle_env_var(char *str, t_token *tokens)
 		join_result(tokens, str, &i, &result);
 		i++;
 	}
+	return (result);
+}
+/**
+ * @brief Elimina los espacios consecutivos de una cadena
+ * 
+ * Esta función recorre la cadena de entrada y elimina los espacios
+ * consecutivos, dejando solo un espacio entre palabras.
+ * 
+ * @param str Cadena de entrada a procesar
+ * @return char* Nueva cadena con los espacios consecutivos eliminados
+ */
+char	*remove_consec_spaces(char *str)
+{
+	int		i;
+	int		j;
+	char	*result;
+
+	if (!str)
+		return (NULL);
+	result = malloc(sizeof(char) * (ft_strlen(str) + 1));
+	if (!result)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (str[i])
+	{
+		if ((str[i] == ' ' && str[i + 1] != ' ') || str[i] != ' ')
+			result[j++] = str[i];
+		i++;
+	}
+	result[j] = '\0';
+	free(str);
 	return (result);
 }

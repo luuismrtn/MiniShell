@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:16:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/02 20:01:09 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 13:28:49 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	add_env_var(t_token *tokens, char *name, char *content)
 		return ;
 	new_env->name = ft_strdup(name);
 	if (content || find_env_var(tokens->env_mshell, name))
-		handle_add_var(tokens, new_env, content);
+		handle_add_var(tokens, new_env, remove_consec_spaces(content));
 	else
 	{
 		if (find_env_var(tokens->exp_var, name))
@@ -65,7 +65,7 @@ static void	process_assignment(t_token *tokens, char *arg)
 	if (current)
 	{
 		free(current->content);
-		current->content = ft_strdup(var_content);
+		current->content = ft_strdup(remove_consec_spaces(var_content));
 	}
 	else
 		add_env_var(tokens, var_name, var_content);
