@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 16:26:41 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/04/03 12:55:54 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 21:28:17 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,5 +111,10 @@ char	**build_command_string(t_token *tokens, int count)
 	if (!args)
 		return (NULL);
 	fill_args(args, num_args, tokens);
+	if (!args[0])
+	{
+		free_array(args);
+		return (NULL);
+	}
 	return (args);
 }

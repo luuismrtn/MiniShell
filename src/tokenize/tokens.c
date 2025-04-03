@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 20:57:00 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/02 20:00:34 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 21:30:23 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,10 @@ void	add_token(t_token **head, t_token_value type, char *content, int quotes)
 	t_token	*new_token;
 
 	if (!content)
-		return ;
+		return (free(content));
 	new_token = create_node(type, content, quotes);
 	if (!new_token || !head)
-		return ;
+		return (free(content), free(new_token));
 	if (*head == NULL)
 		*head = new_token;
 	else
@@ -72,6 +72,7 @@ void	add_token(t_token **head, t_token_value type, char *content, int quotes)
 			aux = aux->next;
 		aux->next = new_token;
 	}
+	free(content);
 }
 
 void	free_tokens_first(t_token *tokens)
