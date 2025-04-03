@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_pipex.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/03 12:56:22 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 18:23:18 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	executor(t_token **tokens, int (*fds)[2], char **args,
  * @param tokens Doble puntero al token que contiene la información del comando
  * @param fd_in Descriptor de archivo para la entrada desde el comando anterior
  */
-void	final_command(int *count, t_token **tokens, int fd_in)
+int	final_command(int *count, t_token **tokens, int fd_in)
 {
 	int		fds[2];
 	char	**args;
@@ -76,11 +76,11 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 	int		status;
 
 	set_fds(&fds);
-	if (setup_redirections((*tokens), &fds, *count) < 0 || fd_in < 0)
-		return ;
+	if (setup_redirections((*tokens), &fds, *count) < 0)
+		return (0);
 	args = build_command_string((*tokens), *count);
 	if (!args || !args[0])
-		return ;
+		return (0);
 	signals('c');
 	if (ft_strncmp(args[0], "./minishell", 12) == 0)
 		ign_signal();
@@ -89,12 +89,12 @@ void	final_command(int *count, t_token **tokens, int fd_in)
 		return (errors_pipex(&fd_in, NULL, args, 'e'));
 	else if (pid == 0)
 	{
-		child_pipe_fdin_redir(&fd_in, args, NULL);
+		child_pipe_fdin_redir(&fd_in, NULL);
 		executor(tokens, &fds, args, dup(STDOUT_FILENO));
 	}
 	waitpid(pid, &status, 0);
 	g_exit_num = WEXITSTATUS(status);
-	return (close(fd_in), free_array(args));
+	return (close(fd_in), free_array(args), 0);
 }
 
 /**
@@ -119,7 +119,7 @@ int	first_command(t_token **tokens, int count)
 
 	set_fds(&fds);
 	if (setup_redirections(*tokens, &fds, count) < 0)
-		return (0);
+		return (fds[0]);
 	args = build_command_string(*tokens, count);
 	if (!args || !args[0])
 		return (-1);
@@ -132,7 +132,7 @@ int	first_command(t_token **tokens, int count)
 		return (errors_pipex(&connect[0], &connect[1], args, 'f'), -1);
 	else if (pid == 0)
 	{
-		original_stdout = child_pipe_fdin_redir(NULL, args, &connect);
+		original_stdout = child_pipe_fdin_redir(NULL, &connect);
 		executor(tokens, &fds, args, original_stdout);
 	}
 	return (close(connect[1]), clean_father_material(&fds, args), connect[0]);
@@ -163,8 +163,8 @@ int	middle_command(int *count, t_token **tokens, int fd_in)
 	int		original_stdout;
 
 	set_fds(&fds);
-	if (setup_redirections(*tokens, &fds, *count) < 0 || fd_in < 0)
-		return (close(fd_in), 0);
+	if (setup_redirections(*tokens, &fds, *count) < 0)
+		return (close(fd_in), fds[0]);
 	args = build_command_string((*tokens), *count);
 	if (!args || !args[0])
 		return (close(fd_in), -1);
@@ -175,7 +175,7 @@ int	middle_command(int *count, t_token **tokens, int fd_in)
 		return (errors_pipex(&connect[0], &connect[1], args, 'f'), -1);
 	else if (pid == 0)
 	{
-		original_stdout = child_pipe_fdin_redir(&fd_in, args, &connect);
+		original_stdout = child_pipe_fdin_redir(&fd_in, &connect);
 		executor(tokens, &fds, args, original_stdout);
 	}
 	clean_father_material(&fds, args);

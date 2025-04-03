@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 15:09:29 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/02 20:01:09 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 18:05:00 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,9 @@ void	one_comnd(t_token **tokens)
 	pid_t	pid;
 	int		status;
 
-	fds[0] = STDIN_FILENO;
-	fds[1] = STDOUT_FILENO;
-	setup_redirections(*tokens, &fds, 0);
+	set_fds(&fds);
+	if (setup_redirections(*tokens, &fds, 0) < 0)
+		return ;
 	args = build_command_string(*tokens, 0);
 	if (!args || !args[0])
 		return ;

@@ -25,6 +25,9 @@ pwd | cat | cat -e >3 | wc -l (bash: 0 y crea 3 con print dwl pwd) (mshell: hace
 #< input.txt > output.txt | cat
 # error: catsrttgt Makefile > hola.txt
 #echo hi > ./hola/outfile | echo bye
+cat < missing | echo hi
+cat < missing | cat Makefile
+cat <missing | cat
 
 
 EXPORT

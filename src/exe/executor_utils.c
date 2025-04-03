@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 15:00:46 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/01 01:47:50 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 18:18:48 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,32 +30,37 @@ void	set_fds(int (*fds)[2])
  * @param pipe_out Puntero al descriptor de salida de la tubería
  * @param args Array de argumentos del comando (se liberará)
  * @param c Carácter que indica el tipo de error:
- *          'p' - Error en pipe()
- *          'f' - Error en fork() con descriptor de salida
- *          'e' - Error en fork() sin descriptor de salida
- *          'd' - Error en archivo de salida
+ *          'p' - 'pipe' Error en pipe()
+ *          'f' - 'fork' Error en fork() con descriptor de salida
+ *          'e' - 'end' Error en fork() sin descriptor de salida
+ *          'i' - 'in' Error si fd_in recibido < 0
  */
-void	errors_pipex(int *pipe_in, int *pipe_out, char **args, char c)
+int	errors_pipex(int *pipe_in, int *pipe_out, char **args, char c)
 {
+	int fd_null;
+
 	free_array(args);
 	if (c == 'p')
 		perror("pipe");
 	else if (c == 'f')
 	{
 		perror("fork");
-		close((*pipe_in));
-		close((*pipe_out));
+		return (close(*pipe_in), close(*pipe_out));
 	}
 	else if (c == 'e')
+		return (perror("fork"), close(*pipe_in));
+	else if (c == 'i')
 	{
-		perror("fork");
-		close((*pipe_in));
+		fd_null = open("/dev/null", O_RDONLY);
+		if (fd_null == -1)
+		{
+			perror("open /dev/null");
+			exit(1);
+		}
+		dup2(fd_null, STDIN_FILENO);
+		close(fd_null);
 	}
-	else if (c == 'd')
-	{
-		perror("error output file");
-		exit(1);
-	}
+	return 0;
 }
 
 /**
@@ -74,7 +79,7 @@ void	errors_pipex(int *pipe_in, int *pipe_out, char **args, char c)
 	escritura] de la tubería
  * @return int Descriptor original de stdout (para restaurarlo después)
  */
-int	child_pipe_fdin_redir(int *fd_in, char **args, int (*connect)[2])
+int	child_pipe_fdin_redir(int *fd_in, int (*connect)[2])
 {
 	int	original_stdout;
 
@@ -82,7 +87,7 @@ int	child_pipe_fdin_redir(int *fd_in, char **args, int (*connect)[2])
 	if (fd_in != NULL)
 	{
 		if ((*fd_in) < 0)
-			return (errors_pipex(NULL, NULL, args, 'd'), -1);
+			errors_pipex(NULL, NULL, NULL, 'i');
 		dup2((*fd_in), STDIN_FILENO);
 		close((*fd_in));
 	}

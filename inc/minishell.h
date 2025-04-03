@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/03 13:24:42 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 18:17:30 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,12 +125,11 @@ void					executor(t_token **tokens, int (*fds)[2], char **args,
 void					one_comnd(t_token **tokens);
 
 //	PIPEX UTILS
-int						child_pipe_fdin_redir(int *fd_in, char **args,
-							int (*connect)[2]);
+int						child_pipe_fdin_redir(int *fd_in, int (*connect)[2]);
 void					change_fds_redir(int (*fds)[2], int *o_stdin,
 							int *o_stdout, int builtin_father);
 void					clean_father_material(int (*fds)[2], char **args);
-void					errors_pipex(int *pipe_in, int *pipe_out, char **args,
+int					errors_pipex(int *pipe_in, int *pipe_out, char **args,
 							char c);
 void					set_fds(int (*fds)[2]);
 

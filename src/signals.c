@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 20:25:06 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/04/03 11:27:52 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 18:41:38 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
