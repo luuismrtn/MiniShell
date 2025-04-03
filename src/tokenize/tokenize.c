@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 20:53:45 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/03 21:31:03 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 21:40:47 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static void	handle_pipe(t_token **tokens, char input, t_token_value type,
 	quotes[0] = input;
 	quotes[1] = '\0';
 	(*i)++;
-	add_token(tokens, type,ft_strdup(quotes), 0);
+	add_token(tokens, type, ft_strdup(quotes), 0);
 }
 
 /**

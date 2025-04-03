@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 01:22:30 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/03 13:30:43 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 21:40:32 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,7 @@ char	*handle_env_var(char *str, t_token *tokens)
 	}
 	return (result);
 }
+
 /**
  * @brief Elimina los espacios consecutivos de una cadena
  * 

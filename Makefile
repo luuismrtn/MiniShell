@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror #-g3 -fsanitize=address
 RM = rm -f
 
 SRC = src/main.c \
@@ -39,7 +39,8 @@ SRC = src/main.c \
 	src/builtins/modify_pwd.c \
 	src/builtins/modify_pwd_utils.c \
 	src/modify_env.c \
-	src/utils_general.c\
+	src/utils_general.c \
+	src/utils_general_2.c \
 	src/utils_errors.c \
 
 INCLUDE = -I libft -I.
@@ -66,16 +67,6 @@ re: fclean all
 
 .PHONY: all clean fclean re
 
-
-# LEAKS:
 #MIRAR FD's y errores ejecutando con valgrind:
 #valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=all --trace-children=yes ./minishell
 
-#cat <"./test_files/infile_big" | echo hi
-#cat <missing | cat
-
-
-# MASS PRUEBAS CON ERROR:
-
-
-#norminette

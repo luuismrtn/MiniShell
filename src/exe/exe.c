@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 17:30:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/03 20:25:45 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 21:40:58 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,8 @@ void	exe(t_token *tokens, char **cmd, int stdout_fd)
 		ft_putstr_fd("minishell: .: filename argument required\n", 2);
 		exit(2);
 	}
-	if ((ft_strchr(cmd[0], '/') != NULL && access(cmd[0], X_OK) == 0) || ((!ft_strncmp(cmd[0], ".", 2)) || (!ft_strncmp(cmd[0], "..", 3))))
+	if ((ft_strchr(cmd[0], '/') != NULL && access(cmd[0], X_OK) == 0)
+		|| ((!ft_strncmp(cmd[0], ".", 2)) || (!ft_strncmp(cmd[0], "..", 3))))
 	{
 		close(stdout_fd);
 		execve(cmd[0], cmd, env);

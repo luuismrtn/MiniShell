@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 20:57:00 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/03 21:30:23 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 21:46:43 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,14 @@ void	add_token(t_token **head, t_token_value type, char *content, int quotes)
 	free(content);
 }
 
+/**
+ * @brief Libera la memoria del primer token
+ *
+ * Esta función libera la memoria ocupada por el primer token
+ * de la lista enlazada.
+ *
+ * @param tokens Puntero al primer token de la lista
+ */
 void	free_tokens_first(t_token *tokens)
 {
 	if (!tokens)
@@ -88,6 +96,14 @@ void	free_tokens_first(t_token *tokens)
 	free(tokens);
 }
 
+/**
+ * @brief Libera la memoria de todos los tokens
+ *
+ * Esta función libera la memoria ocupada por todos los tokens
+ * de la lista enlazada.
+ *
+ * @param tokens Doble puntero al primer token de la lista
+ */
 void	free_tokens(t_token **tokens)
 {
 	t_token	*next;
@@ -104,6 +120,16 @@ void	free_tokens(t_token **tokens)
 	*tokens = 0;
 }
 
+/**
+ * @brief Duplica un token
+ *
+ * Esta función crea una copia de un token existente.
+ * La copia incluye todos los campos del token original, excepto el contenido,
+ * que se inicializa a NULL.
+ * 
+ * @param orig Token original a duplicar
+ * @return Puntero al nuevo token duplicado
+ */
 t_token	*dup_token(t_token orig)
 {
 	t_token	*new;

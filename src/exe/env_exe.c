@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 23:26:19 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/02 17:17:07 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 21:44:19 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,9 @@ char	*get_path_from_env(char **env)
 
 /**
  * @brief Cuenta el número de variables en la lista de entorno.
+ * 
+ * Recorre la lista enlazada de variables de entorno y cuenta
+ * el número de nodos.
  *
  * @param env_list Lista enlazada de variables de entorno.
  * @return int Número de variables.
@@ -83,6 +86,9 @@ int	count_env_vars(t_env *env_list)
 
 /**
  * @brief Libera un array de cadenas de entorno.
+ * 
+ * Libera la memoria ocupada por un array de cadenas
+ * de variables de entorno.
  *
  * @param env Array de cadenas a liberar.
  * @param count Número de elementos a liberar.

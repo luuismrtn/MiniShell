@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup_redir.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 16:25:22 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/04/03 18:01:42 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/04/03 21:56:38 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,21 @@ int	handle_redir_heredoc(t_token *tokens, t_token *head_tokens)
 	return (connect[0]);
 }
 
+/**
+ * @brief Configura las redirecciones de entrada/salida
+ * 
+ * Recorre la lista de tokens y busca los operadores de redirección.
+ * Configura los descriptores de archivo apropiados para la entrada
+ * y salida estándar del comando.
+ * 
+ * Detiene la búsqueda al encontrar un pipe o al final de la lista
+ * de tokens.
+ * 
+ * @param tokens Lista de tokens que contiene el comando y sus redirecciones
+ * @param fds Puntero a un array [stdin, stdout] donde se guardan los
+ * descriptores
+ * @param head_tokens Puntero a la cabeza de la lista de tokens
+ */
 void	make_redirections(t_token *tokens, int (*fds)[2], t_token *head_tokens)
 {
 	while (tokens)

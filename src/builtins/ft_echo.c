@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:16 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/03 20:15:57 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/03 21:40:36 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
  */
 static void	print_echo(char **args, int n, int i)
 {
-	int a;
+	int	a;
 
 	a = 0;
 	while (args[i])

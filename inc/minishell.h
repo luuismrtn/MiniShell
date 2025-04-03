@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/03 18:17:30 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/04/03 21:41:54 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ int						ft_len_var_name(char *str, int i);
 
 // TOKENIZE
 t_token					*tokenize(char *input, t_token *tokens);
+t_token					*dup_token(t_token orig);
 void					add_token(t_token **head, t_token_value type,
 							char *content, int quotes);
 void					handle_redirections(t_token **tokens, char *input,
@@ -129,7 +130,7 @@ int						child_pipe_fdin_redir(int *fd_in, int (*connect)[2]);
 void					change_fds_redir(int (*fds)[2], int *o_stdin,
 							int *o_stdout, int builtin_father);
 void					clean_father_material(int (*fds)[2], char **args);
-int					errors_pipex(int *pipe_in, int *pipe_out, char **args,
+int						errors_pipex(int *pipe_in, int *pipe_out, char **args,
 							char c);
 void					set_fds(int (*fds)[2]);
 
@@ -185,7 +186,5 @@ char					*handle_env_var(char *str, t_token *tokens);
 int						num_pipes(t_token *tokens);
 int						len_array(char **array);
 int						check_var_exist(char *var, t_token *tokens);
-
-t_token					*dup_token(t_token orig);
 
 #endif

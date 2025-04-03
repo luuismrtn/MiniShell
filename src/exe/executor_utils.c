@@ -3,15 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   executor_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 15:00:46 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/03 18:18:48 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/04/03 21:45:05 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
+/**
+ * @brief Inicializa los descriptores de archivo para stdin y stdout
+ * 
+ * Esta función establece los descriptores de archivo para stdin y stdout
+ * en un array de enteros. Se utiliza para inicializar los descriptores
+ * antes de realizar operaciones de redirección o creación de pipes.
+ * 
+ * @param fds Puntero a un array de enteros donde se almacenarán
+ */
 void	set_fds(int (*fds)[2])
 {
 	(*fds)[0] = STDIN_FILENO;
@@ -37,7 +46,7 @@ void	set_fds(int (*fds)[2])
  */
 int	errors_pipex(int *pipe_in, int *pipe_out, char **args, char c)
 {
-	int fd_null;
+	int	fd_null;
 
 	free_array(args);
 	if (c == 'p')
@@ -60,7 +69,7 @@ int	errors_pipex(int *pipe_in, int *pipe_out, char **args, char c)
 		dup2(fd_null, STDIN_FILENO);
 		close(fd_null);
 	}
-	return 0;
+	return (0);
 }
 
 /**
