@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 15:09:29 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/03 18:05:00 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/04/04 18:52:50 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	one_comnd(t_token **tokens)
 	if (is_builtin(args) == 1)
 		return (executor_father((*tokens), &fds, &args, -1));
 	signals('c');
-	if (ft_strncmp(args[0], "./minishell", 12) == 0)
+	if (match_string(args[0], (*tokens)->name_prog))
 		ign_signal();
 	pid = fork();
 	if (pid == -1)

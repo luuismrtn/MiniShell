@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 20:57:00 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/04 14:38:11 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 18:50:20 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,7 @@ t_token	*dup_token(t_token orig)
 	new->env_mshell = orig.env_mshell;
 	new->exp_var = orig.exp_var;
 	new->type = orig.type;
+	new->name_prog = orig.name_prog;
 	new->content = 0;
 	new->next = 0;
 	return (new);

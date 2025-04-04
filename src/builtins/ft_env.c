@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:17:16 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/04 16:17:01 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 18:49:55 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	get_env_content_and_replace(t_token **tokens, char *name, char *content)
  * @param env Array de strings con las variables de entorno.
  * @return t_token* Puntero a la estructura principal del shell, NULL si falla
  */
-t_token	*initialize_shell(char **env, char**vars)
+t_token	*initialize_shell(char **env, char**vars, char* argv)
 {
 	t_token	*tokens;
 
@@ -90,6 +90,7 @@ t_token	*initialize_shell(char **env, char**vars)
 		tokens->exp_var = env_buildin(vars);
 	else
 		tokens->exp_var = NULL;
+	tokens->name_prog = argv;
 	tokens->content = ft_strdup("0");
 	signals('f');
 	return (tokens);

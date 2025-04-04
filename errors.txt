@@ -28,6 +28,7 @@ pwd | cat | cat -e >3 | wc -l (bash: 0 y crea 3 con print dwl pwd) (mshell: hace
 cat < missing | echo hi
 cat < missing | cat Makefile
 cat <missing | cat
+cat < a < b <<e (fd no ceerrado)
 
 
 EXPORT
@@ -162,6 +163,8 @@ PARSEO
 "ls -l" debe ser command not found
 # espacios por terminal (segfault o error command)
 #cat' ' -> sintaxy error cd espacio al final 
+doble pipe lo pilla  
+si quotes closed 
 
 
 
@@ -212,6 +215,7 @@ probar sin environment
     #en ese caso: leer /etc/environment (guardas path desde este y añades PWD y SHLVL->si no exite: 1)
     #si luego quitan ademas luego hacen env -i $PATH; minishell no ejecuta comandos pero no debe petar
 #cat < out no va
+./minishell y luego ./minishell (exit se sale de todo)
 
 
 

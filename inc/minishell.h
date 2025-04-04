@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/04 16:52:26 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 18:49:21 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ typedef struct s_token
 	t_env				*env_mshell;
 	t_env				*exp_var;
 	t_token_value		type;
+	char*				name_prog;
 	char				*content;
 	int					quotes;
 	struct s_token		*next;
@@ -79,7 +80,7 @@ int						replace_history(char *history_file, char **history);
 // ENV
 t_env					*env_buildin(char **env);
 t_env					*find_env_var(t_env *env, char *var_name);
-t_token					*initialize_shell(char **env, char **vars);
+t_token					*initialize_shell(char **env, char **vars, char *argv);
 t_env					*create_env_node(char *env_var);
 void					add_last(t_env **head, t_env *node);
 t_env					*make_little_env(void);

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/04 16:48:27 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 18:47:49 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static int	run(char *line, t_token *tokens)
 	if (check_quotes_closed(line) == ERROR)
 	{
 		printf("Error: quotes not closed\n");
-		return (ERROR);
+		return (0);
 	}
 	tokens = tokenize(line, tokens);
 	if (!tokens)
@@ -170,8 +170,7 @@ int	main(int argc, char **argv, char **env)
 	t_token	*cmd_tokens;
 
 	(void)argc;
-	(void)argv;
-	tokens = initialize_shell(env, NULL);
+	tokens = initialize_shell(env, NULL, argv[0]);
 	history_file = get_history_path();
 	if (!tokens || ft_read_history(history_file) == ERROR)
 		return (free(history_file), free_tokens(&tokens), ERROR);

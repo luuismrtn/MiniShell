@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/04 15:43:56 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 18:52:39 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,11 @@ void	executor(t_token **tokens, int (*fds)[2], char **args,
 	{
 		ft_putstr_fd("minishell: '' command not found\n", 2);
 		g_exit_num = 127;
+		exit(g_exit_num);
 	}
-	else if ((ft_strncmp(args[0], "./minishell", 12) == 0)
-		&& num_pipes(*tokens) == 0)
+	if (match_string(args[0], (*tokens)->name_prog) && num_pipes(*tokens) == 0)
 		modify_shlvl(tokens, "SHLVL");
-	else if (is_builtin(args) == 1)
+	if (is_builtin(args) == 1)
 	{
 		change_fds_redir(fds, NULL, &original_stdout, 1);
 		handle_builtin(args, (*tokens));
@@ -82,7 +82,7 @@ int	final_command(int *count, t_token **tokens, int fd_in)
 	if (!args || !args[0])
 		return (0);
 	signals('c');
-	if (ft_strncmp(args[0], "./minishell", 12) == 0)
+	if (match_string(args[0], (*tokens)->name_prog))
 		ign_signal();
 	pid = fork();
 	if (pid == -1)
@@ -125,7 +125,7 @@ int	first_command(t_token **tokens, int count)
 		return (-1);
 	if (pipe(connect) == -1)
 		return (errors_pipex(NULL, NULL, args, 'p'), -1);
-	if (ft_strncmp(args[0], "./minishell", 12) == 0)
+	if (match_string(args[0], (*tokens)->name_prog))
 		return (close(connect[1]), connect[0]);
 	pid = fork();
 	if (pid == -1)

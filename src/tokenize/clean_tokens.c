@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 20:48:33 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 20:56:13 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 18:26:47 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,9 @@
  */
 static int	should_merge_tokens(t_token *current, t_token *next)
 {
+	if ((current->type == T_PIPE && next->type == T_PIPE)
+		&& (match_string(current->content, next->content)))
+		return (0);
 	if (current->type == next->type)
 		return (1);
 	if (current->type == T_WORD && next->type == T_ENV)
