@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:49:21 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/02 20:01:09 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 16:28:52 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,33 +79,6 @@ static char	*find_desired_path(char *pwd, char *dir)
 }
 
 /**
- * @brief Muestra un mensaje de error para el comando cd.
- *
- * Imprime un mensaje de error estandarizado para el comando cd cuando
- * una ruta no es válida o accesible. También establece el código de salida
- * en 1 para indicar que ocurrió un error.
- *
- * @param path La ruta que causó el error.
- */
-void	print_cd_error(char *path, t_token **tokens, char *input_path)
-{
-	if (input_path)
-	{
-		ft_putstr_fd("cd: error retrieving current directory: getcwd: ", 2);
-		ft_putstr_fd("cannot access parent directories: ", 2);
-		ft_putstr_fd("No such file or directory\n", 2);
-		modify_pwd(tokens, input_path);
-	}
-	else
-	{
-		ft_putstr_fd("cd: ", 2);
-		ft_putstr_fd(path, 2);
-		ft_putstr_fd(": No such file or directory\n", 2);
-		g_exit_num = 1;
-	}
-}
-
-/**
  * @brief Maneja el caso donde getcwd() falla pero necesitamos cambiar de
  * directorio.
  *
@@ -120,6 +93,7 @@ void	handle_broken_pwd(t_token **tokens, char *input_path)
 {
 	char	*desired_path;
 	t_env	*current;
+	char	*cwd;
 
 	if (!validate_input_cd(input_path))
 		return (print_cd_error(input_path, NULL, NULL));
@@ -127,7 +101,8 @@ void	handle_broken_pwd(t_token **tokens, char *input_path)
 				"PWD")->content, input_path);
 	if (chdir(desired_path) == 0)
 	{
-		get_env_content_and_replace(tokens, "PWD", desired_path);
+		cwd = getcwd(NULL, 0);
+		get_env_content_and_replace(tokens, "PWD", cwd);
 		current = (*tokens)->env_mshell;
 		while (current)
 		{
@@ -138,6 +113,7 @@ void	handle_broken_pwd(t_token **tokens, char *input_path)
 	}
 	else
 		print_cd_error(NULL, tokens, input_path);
+	free(desired_path);
 }
 
 /**

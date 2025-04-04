@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 20:19:51 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/03/27 00:47:35 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 16:28:50 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,4 +89,31 @@ int	check_quotes_closed(char *input)
 	if ((count_s_d[1] % 2 == 0) && (count_s_d[0] % 2 == 0))
 		return (SUCCESS);
 	return (ERROR);
+}
+
+/**
+ * @brief Muestra un mensaje de error para el comando cd.
+ *
+ * Imprime un mensaje de error estandarizado para el comando cd cuando
+ * una ruta no es válida o accesible. También establece el código de salida
+ * en 1 para indicar que ocurrió un error.
+ *
+ * @param path La ruta que causó el error.
+ */
+void	print_cd_error(char *path, t_token **tokens, char *input_path)
+{
+	if (input_path)
+	{
+		ft_putstr_fd("cd: error retrieving current directory: getcwd: ", 2);
+		ft_putstr_fd("cannot access parent directories: ", 2);
+		ft_putstr_fd("No such file or directory\n", 2);
+		modify_pwd(tokens, input_path);
+	}
+	else
+	{
+		ft_putstr_fd("cd: ", 2);
+		ft_putstr_fd(path, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+		g_exit_num = 1;
+	}
 }

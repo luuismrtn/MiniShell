@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:15:28 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/02 20:01:09 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 16:25:17 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,5 @@ void	ft_pwd(t_token *tokens)
 	if (!cwd)
 		cwd = find_env_var(tokens->env_mshell, "PWD")->content;
 	ft_putendl_fd(cwd, 1);
+	free(cwd);
 }

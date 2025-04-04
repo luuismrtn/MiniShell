@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:16:14 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/03 13:28:49 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:30:27 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static void	process_assignment(t_token *tokens, char *arg)
 	if (current)
 	{
 		free(current->content);
-		current->content = ft_strdup(remove_consec_spaces(var_content));
+		current->content = remove_consec_spaces(var_content);
 	}
 	else
 		add_env_var(tokens, var_name, var_content);

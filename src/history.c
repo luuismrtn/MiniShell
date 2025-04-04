@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:57:25 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/01 01:23:58 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 12:05:21 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,12 +97,12 @@ static int	process_history_line(int fd, char *line_clean, char *last_command)
 	}
 	else
 	{
-		if (ft_strncmp(line_clean, last_command, ft_strlen(line_clean)
-				+ ft_strlen(last_command)) != 0)
+		if (match_string(line_clean, last_command) == 0)
 		{
 			if (line_clean[0] != '\0')
 				write(fd, "\n", 1);
 			write(fd, line_clean, ft_strlen(line_clean));
+			add_history(line_clean);
 		}
 		free(last_command);
 		free(line_clean);

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 18:17:47 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/03 21:06:44 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:24:01 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ static int	**create_automata(void)
 	int	**automata;
 
 	automata = malloc(sizeof(int *) * 6);
+	if (!automata)
+		return (NULL);
 	automata[0] = (int []){1, 5, 5, 3, 3, 3, 3, 2};
 	automata[1] = (int []){2, 1, 4, 3, 3, 3, 3, 1};
 	automata[2] = (int []){2, 2, 4, 3, 3, 3, 3, 2};
@@ -100,7 +102,7 @@ int	automata(t_token *tokens)
 	prev_token = 0;
 	automata = create_automata();
 	if (!automata || tokens->next == NULL)
-		return (1);
+		return (free(automata), 1);
 	tokens = tokens->next;
 	current_state = 0;
 	while (current_state != 5 && tokens != NULL)

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/03 21:14:00 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 15:51:24 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,6 @@ static t_token	*process_line(char *line, t_token **tokens, char *history_file)
 		return (free(line), free(trimmed), free_tokens(tokens), cmd_tokens);
 	}
 	free(line);
-	add_history(trimmed);
 	write_line_history(history_file, trimmed);
 	if (run(trimmed, *tokens) == ERROR)
 	{
@@ -141,8 +140,10 @@ static char	*show_prompt(t_token *tokens)
 	char	*pwd_content;
 	char	*prompt;
 	char	*line;
+	t_env *pwd_env;
 
-	pwd_content = find_env_var(tokens->env_mshell, "PWD")->content;
+	pwd_env = find_env_var(tokens->env_mshell, "PWD");
+	pwd_content = pwd_env->content;
 	prompt = ft_strjoin(pwd_content, " ~ ");
 	line = readline(prompt);
 	free(prompt);
@@ -180,7 +181,7 @@ int	main(int argc, char **argv, char **env)
 		line = show_prompt(cmd_tokens);
 		if (!line)
 		{
-			free_tokens(&cmd_tokens);
+			free_env_list(tokens->exp_var);
 			break ;
 		}
 		cmd_tokens = process_line(line, &cmd_tokens, history_file);

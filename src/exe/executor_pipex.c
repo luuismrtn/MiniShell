@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_pipex.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:49:00 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/03 18:23:18 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/04/04 15:43:56 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,10 @@ void	executor(t_token **tokens, int (*fds)[2], char **args,
 		ft_putstr_fd("minishell: '' command not found\n", 2);
 		g_exit_num = 127;
 	}
-	if ((ft_strncmp(args[0], "./minishell", 12) == 0)
+	else if ((ft_strncmp(args[0], "./minishell", 12) == 0)
 		&& num_pipes(*tokens) == 0)
 		modify_shlvl(tokens, "SHLVL");
-	if (is_builtin(args) == 1)
+	else if (is_builtin(args) == 1)
 	{
 		change_fds_redir(fds, NULL, &original_stdout, 1);
 		handle_builtin(args, (*tokens));

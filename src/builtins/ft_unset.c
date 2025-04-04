@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:16:46 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/02 20:01:09 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 15:52:55 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,40 @@ static void	remove_env_var(t_token *tokens, char *var_name)
 }
 
 /**
+ * @brief Elimina una variable exportada de la lista
+ *
+ * Esta función busca en la lista de variables exportadas
+ * una variable que coincida con el nombre proporcionado y la elimina.
+ * Maneja correctamente el caso especial cuando la variable a eliminar
+ * es la primera de la lista, actualizando el puntero principal.
+ *
+ * @param tokens Token que contiene la lista de variables exportadas
+ * @param var_name Nombre de la variable a eliminar
+ */
+static void	remove_export_var(t_token *tokens, char *var_name)
+{
+	t_env	*current;
+	t_env	*prev;
+
+	current = tokens->exp_var;
+	prev = NULL;
+	while (current)
+	{
+		if (match_string(current->name, var_name))
+		{
+			if (prev)
+				prev->next = current->next;
+			else
+				tokens->exp_var = current->next;
+			free_current(current);
+			break ;
+		}
+		prev = current;
+		current = current->next;
+	}
+}
+
+/**
  * @brief Implementa el comando builtin 'unset'
  *
  * El comando unset elimina una o más variables de entorno.
@@ -83,7 +117,10 @@ void	ft_unset(t_token *tokens, char **args)
 	i = 1;
 	while (args[i])
 	{
-		remove_env_var(tokens, args[i]);
+		if (find_env_var(tokens->env_mshell, args[i]))
+			remove_env_var(tokens, args[i]);
+		else
+			remove_export_var(tokens, args[i]);
 		i++;
 	}
 	g_exit_num = 0;

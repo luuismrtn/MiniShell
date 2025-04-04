@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_build_in.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 15:01:35 by aldferna          #+#    #+#             */
-/*   Updated: 2025/03/31 18:45:11 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/04/04 14:12:28 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:44:38 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/03 20:57:57 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:19:49 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,10 @@ static void	update_pwd_dot(t_env *aux, char *dir)
 {
 	char	*new_pwd;
 	char	*temp;
+	char	*cwd;
 
-	if (getcwd(NULL, 0) == NULL)
+	cwd = getcwd(NULL, 0);
+	if (cwd == NULL)
 	{
 		temp = ft_strjoin("/", dir);
 		new_pwd = ft_strjoin(aux->content, temp);
@@ -36,8 +38,9 @@ static void	update_pwd_dot(t_env *aux, char *dir)
 		aux->content = new_pwd;
 		return ;
 	}
-	new_pwd = ft_strdup(getcwd(NULL, 0));
+	new_pwd = ft_strdup(cwd);
 	free(aux->content);
+	free(cwd);
 	aux->content = new_pwd;
 }
 
