@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/04 14:00:31 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 16:52:26 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ void					handle_redirections(t_token **tokens, char *input,
 							int *i);
 void					handle_quotes(t_token **tokens, char *input, int *i,
 							t_token_value type);
+void					handle_vir(t_token **tokens, int *i);
 char					*process_env_in_quotes(char *result, char *input,
 							int *i, t_token **tokens);
 char					*expand_var_in_quotes(char *result, char *var_name,
@@ -152,6 +153,7 @@ void					print_cd_error(char *path, t_token **tokens,
 void					handle_broken_pwd(t_token **tokens, char *input_path);
 int						validate_input_cd(char *input);
 char					*find_path(char **args);
+void					handle_cd(t_token **tokens, char **args);
 
 // EXPORT_UTILS
 int						is_valid_var_name(char *name);

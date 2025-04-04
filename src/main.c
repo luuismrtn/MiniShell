@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/04 15:51:24 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 16:48:27 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ static char	*show_prompt(t_token *tokens)
 	char	*pwd_content;
 	char	*prompt;
 	char	*line;
-	t_env *pwd_env;
+	t_env	*pwd_env;
 
 	pwd_env = find_env_var(tokens->env_mshell, "PWD");
 	pwd_content = pwd_env->content;

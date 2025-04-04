@@ -13,6 +13,7 @@ SRC = src/main.c \
 	src/tokenize/handle_quotes.c \
 	src/tokenize/handle_quotes_utils.c \
 	src/tokenize/handle_redirections.c \
+	src/tokenize/handle_vir.c \
 	src/tokenize/tokens.c \
 	src/automata.c \
 	src/setup_redir.c \

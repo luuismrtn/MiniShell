@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:54 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/04 16:27:49 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 16:52:53 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,11 +144,7 @@ int	validate_input_cd(char *input)
  */
 void	ft_cd(char **args, t_token **tokens)
 {
-	char	*path;
-	char	*cwd;
-
-	if (!args[1] || ft_strncmp(args[1], "~", 2) == 0 || ft_strncmp(args[1],
-			"--", 3) == 0)
+	if (!args[1] || ft_strncmp(args[1], "--", 3) == 0)
 		return (cd_to_home(tokens));
 	else if (match_string(args[1], "/") || ft_strncmp(args[1], "//", 2) == 0)
 		return (cd_to_root(tokens, args[1]));
@@ -157,20 +153,6 @@ void	ft_cd(char **args, t_token **tokens)
 	else if (args[1] && args[2])
 		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
 	else
-	{
-		cwd = getcwd(NULL, 0);
-		path = find_path(args);
-		if (cwd == NULL)
-			handle_broken_pwd(tokens, path);
-		else if (chdir(path) == 0)
-		{
-			free(cwd);
-			cwd = getcwd(NULL, 0);
-			modify_pwd(tokens, cwd);
-		}
-		else
-			print_cd_error(path, NULL, NULL);
-		return (free(cwd), free(path));
-	}
+		handle_cd(tokens, args);
 	g_exit_num = 1;
 }

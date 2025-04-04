@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 20:53:45 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/04 14:27:43 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 16:48:17 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,8 @@ static void	handle_env(t_token **tokens, char *input, int *i)
 	(*i) += len_var_name;
 	if (!check_var_exist(var_name, *tokens))
 		return (free(var_name));
-	var_content = ft_strdup(find_env_var((*tokens)->env_mshell, var_name)->content);
+	var_content = ft_strdup(find_env_var((*tokens)->env_mshell,
+				var_name)->content);
 	add_token(tokens, T_ENV, var_content, 0);
 	free(var_name);
 	if (input[*i] == '$' && input[*i + 1] != '\0' && (ft_isalnum(input[*i + 1])
@@ -163,6 +164,8 @@ t_token	*tokenize(char *input, t_token *tokens)
 			handle_pipe(&tokens, input[i], T_PIPE, &i);
 		else if (input[i] == '$' && input[i + 1] && input[i + 1] != '\0')
 			handle_env(&tokens, input, &i);
+		else if (input[i] == '~' && input[i + 1] != '~')
+			handle_vir(&tokens, &i);
 		else
 			handle_word(&tokens, input, &i);
 	}

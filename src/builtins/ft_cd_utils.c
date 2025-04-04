@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:49:21 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/04 16:28:52 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/04 16:54:22 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,4 +135,33 @@ char	*find_path(char **args)
 	else
 		path = ft_strdup(args[1]);
 	return (path);
+}
+
+/**
+ * @brief Maneja el comando cd (cambiar directorio).
+ *
+ * Esta función cambia el directorio de trabajo actual al especificado
+ * en los argumentos. Si el directorio no es accesible, maneja el error.
+ *
+ * @param tokens Doble puntero a la lista de tokens.
+ * @param args Array de argumentos del comando.
+ */
+void	handle_cd(t_token **tokens, char **args)
+{
+	char	*path;
+	char	*cwd;
+
+	cwd = getcwd(NULL, 0);
+	path = find_path(args);
+	if (cwd == NULL)
+		handle_broken_pwd(tokens, path);
+	else if (chdir(path) == 0)
+	{
+		free(cwd);
+		cwd = getcwd(NULL, 0);
+		modify_pwd(tokens, cwd);
+	}
+	else
+		print_cd_error(path, NULL, NULL);
+	return (free(cwd), free(path));
 }
