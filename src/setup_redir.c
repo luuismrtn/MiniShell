@@ -6,7 +6,7 @@
 /*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 16:25:22 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/04/05 17:42:06 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/04/05 19:04:27 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,45 +80,6 @@ int	handle_redir_left(t_token *tokens, int (*fds)[2])
 }
 
 /**
- * @brief Maneja la redirección de tipo heredoc (<<)
- *
- * Crea un proceso hijo que lee la entrada estándar hasta encontrar
- * el delimitador especificado. Todo el contenido leído se pasa al
- * proceso padre a través de una tubería.
- *
- * Configura señales específicas para el manejo del heredoc y restaura
- * la configuración original después.
- *
- * @param tokens El token actual con la redirección
- * @return int Descriptor de archivo para leer el contenido del heredoc
- */
-int	handle_redir_heredoc(t_token *tokens, t_token *head_tokens)
-{
-	int		status;
-	pid_t	pid;
-	int		connect[2];
-
-	ign_signal();
-	if (pipe(connect) == -1)
-		return (perror("pipe"), -1);
-	pid = fork();
-	if (pid == -1)
-		return (perror("fork"), -1);
-	else if (pid == 0)
-	{
-		signals('h');
-		close(connect[0]);
-		handle_heredoc(tokens->next->content, connect[1], head_tokens);
-		close(connect[1]);
-		exit(0);
-	}
-	close(connect[1]);
-	waitpid(pid, &status, 0);
-	signals('f');
-	return (connect[0]);
-}
-
-/**
  * @brief Configura las redirecciones de entrada/salida
  * 
  * Recorre la lista de tokens y busca los operadores de redirección.
@@ -133,11 +94,8 @@ int	handle_redir_heredoc(t_token *tokens, t_token *head_tokens)
  * descriptores
  * @param head_tokens Puntero a la cabeza de la lista de tokens
  */
-void	make_redirections(t_token *tokens, int (*fds)[2], t_token *head_tokens)
+void	make_redirections(t_token *tokens, int (*fds)[2])
 {
- 	t_token *aux;
-	
-	aux = tokens;
 	while (tokens)
 	{
 		if (tokens->type == T_REDIR_RIGHT && tokens->next)
@@ -146,8 +104,6 @@ void	make_redirections(t_token *tokens, int (*fds)[2], t_token *head_tokens)
 			(*fds)[1] = handle_redir_right_append(tokens, fds, 'a');
 		else if (tokens->type == T_REDIR_LEFT && tokens->next)
 		{
-			//if ((*fds)[0] != STDIN_FILENO)
-			//	close((*fds)[0]);
 			(*fds)[0] = handle_redir_left(tokens, fds);
 			if ((*fds)[0] < 0)
 				break ;	
@@ -155,23 +111,6 @@ void	make_redirections(t_token *tokens, int (*fds)[2], t_token *head_tokens)
 		else if (tokens->type == T_PIPE)
 			break ;
 		tokens = tokens->next;
-	}
-	while (aux)
-	{
-		if (aux->type == T_HERE_DOC && aux->next)
-		{
-			if ((*fds)[0] < 0 || (*fds)[1] < 0)	
-				handle_redir_heredoc(aux, head_tokens);
-			else
-			{
-				//if ((*fds)[0] != STDIN_FILENO)
-				//	close((*fds)[0]);
-				(*fds)[0] = handle_redir_heredoc(aux, head_tokens);
-			}
-		}
-		else if (aux->type == T_PIPE)
-			break ;
-		aux = aux->next;
 	}
 }
 
@@ -201,7 +140,8 @@ int	setup_redirections(t_token *tokens, int (*fds)[2], int count)
 			count--;
 		tokens = tokens->next;
 	}
-	make_redirections(tokens, fds, head_tokens);
+	make_redirections(tokens, fds);
+	make_heredoc_redir(tokens, fds, head_tokens);
 	if ((*fds)[1] < 0 || (*fds)[0] < 0)
 		return (-1);
 	return (0);

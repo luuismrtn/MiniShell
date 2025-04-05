@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/04 18:49:21 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/05 19:03:27 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,6 +172,7 @@ void					create_new_pwd(t_token **tokens, char *dir);
 //	HERE DOC
 void					handle_heredoc(char *eof, int fd, t_token *tokens);
 void					expand_in_heredoc(char **line, t_token *tokens);
+void	make_heredoc_redir(t_token *tokens, int (*fds)[2], t_token *head_tokens);
 
 //	SIGNALS
 void					signals(char c);

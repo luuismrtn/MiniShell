@@ -165,6 +165,8 @@ PARSEO
 #cat' ' -> sintaxy error cd espacio al final 
 doble pipe lo pilla  
 si quotes closed 
+/Users/adrianafernandez/Desktop/MiniShell ~ cat << g<<h
+    > g<<h
 
 
 
