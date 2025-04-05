@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup_redir.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 16:25:22 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/04/03 21:56:38 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/05 17:42:06 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,9 @@ int	handle_redir_heredoc(t_token *tokens, t_token *head_tokens)
  */
 void	make_redirections(t_token *tokens, int (*fds)[2], t_token *head_tokens)
 {
+ 	t_token *aux;
+	
+	aux = tokens;
 	while (tokens)
 	{
 		if (tokens->type == T_REDIR_RIGHT && tokens->next)
@@ -142,12 +145,33 @@ void	make_redirections(t_token *tokens, int (*fds)[2], t_token *head_tokens)
 		else if (tokens->type == T_APPEND && tokens->next)
 			(*fds)[1] = handle_redir_right_append(tokens, fds, 'a');
 		else if (tokens->type == T_REDIR_LEFT && tokens->next)
+		{
+			//if ((*fds)[0] != STDIN_FILENO)
+			//	close((*fds)[0]);
 			(*fds)[0] = handle_redir_left(tokens, fds);
-		else if (tokens->type == T_HERE_DOC && tokens->next)
-			(*fds)[0] = handle_redir_heredoc(tokens, head_tokens);
+			if ((*fds)[0] < 0)
+				break ;	
+		}
 		else if (tokens->type == T_PIPE)
 			break ;
 		tokens = tokens->next;
+	}
+	while (aux)
+	{
+		if (aux->type == T_HERE_DOC && aux->next)
+		{
+			if ((*fds)[0] < 0 || (*fds)[1] < 0)	
+				handle_redir_heredoc(aux, head_tokens);
+			else
+			{
+				//if ((*fds)[0] != STDIN_FILENO)
+				//	close((*fds)[0]);
+				(*fds)[0] = handle_redir_heredoc(aux, head_tokens);
+			}
+		}
+		else if (aux->type == T_PIPE)
+			break ;
+		aux = aux->next;
 	}
 }
 

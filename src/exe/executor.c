@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 15:09:29 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/04 18:52:50 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/05 17:44:12 by adrianafern      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	one_comnd(t_token **tokens)
 		return (executor_father((*tokens), &fds, &args, -1));
 	signals('c');
 	if (match_string(args[0], (*tokens)->name_prog))
-		ign_signal();
+		ign_signal();	
 	pid = fork();
 	if (pid == -1)
 		return (perror("fork"));
