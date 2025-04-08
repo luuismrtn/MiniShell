@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup_redir.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 16:25:22 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/04/05 19:04:27 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/04/08 20:59:21 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,14 +81,14 @@ int	handle_redir_left(t_token *tokens, int (*fds)[2])
 
 /**
  * @brief Configura las redirecciones de entrada/salida
- * 
+ *
  * Recorre la lista de tokens y busca los operadores de redirección.
  * Configura los descriptores de archivo apropiados para la entrada
  * y salida estándar del comando.
- * 
+ *
  * Detiene la búsqueda al encontrar un pipe o al final de la lista
  * de tokens.
- * 
+ *
  * @param tokens Lista de tokens que contiene el comando y sus redirecciones
  * @param fds Puntero a un array [stdin, stdout] donde se guardan los
  * descriptores
@@ -106,7 +106,7 @@ void	make_redirections(t_token *tokens, int (*fds)[2])
 		{
 			(*fds)[0] = handle_redir_left(tokens, fds);
 			if ((*fds)[0] < 0)
-				break ;	
+				break ;
 		}
 		else if (tokens->type == T_PIPE)
 			break ;

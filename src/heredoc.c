@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adrianafernandez <adrianafernandez@stud    +#+  +:+       +#+        */
+/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 16:31:15 by adrianafern       #+#    #+#             */
-/*   Updated: 2025/04/05 19:10:22 by adrianafern      ###   ########.fr       */
+/*   Updated: 2025/04/08 21:21:32 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,8 @@ int	handle_redir_heredoc(t_token *tokens, t_token *head_tokens)
 	return (connect[0]);
 }
 
-void	make_real_redir_heredoc(t_token *tokens, int (*fds)[2], t_token *head_tokens)
+void	make_real_redir_heredoc(t_token *tokens, int (*fds)[2],
+		t_token *head_tokens)
 {
 	if ((*fds)[0] != STDIN_FILENO)
 		close((*fds)[0]);
@@ -136,14 +137,22 @@ void	make_real_redir_heredoc(t_token *tokens, int (*fds)[2], t_token *head_token
 /**
  * @brief Maneja como se debe redirigir heredoc
  *
- * Si hay un error en anteriores redirecciones no crea un pipe.
- * En caso contrario cierra fd[0] antes de sobrescribir.
+ * Esta función se encarga de gestionar la redirección de heredoc
+ * en función de si se está ejecutando en un entorno interactivo o no.
+ * Si el heredoc se está ejecutando en un entorno interactivo,
+ * se utiliza readline para leer la entrada del usuario.
+ * Si no, se utiliza la función handle_redir_heredoc para manejar la redirección
+ * real.
  *
+ * @param tokens Lista de tokens que contiene el heredoc
+ * @param fds Array de descriptores de archivo [stdin, stdout]
+ * @param head_tokens Puntero a la cabeza de la lista de tokens
  */
 void	make_heredoc_redir(t_token *tokens, int (*fds)[2], t_token *head_tokens)
 {
-	char *line = NULL;
+	char	*line;
 
+	line = NULL;
 	while (tokens)
 	{
 		if (tokens->type == T_HERE_DOC && tokens->next)
@@ -153,7 +162,7 @@ void	make_heredoc_redir(t_token *tokens, int (*fds)[2], t_token *head_tokens)
 				while (1)
 				{
 					line = readline("> ");
-					if (!line || ft_strncmp(line, tokens->next->content, ft_strlen(tokens->next->content) + 1) == 0)
+					if (!line || match_string(line, tokens->next->content) == 0)
 						break ;
 					free(line);
 				}
