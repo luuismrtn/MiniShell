@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:44:38 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/04 14:19:49 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/08 23:33:16 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ static void	update_pwd_other(t_env *aux, char *dir)
 static void	modify_oldpwd(t_token *tokens)
 {
 	t_env	*aux;
+	t_env	*oldpwd;
 	char	*a_pwd;
 
 	a_pwd = NULL;
@@ -123,7 +124,14 @@ static void	modify_oldpwd(t_token *tokens)
 		}
 		aux = aux->next;
 	}
-	add_env_var(tokens, "OLDPWD", a_pwd);
+	oldpwd = find_env_var(tokens->env_mshell, "OLDPWD");
+	if (oldpwd)
+	{
+		free(oldpwd->content);
+		oldpwd->content = a_pwd;
+	}
+	else
+		add_env_var(tokens, "OLDPWD", a_pwd);
 }
 
 /**

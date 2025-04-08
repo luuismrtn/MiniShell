@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/08 20:59:15 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/08 22:10:54 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ void					handle_redirections(t_token **tokens, char *input,
 							int *i);
 void					handle_quotes(t_token **tokens, char *input, int *i,
 							t_token_value type);
-void					handle_vir(t_token **tokens, int *i);
+void					handle_vir(t_token **tokens, char *input, int *i);
 char					*process_env_in_quotes(char *result, char *input,
 							int *i, t_token **tokens);
 char					*expand_var_in_quotes(char *result, char *var_name,

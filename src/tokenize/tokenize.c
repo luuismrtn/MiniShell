@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 20:53:45 by aldferna          #+#    #+#             */
-/*   Updated: 2025/04/04 18:15:07 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/08 22:10:24 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,8 +164,8 @@ t_token	*tokenize(char *input, t_token *tokens)
 			handle_pipe(&tokens, input[i], T_PIPE, &i);
 		else if (input[i] == '$' && input[i + 1] && input[i + 1] != '\0')
 			handle_env(&tokens, input, &i);
-		else if (input[i] == '~' && input[i + 1] != '~')
-			handle_vir(&tokens, &i);
+		else if (input[i] == '~')
+			handle_vir(&tokens, input, &i);
 		else
 			handle_word(&tokens, input, &i);
 	}
