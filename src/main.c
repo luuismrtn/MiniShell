@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/04 18:47:49 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/08 23:45:15 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ static int	run(char *line, t_token *tokens)
 	if (!tokens)
 		return (ERROR);
 	clean_tokens(&tokens);
+	replace_last_command(tokens);
 	result = automata(tokens);
 	if (result == 0)
 	{

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 21:49:19 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/03 21:56:09 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/08 23:54:46 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,4 +34,30 @@ int	check_var_exist(char *var, t_token *tokens)
 		current = current->next;
 	}
 	return (0);
+}
+
+/**
+ * @brief Reemplaza el último comando ejecutado en la variable de entorno "_"
+ * 
+ * Esta función busca la variable de entorno "_" y la reemplaza con el
+ * último comando ejecutado.
+ * 
+ * @param tokens Token que contiene la lista de variables de entorno
+ */
+void	replace_last_command(t_token *tokens)
+{
+	t_env	*slash;
+	t_token	*last_command;
+	char	*last_word;
+
+	last_command = tokens;
+	while (last_command->next)
+		last_command = last_command->next;
+	last_word = last_command->content;
+	slash = find_env_var(tokens->env_mshell, "_");
+	if (slash)
+	{
+		free(slash->content);
+		slash->content = ft_strdup(last_word);
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 16:35:52 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/08 22:58:29 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/08 23:55:24 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	handle_vir(t_token **tokens, char *input, int *i)
 	char	*home_content;
 
 	if (!(input[*i + 1] == '/' || input[*i + 1] == '\0' || input[*i
-			+ 1] == ' '))
+				+ 1] == ' '))
 	{
 		(*i)++;
 		add_token(tokens, T_WORD, ft_strdup("~"), 0);

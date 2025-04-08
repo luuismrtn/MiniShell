@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/08 22:10:54 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/08 23:44:06 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,5 +191,6 @@ char					*handle_env_var(char *str, t_token *tokens);
 int						num_pipes(t_token *tokens);
 int						len_array(char **array);
 int						check_var_exist(char *var, t_token *tokens);
+void					replace_last_command(t_token *tokens);
 
 #endif
