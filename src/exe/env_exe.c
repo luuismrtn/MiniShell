@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 23:26:19 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/03 21:44:19 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/09 00:13:07 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,28 +41,35 @@ static char	*create_env_string(t_env *env_var)
  *
  * Busca en el array de variables de entorno hasta encontrar
  * la variable PATH y devuelve su valor (saltando "PATH=").
+ * En el caso de que PATH no exista, enviamos el valor de PWD
  *
  * @param env Array de strings de variables de entorno.
  * @return char* Puntero al valor de PATH (no debe liberarse).
  */
 char	*get_path_from_env(char **env)
 {
-	int	i;
+	int		i;
+	t_env	*env_s;
+	t_env	*pwd;
+	char	*path;
 
 	i = 0;
 	while (env[i] != NULL && ft_strncmp(env[i], "PATH=", 5) != 0)
 		i++;
 	if (env[i] == NULL)
 	{
-		write(2, "Path not found\n", 16);
-		exit(10);
+		env_s = env_buildin(env);
+		pwd = find_env_var(env_s, "PWD");
+		path = ft_strdup(pwd->content);
+		free_env_list(env_s);
+		return (path);
 	}
 	return (env[i] + 5);
 }
 
 /**
  * @brief Cuenta el número de variables en la lista de entorno.
- * 
+ *
  * Recorre la lista enlazada de variables de entorno y cuenta
  * el número de nodos.
  *
@@ -86,7 +93,7 @@ int	count_env_vars(t_env *env_list)
 
 /**
  * @brief Libera un array de cadenas de entorno.
- * 
+ *
  * Libera la memoria ocupada por un array de cadenas
  * de variables de entorno.
  *
