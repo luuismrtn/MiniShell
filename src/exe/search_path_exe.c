@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 23:39:32 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/04 15:42:27 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/09 16:24:45 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ char	**search_path(char **env, char *cmd)
 
 	path_str = get_path_from_env(env);
 	paths_split = ft_split(path_str, ':');
+	free(path_str);
 	paths = malloc(sizeof(char *) * (len_array(paths_split) + 1));
 	i = 0;
 	while (paths_split[i] != NULL)

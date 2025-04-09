@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:15:28 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/04 16:25:17 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/09 16:38:43 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,15 @@
  */
 void	ft_pwd(t_token *tokens)
 {
+	t_env	*pwd_env;
 	char	*cwd;
 
-	cwd = getcwd(NULL, 0);
-	if (!cwd)
-		cwd = find_env_var(tokens->env_mshell, "PWD")->content;
+	pwd_env = find_env_var(tokens->env_mshell, "PWD");
+	if (pwd_env == NULL)
+	{
+		ft_putstr_fd("Error: PWD not found in environment variables\n", 2);
+		return ;
+	}
+	cwd = pwd_env->content;
 	ft_putendl_fd(cwd, 1);
-	free(cwd);
 }

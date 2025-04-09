@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:24:09 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/08 23:45:15 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/09 21:58:01 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,17 +174,17 @@ int	main(int argc, char **argv, char **env)
 	tokens = initialize_shell(env, NULL, argv[0]);
 	history_file = get_history_path();
 	if (!tokens || ft_read_history(history_file) == ERROR)
-		return (free(history_file), free_tokens(&tokens), ERROR);
+		return (free(history_file), free_tokens(&tokens),
+			free_tokens_first(tokens), ERROR);
 	cmd_tokens = dup_token(*tokens);
+	free(tokens);
 	while (1)
 	{
 		line = show_prompt(cmd_tokens);
 		if (!line)
-		{
-			free_env_list(tokens->exp_var);
 			break ;
-		}
 		cmd_tokens = process_line(line, &cmd_tokens, history_file);
 	}
-	return (free(history_file), free_tokens_first(tokens), SUCCESS);
+	free_tokens_first(cmd_tokens);
+	return (free(history_file), SUCCESS);
 }

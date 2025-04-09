@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:17:16 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/08 20:59:36 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/09 15:01:47 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ t_token	*initialize_shell(char **env, char **vars, char *argv)
 	else
 		tokens->exp_var = NULL;
 	tokens->name_prog = argv;
-	tokens->content = ft_strdup("0");
+	tokens->content = NULL;
 	signals('f');
 	return (tokens);
 }

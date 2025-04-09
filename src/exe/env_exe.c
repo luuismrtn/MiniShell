@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 23:26:19 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/09 00:13:07 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/09 16:24:37 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ char	*get_path_from_env(char **env)
 		free_env_list(env_s);
 		return (path);
 	}
-	return (env[i] + 5);
+	return (ft_strdup(env[i] + 5));
 }
 
 /**

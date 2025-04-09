@@ -6,7 +6,7 @@
 /*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 00:14:54 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/04 16:52:53 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/04/09 16:47:14 by lumartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ static void	cd_to_root(t_token **tokens, char *args)
 {
 	if (ft_strncmp(args, "///", 3) == 0)
 		args = ft_strdup("/");
+	else
+		args = ft_strdup(args);
 	if (chdir(args) == 0)
 	{
 		modify_pwd(tokens, args);
@@ -64,6 +66,7 @@ static void	cd_to_root(t_token **tokens, char *args)
 	}
 	else
 		print_cd_error(args, NULL, NULL);
+	free(args);
 }
 
 /**
