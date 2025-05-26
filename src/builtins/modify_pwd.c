@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   modify_pwd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lumartin <lumartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: aldara <aldara@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 11:44:38 by lumartin          #+#    #+#             */
-/*   Updated: 2025/04/08 23:33:16 by lumartin         ###   ########.fr       */
+/*   Updated: 2025/05/26 15:49:49 by aldara           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-/**
+/* 
  * @brief Actualiza la variable PWD cuando el directorio es ".".
  *
  * Maneja el caso especial cuando cambiamos al directorio actual (".").
@@ -80,7 +80,7 @@ static void	update_pwd_home(t_env *aux, char *dir, t_token **tokens)
  * @param aux Puntero a la variable PWD en el entorno.
  * @param dir El directorio al que se cambió.
  */
-static void	update_pwd_other(t_env *aux, char *dir)
+ static void	update_pwd_other(t_env *aux, char *dir)
 {
 	char	*path;
 	char	*new_pwd;
@@ -92,7 +92,7 @@ static void	update_pwd_other(t_env *aux, char *dir)
 	if (dir[0] == '/')
 		new_pwd = ft_strdup(dir);
 	else
-		new_pwd = ft_strjoin(aux->content, path);
+ 	new_pwd = ft_strjoin(aux->content, path);
 	free(path);
 	free(aux->content);
 	aux->content = new_pwd;
@@ -133,7 +133,6 @@ static void	modify_oldpwd(t_token *tokens)
 	else
 		add_env_var(tokens, "OLDPWD", a_pwd);
 }
-
 /**
  * @brief Actualiza la variable PWD después de un cambio de directorio.
  *
@@ -150,7 +149,8 @@ static void	modify_oldpwd(t_token *tokens)
  * @param tokens Puntero a la estructura de tokens con variables de entorno.
  * @param dir El directorio al que se cambió.
  */
-void	modify_pwd(t_token **tokens, char *dir)
+
+void	modify_pwd_error(t_token **tokens, char *dir)
 {
 	t_env	*aux;
 
@@ -177,4 +177,27 @@ void	modify_pwd(t_token **tokens, char *dir)
 		aux = aux->next;
 	}
 	create_new_pwd(tokens, dir);
+}
+
+void modify_pwd(t_token **tokens, char *dir)
+{
+    t_env *pwd_var;
+    char *cwd;
+
+    modify_oldpwd((*tokens));
+    cwd = getcwd(NULL, 0);
+    if (!cwd)
+	{
+		modify_pwd_error(tokens, dir);
+        return;
+	}
+    pwd_var = find_env_var((*tokens)->env_mshell, "PWD");
+    if (pwd_var)
+    {
+        free(pwd_var->content);
+        pwd_var->content = ft_strdup(cwd);
+    }
+    else
+        add_env_var((*tokens), "PWD", ft_strdup(cwd));
+    free(cwd);
 }
